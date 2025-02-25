@@ -61,6 +61,7 @@ export default function LoginForm() {
           <PasswordInput
             label="비밀번호"
             placeholder="비밀번호를 입력하세요"
+            visible={showPassword}
             visibilityToggleIcon={({ reveal }) =>
               reveal ? <EyeOff size={24} /> : <Eye size={24} />
             }
