@@ -45,6 +45,14 @@ export default {
         900: '#534300', 
         950: '#332900', 
       },
+      error: '#D6173A',
+      tag: {
+        red: '#DA5D3F',  
+        orange: '#F4992A',
+        green: '#55BC8A',
+        blue: '#529FCD',
+        purple: '#A67DC1',
+      }
     },
     extend: {},
   },
