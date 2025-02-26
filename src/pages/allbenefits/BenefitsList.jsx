@@ -3,54 +3,63 @@ import Card from "../../components/card";
 
 const CardListPage = () => {
   return (
-    <div className="p-6 min-h-screen flex">
+    <div className="flex min-h-screen p-6">
       {/* 사이드 필터 */}
-      <div className="w-1/6 p-2 mr-4 border rounded text-xs">
-        <div className="flex justify-between items-center mb-2">
+      <div className="w-1/6 p-2 mr-4 text-xs border rounded">
+        <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-semibold">필터</h2>
-          <button className="text-red-500 text-xs">전체선택</button>
+          <button className="text-xs text-red-500">전체선택</button>
         </div>
-        <select className="border p-1 rounded w-full mb-1">
+        <select className="w-full p-1 mb-1 border rounded">
           <option>생애주기</option>
         </select>
-        <select className="border p-1 rounded w-full mb-1">
+        <select className="w-full p-1 mb-1 border rounded">
           <option>가구상황</option>
         </select>
-        <select className="border p-1 rounded w-full">
+        <select className="w-full p-1 border rounded">
           <option>관심주제</option>
         </select>
       </div>
 
       <div className="flex-1">
-        {/* 제목 */}
-        <h1 className="text-xl font-semibold mb-4 text-center">복지혜택 전체보기</h1>
-{/* 필터 및 검색창 */}
-<div className="border rounded p-4 mb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-gray-500 mr-2">나이</span>
-            <input type="text" placeholder="나이를 입력하세요" className="border p-1 rounded w-1/5 text-right focus:outline-none" />
-            <span className="text-gray-500 mx-4">지역</span>
-            <select className="border p-1 rounded w-1/5">
-              <option>시/도 선택</option>
-            </select>
-            <select className="border p-1 rounded w-1/5">
-              <option>시/군/구 선택</option>
-            </select>
+        {/* 필터 및 검색창 */}
+        <div className=" pt-[40px] pb-[40px] pr-[30px] pl-[30px] mb-6 border rounded w-[1200px] h-[250px]">
+          <div className=" flex flex-col gap-[30px] w-[1140px] h-[110px]">
+          <div className="flex items-center gap-[150px] w-[1140px] h-[40px]">
+            <div className="w-[300px] h-[40px] gap-[30px] flex items-center">
+              <span className="text-[16px] ">나이</span>
+              <input type="text" placeholder="만 0세" className="p-2 w-[240px] border rounded-[12px] " />
+            </div>
+            <div className="w-[690px] h-[40px] gap-[30px] flex items-center">
+              <span className="text-[16px] ">지역</span>
+              <div className="w-[630px] gap-[10px] flex items-center">
+                <select className="w-[300px] p-1 border rounded">
+                  <option>시/도 선택</option>
+                </select>
+                <select className="w-[320px] p-1 border rounded">
+                  <option>시/군/구 선택</option>
+                </select>
+              </div>
+            </div>
           </div>
           {/* 검색창 */}
-          <div className="flex items-center gap-2 justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-gray-500 mr-2">검색</span>
-              <input type="text" placeholder="검색어 입력" className="border p-1 rounded flex-1 w-1/3" />
-            </div>
-            <div className="flex gap-2">
-              <button className="bg-gray-300 text-black px-3 py-1 rounded">초기화</button>
-              <button className="bg-yellow-500 text-white px-3 py-1 rounded">검색</button>
+          <div className="flex items-center gap-[30px] w-[1140px] h-[40px]">
+            <span className="text-[16px]">검색</span>
+            <input type="text"
+              placeholder="검색어 입력"
+              className="w-[1080px] p-2 rounded-[12px] border" />
+          </div>
+          </div>
+          <div className="flex justify-end mt-[20px]">
+            <div className="flex gap-2.5 w-[296px] h-[40px]">
+              <button className="w-[143px] text-black-50 bg-gray-500 rounded-[10px]">초기화</button>
+              <button className="w-[143px] text-black-50 bg-yellow-700 rounded-[10px]">검색</button>
             </div>
           </div>
         </div>
+
         {/* 카드 리스트 */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3 w-[1236px]">
           {Array(9).fill(0).map((_, index) => (
             <Card key={index} />
           ))}
@@ -58,9 +67,9 @@ const CardListPage = () => {
 
         {/* 페이지네이션 */}
         <div className="flex justify-center mt-6">
-          <button className="px-2 py-1 border rounded mx-1 bg-yellow-500 text-white">1</button>
+          <button className="px-2 py-1 mx-1 text-white bg-yellow-500 border rounded">1</button>
           {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-            <button key={num} className="px-2 py-1 border rounded mx-1">{num}</button>
+            <button key={num} className="px-2 py-1 mx-1 border rounded">{num}</button>
           ))}
         </div>
       </div>
