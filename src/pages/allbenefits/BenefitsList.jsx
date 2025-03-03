@@ -26,7 +26,6 @@ const SortOptions = ({ selected, onSelect }) => {
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="flex items-center justify-center mt-6 space-x-2">
-      {/* 처음 & 이전 버튼 */}
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
@@ -42,7 +41,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         ＜
       </button>
 
-      {/* 페이지 번호 */}
       {[...Array(totalPages)].map((_, index) => {
         const page = index + 1;
         return (
@@ -60,7 +58,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         );
       })}
 
-      {/* 다음 & 마지막 버튼 */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -85,7 +82,7 @@ const CardListPage = () => {
   const totalPages = 10;
 
   return (
-    <div className="flex min-h-screen p-6">
+    <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6">
       {/* 사이드 필터 */}
       <SideFilter />
 
@@ -98,7 +95,7 @@ const CardListPage = () => {
         <SortOptions selected={sortOption} onSelect={setSortOption} />
 
         {/* 카드 리스트 */}
-        <div className="grid grid-cols-3 gap-10 w-[1200px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 max-w-full">
           {Array(9)
             .fill(0)
             .map((_, index) => (
