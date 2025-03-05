@@ -1,6 +1,6 @@
 const SearchFilter = () => {
     return (
-        <div className="pt-10 pb-10 px-6 mb-6 border rounded h-[250px]">
+        <div className="pt-10 pb-10 px-6 mb-6 border rounded max-w-[1200px] max-h-[250px] bg-black-50">
             <div className="flex flex-col gap-6 w-full">
                 <div className="flex flex-wrap gap-6 w-full">
                     <div className="flex-1 min-w-[250px] flex items-center gap-4">
@@ -14,10 +14,10 @@ const SearchFilter = () => {
                     <div className="flex-1 min-w-[400px] flex items-center gap-4">
                         <span className="text-[16px]">지역</span>
                         <div className="flex-1 flex items-center gap-2">
-                            <select className="flex-1 min-w-[150px] p-1 border rounded">
+                            <select className="flex-1 min-w-[150px] p-1 border rounded-[12px]">
                                 <option>시/도 선택</option>
                             </select>
-                            <select className="flex-1 min-w-[150px] p-1 border rounded">
+                            <select className="flex-1 min-w-[150px] p-1 border rounded-[12px]">
                                 <option>시/군/구 선택</option>
                             </select>
                         </div>

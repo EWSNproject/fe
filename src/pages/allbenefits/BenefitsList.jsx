@@ -82,20 +82,23 @@ const CardListPage = () => {
   const totalPages = 10;
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6">
+    <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
       {/* 사이드 필터 */}
       <SideFilter />
 
       {/* 메인 컨텐츠 영역 */}
       <div className="flex flex-col flex-1">
+      <span className="text-[24px] mb-5 font-semibold">복지혜택 전체보기</span>
         {/* 필터 및 검색창 */}
         <SearchFilter />
 
         {/* 정렬 옵션 */}
+        <div className="max-w-[1200px]">
         <SortOptions selected={sortOption} onSelect={setSortOption} />
+        </div>
 
         {/* 카드 리스트 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 max-w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 max-w-[1200px]">
           {Array(9)
             .fill(0)
             .map((_, index) => (

@@ -3,7 +3,7 @@ import { BookmarkIcon } from "@heroicons/react/24/solid";
 
 const Card = () => {
   return (
-    <div className="relative p-6 border shadow-md rounded-2xl w-full max-w-[380px] min-h-[285px] gap-6 flex flex-col bg-black-50">
+    <div className="relative p-6 border shadow-md rounded-2xl w-full max-w-[404px] min-h-[285px] gap-6 flex flex-col bg-black-50">
       {/* 카테고리 태그 */}
       <div className="flex justify-between">
         <div className="flex flex-wrap space-x-2 sm:space-x-3">
