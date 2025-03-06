@@ -7,13 +7,15 @@ const SortOptions = ({ selected, onSelect }) => {
   const options = ["최신순", "인기순", "북마크순"];
 
   return (
-    <div className="flex justify-end gap-4 mb-4 text-lg">
+    <div className="flex justify-center md:justify-end gap-4 mb-4 text-lg flex-wrap">
       {options.map((option) => (
         <button
           key={option}
           onClick={() => onSelect(option)}
           className={`${
-            selected === option ? "text-black font-bold underline" : "text-gray-400"
+            selected === option
+              ? "text-black font-bold underline"
+              : "text-gray-400"
           }`}
         >
           {option}
@@ -25,7 +27,7 @@ const SortOptions = ({ selected, onSelect }) => {
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
-    <div className="flex items-center justify-center mt-6 space-x-2">
+    <div className="flex items-center justify-center mt-6 gap-2 flex-wrap">
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
@@ -88,17 +90,20 @@ const CardListPage = () => {
 
       {/* 메인 컨텐츠 영역 */}
       <div className="flex flex-col flex-1">
-      <span className="text-[24px] mb-5 font-semibold">복지혜택 전체보기</span>
+        <span className="text-[24px] mb-5 font-semibold">
+          복지혜택 전체보기
+        </span>
+
         {/* 필터 및 검색창 */}
         <SearchFilter />
 
         {/* 정렬 옵션 */}
-        <div className="max-w-[1200px]">
-        <SortOptions selected={sortOption} onSelect={setSortOption} />
+        <div className="w-full max-w-[1200px]">
+          <SortOptions selected={sortOption} onSelect={setSortOption} />
         </div>
 
         {/* 카드 리스트 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 max-w-[1200px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 w-full max-w-[1200px]">
           {Array(9)
             .fill(0)
             .map((_, index) => (
@@ -107,11 +112,13 @@ const CardListPage = () => {
         </div>
 
         {/* 페이지네이션 */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        <div className="flex justify-center max-w-[1200px] mt-6">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
     </div>
   );
