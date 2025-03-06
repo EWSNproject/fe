@@ -34,7 +34,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="relative flex justify-center top-40">
+    <div className="relative flex justify-center pb-10 top-40">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-[520px] space-y-4"
@@ -63,7 +63,7 @@ export default function LoginForm() {
             placeholder="비밀번호를 입력하세요"
             visible={showPassword}
             visibilityToggleIcon={({ reveal }) =>
-              reveal ? <EyeOff size={24} /> : <Eye size={24} />
+              reveal ? <Eye size={24} /> : <EyeOff size={24} />
             }
             visibilityToggleButtonProps={{
               onClick: () => setShowPassword((prev) => !prev),
@@ -87,9 +87,9 @@ export default function LoginForm() {
           로그인
         </Button>
         <div className='text-base font-normal text-right'>
-            <span className='mr-1'>회원이 아니신가요?</span>
-              <span onClick={() => navigate("/signup")} className='underline cursor-pointer text-tag-orange'>회원가입하기</span>
-          </div>
+          <span className='mr-1'>회원이 아니신가요?</span>
+          <span onClick={() => navigate("/signup")} className='underline cursor-pointer text-tag-orange'>회원가입하기</span>
+        </div>
       </form>
     </div>
   );
