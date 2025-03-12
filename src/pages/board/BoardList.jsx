@@ -1,3 +1,168 @@
+import { useState } from "react";
+import { FilePen, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { TextInput } from '@mantine/core';
+import Search from "../../assets/images/ic_search.svg";
+import BoardItem from "./BoardItem";
+import { dummyBoardList } from "./data";
+import { useNavigate } from "react-router-dom";
+
 export default function Boardlist() {
-  return <div>여기는 게시판입니다.</div>;
+  const navigate = useNavigate();
+  const [activeButton, setActiveButton] = useState('전체');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const pageGroupSize = 10;
+
+  const handleButtonClick = (buttonName) => {
+    setActiveButton(buttonName);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const filteredBoardList = dummyBoardList.filter((item) => {
+    const isCategoryMatch = activeButton === '전체' || item.type === activeButton.replace('게시판', '');
+    const isSearchMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return isCategoryMatch && isSearchMatch;
+  });
+
+  const totalPages = Math.ceil(filteredBoardList.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredBoardList.slice(startIndex, startIndex + itemsPerPage);
+
+  // 페이지 그룹 관리
+  const currentGroup = Math.ceil(currentPage / pageGroupSize); 
+  const groupStartPage = (currentGroup - 1) * pageGroupSize + 1;
+  const groupEndPage = Math.min(currentGroup * pageGroupSize, totalPages); 
+
+  return (
+    <div className="flex justify-center bg-black-50">
+      <div className="mt-20 flex flex-col gap-[30px]">
+        <h1 className="text-4xl font-semibold text-center text-black-950">게시판</h1>
+
+        {/* 게시판 종류 */}
+        <div className="flex justify-center">
+          <div className="space-x-3 text-lg text-black-400">
+            {['전체', '질문게시판', '자유게시판', '인사게시판'].map((buttonName) => (
+              <button
+                key={buttonName}
+                className={`${activeButton === buttonName ? 'pb-2.5 border-b-4 border-yellow-700 text-black-950 font-medium' : ''}`}
+                onClick={() => handleButtonClick(buttonName)}
+              >
+                {buttonName}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 상단 정보 및 검색 */}
+        <div className="mt-[30px] w-[1380px]">
+          <div className="flex justify-between">
+            <div className="flex items-end gap-4 text-base font-medium text-black-500">
+              <div className="flex gap-1">
+                <FilePen />
+                <p>총 게시물 <span className="text-tag-red">{filteredBoardList.length}</span>건</p>
+              </div>
+              <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
+            </div>
+
+            <div className="flex items-center border rounded h-[40px] border-black-300 bg-black-50 border-r-0">
+              <img src={Search} alt="검색" className="w-4 h-4 ml-2" />
+              <TextInput
+                placeholder="검색"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                classNames={{
+                  root: "ml-2 flex-1 mr-2",
+                  input: "border-0 focus:ring-0 focus:border-0 hover:border-0 shadow-none outline-none",
+                }}
+              />
+              <button className="px-4 py-2 font-bold bg-yellow-700 rounded-r text-black-50 w-[94px]">
+                검색
+              </button>
+            </div>
+          </div>
+
+          {/* 게시판글 시작부분 */}
+          <div className="mt-5">
+            <div className="h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center">
+              <p className="w-[70px] flex-col flex justify-center">번호</p>
+              <p className="w-[890px] text-left flex-col flex justify-center pl-3.5">제목</p>
+              <p className="w-[130px] flex-col flex justify-center">작성자</p>
+              <p className="w-[130px] flex-col flex justify-center">작성일</p>
+              <p className="w-[80px] flex-col flex justify-center">조회수</p>
+              <p className="w-[80px] flex-col flex justify-center">종류</p>
+            </div>
+
+            {/* 게시글 리스트 10개씩 */}
+            {currentItems.map((item, idx) => (
+              <BoardItem
+                key={item.id}
+                id={item.id}
+                number={filteredBoardList.length - (startIndex + idx)}
+                title={item.title}
+                writer={item.author}
+                date={item.date}
+                views={item.views}
+                type={item.type}
+              />
+            ))}
+          </div>
+            
+          <div className="flex justify-end text-center mt-[15px]">
+            <button onClick={() => navigate("/post")} 
+            className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 transform hover:scale-105">글쓰기</button>
+          </div>
+
+          {/* 페이지네이션 버튼 */}
+          <div className="flex items-center justify-center mt-[15px] mb-[45x]">
+            <button
+              onClick={() => handlePageChange(1)}
+              disabled={currentPage === 1}
+              className="flex items-center justify-center w-10 cursor-pointer h-11"
+            >
+              <ChevronsLeft />
+            </button>
+            <button
+              onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+              disabled={currentPage === 1}
+              className="flex items-center justify-center w-10 cursor-pointer h-11"
+            >
+              <ChevronLeft />
+            </button>
+
+            {Array.from({ length: groupEndPage - groupStartPage + 1 }, (_, idx) => groupStartPage + idx).map((pageNum) => (
+              <button
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={`w-11 h-11 flex justify-center items-center rounded-2xl text-xl hover:bg-gray-100 ${
+                  currentPage === pageNum ? 'bg-yellow-700 text-black-50 hover:bg-yellow-700' : 'text-black-600'
+                }`}
+              >
+                {pageNum}
+              </button>
+            ))}
+
+            <button
+              onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="flex items-center justify-center w-10 cursor-pointer h-11"
+            >
+              <ChevronRight />
+            </button>
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              disabled={currentPage === totalPages}
+              className="flex items-center justify-center w-10 cursor-pointer h-11"
+            >
+              <ChevronsRight />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
