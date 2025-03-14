@@ -63,7 +63,7 @@ export default function Boardlist() {
           <div className="flex justify-between">
             <div className="flex items-end gap-4 text-base font-medium text-black-500">
               <div className="flex gap-1">
-                <FilePen />
+                <FilePen className="text-black-300"/>
                 <p>총 게시물 <span className="text-tag-red">{filteredBoardList.length}</span>건</p>
               </div>
               <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
