@@ -6,19 +6,19 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
     <div className="flex gap-[80px] w-full max-w-[1224px]">
       {/* 회원정보 */}
       <div className="flex flex-col w-full max-w-[341px]">
-        <span className="text-2xl font-bold mb-5">회원정보</span>
+        <span className="mb-5 text-2xl font-bold">회원정보</span>
         <div className="flex flex-col items-start gap-4 bg-white p-6 rounded-lg shadow-md max-h-[230px] bg-black-50">
           <div className="flex gap-4">
             <div className="flex flex-col items-center">
               <img
-                className="w-20 h-20 rounded-full border-2 border-gray-300"
+                className="w-20 h-20 border-2 border-gray-300 rounded-full"
                 src={eggLevel}
                 alt="프로필 이미지"
               />
-              <button className="mt-3 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
+              <button className="px-[23px] py-2 mt-3 text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
                 프로필 변경
               </button>
-              <button className="mt-3 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
+              <button className="px-4 py-2 mt-3 text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
                 개인정보 수정
               </button>
             </div>
@@ -48,7 +48,7 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
 
       {/* 회원등급 */}
       <div className="flex flex-col w-full max-w-[803px]">
-        <span className="text-2xl font-bold mb-5">회원등급</span>
+        <span className="mb-5 text-2xl font-bold">회원등급</span>
         <div className="bg-black-50 p-6 rounded-lg shadow-md flex flex-row items-center gap-6 min-h-[230px]">
           <img className="w-20" src={eggLevel} alt="회원 등급" />
           <div className="flex flex-col w-full">
@@ -60,7 +60,7 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
                 style={{ width: `${(user.points / maxPoints) * 100}%` }}
               ></div>
             </div>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="mt-2 text-sm text-gray-500">
               {maxPoints - user.points}포인트 모으면 {nextLevel}로 승급!
             </p>
           </div>

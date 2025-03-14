@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Card from "../../components/card";
+import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
+import Pagination from "../../components/Pagination";
 
 const SortOptions = ({ selected, onSelect }) => {
   const options = ["최신순", "인기순", "북마크순"];
 
   return (
-    <div className="flex justify-center md:justify-end gap-4 mb-4 text-lg flex-wrap">
+    <div className="flex flex-wrap justify-center gap-4 mb-4 text-lg md:justify-end">
       {options.map((option) => (
         <button
           key={option}
@@ -25,63 +26,11 @@ const SortOptions = ({ selected, onSelect }) => {
   );
 };
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  return (
-    <div className="flex items-center justify-center mt-6 gap-2 flex-wrap">
-      <button
-        onClick={() => onPageChange(1)}
-        disabled={currentPage === 1}
-        className="px-2 text-gray-600 disabled:opacity-50"
-      >
-        ≪
-      </button>
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-2 text-gray-600 disabled:opacity-50"
-      >
-        ＜
-      </button>
-
-      {[...Array(totalPages)].map((_, index) => {
-        const page = index + 1;
-        return (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`px-3 py-1 rounded ${
-              currentPage === page
-                ? "bg-yellow-400 text-white font-bold"
-                : "text-black"
-            }`}
-          >
-            {page}
-          </button>
-        );
-      })}
-
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-2 text-gray-600 disabled:opacity-50"
-      >
-        ＞
-      </button>
-      <button
-        onClick={() => onPageChange(totalPages)}
-        disabled={currentPage === totalPages}
-        className="px-2 text-gray-600 disabled:opacity-50"
-      >
-        ≫
-      </button>
-    </div>
-  );
-};
-
 const CardListPage = () => {
   const [sortOption, setSortOption] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 10;
+  const pageGroupSize = 5;
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
@@ -112,11 +61,12 @@ const CardListPage = () => {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="flex justify-center max-w-[1200px] mt-6">
+        <div className="flex justify-center max-w-[1200px]">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
+            pageGroupSize={pageGroupSize}
           />
         </div>
       </div>
