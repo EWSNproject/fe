@@ -88,13 +88,17 @@ export default function Boardlist() {
 
           {/* 게시판글 시작부분 */}
           <div className="mt-5">
-            <div className="h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center">
-              <p className="w-[70px] flex-col flex justify-center">번호</p>
-              <p className="w-[890px] text-left flex-col flex justify-center pl-3.5">제목</p>
-              <p className="w-[130px] flex-col flex justify-center">작성자</p>
-              <p className="w-[130px] flex-col flex justify-center">작성일</p>
-              <p className="w-[80px] flex-col flex justify-center">조회수</p>
-              <p className="w-[80px] flex-col flex justify-center">종류</p>
+            <div className="h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center justify-between">
+              <div className="flex">
+                <p className="w-[70px] flex-col flex justify-center">번호</p>
+                <p className="w-[890px] text-left flex-col flex justify-center pl-3.5">제목</p>
+              </div>
+              <div className="flex">
+                <p className="w-[130px] flex-col flex justify-center">작성자</p>
+                <p className="w-[130px] flex-col flex justify-center">작성일</p>
+                <p className="w-[80px] flex-col flex justify-center">조회수</p>
+                <p className="w-[80px] flex-col flex justify-center">종류</p>
+              </div>
             </div>
 
             {/* 게시글 리스트 10개씩 */}
@@ -118,7 +122,7 @@ export default function Boardlist() {
           </div>
 
           {/* 페이지네이션 버튼 */}
-          <div className="flex items-center justify-center mt-[15px] mb-[45x]">
+          <div className="flex items-center justify-center mt-[15px] mb-[45px]">
             <button
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
