@@ -6,6 +6,7 @@ import Login from "./pages/login/LoginForm";
 import BenefitsList from "./pages/allbenefits/BenefitsList";
 import Search from "./pages/search/Search";
 import BoardList from "./pages/board/BoardList";
+import BoardDetail from "./pages/board/BoardDetail";  
 import PostList from "./pages/post/PostList";
 import Mypage from "./pages/mypage/Profile";
 import Layout from "./layouts/Layout";
@@ -20,7 +21,8 @@ function App() {
         <Route path="benefitsList" element={<BenefitsList />} />
         <Route path="search" element={<Search />} />
         <Route path="boardList" element={<BoardList />} />
-        <Route path="postlist" element={<PostList />} />
+        <Route path="board/:id" element={<BoardDetail />} /> 
+        <Route path="post" element={<PostList />} />
         <Route path="mypage" element={<Mypage />} />
       </Route>
     </Routes>
