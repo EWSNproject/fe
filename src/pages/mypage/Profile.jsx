@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../../components/card.jsx";
+import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
 

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { FilePen, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { FilePen } from "lucide-react";
 import { TextInput } from '@mantine/core';
 import Search from "../../assets/images/ic_search.svg";
 import BoardItem from "./BoardItem";
 import { dummyBoardList } from "./data";
 import { useNavigate } from "react-router-dom";
+import Pagination from '../../components/Pagination';
 
 export default function Boardlist() {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ export default function Boardlist() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const pageGroupSize = 10;
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
@@ -32,11 +32,6 @@ export default function Boardlist() {
   const totalPages = Math.ceil(filteredBoardList.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredBoardList.slice(startIndex, startIndex + itemsPerPage);
-
-  // 페이지 그룹 관리
-  const currentGroup = Math.ceil(currentPage / pageGroupSize); 
-  const groupStartPage = (currentGroup - 1) * pageGroupSize + 1;
-  const groupEndPage = Math.min(currentGroup * pageGroupSize, totalPages); 
 
   return (
     <div className="flex justify-center bg-black-50">
@@ -101,7 +96,6 @@ export default function Boardlist() {
               </div>
             </div>
 
-            {/* 게시글 리스트 10개씩 */}
             {currentItems.map((item, idx) => (
               <BoardItem
                 key={item.id}
@@ -121,50 +115,13 @@ export default function Boardlist() {
             className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 transform hover:scale-105">글쓰기</button>
           </div>
 
-          {/* 페이지네이션 버튼 */}
-          <div className="flex items-center justify-center mt-[15px] mb-[45px]">
-            <button
-              onClick={() => handlePageChange(1)}
-              disabled={currentPage === 1}
-              className="flex items-center justify-center w-10 cursor-pointer h-11"
-            >
-              <ChevronsLeft />
-            </button>
-            <button
-              onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-              disabled={currentPage === 1}
-              className="flex items-center justify-center w-10 cursor-pointer h-11"
-            >
-              <ChevronLeft />
-            </button>
-
-            {Array.from({ length: groupEndPage - groupStartPage + 1 }, (_, idx) => groupStartPage + idx).map((pageNum) => (
-              <button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                className={`w-11 h-11 flex justify-center items-center rounded-2xl text-xl hover:bg-gray-100 ${
-                  currentPage === pageNum ? 'bg-yellow-700 text-black-50 hover:bg-yellow-700' : 'text-black-600'
-                }`}
-              >
-                {pageNum}
-              </button>
-            ))}
-
-            <button
-              onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="flex items-center justify-center w-10 cursor-pointer h-11"
-            >
-              <ChevronRight />
-            </button>
-            <button
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              className="flex items-center justify-center w-10 cursor-pointer h-11"
-            >
-              <ChevronsRight />
-            </button>
-          </div>
+          {/* 페이지네이션 컴포넌트 */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            pageGroupSize={10}
+          />
         </div>
       </div>
     </div>
