@@ -115,7 +115,6 @@ export default function Boardlist() {
             className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 transform hover:scale-105">글쓰기</button>
           </div>
 
-          {/* 페이지네이션 컴포넌트 */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
