@@ -112,4 +112,12 @@ export const commentedPosts = [
     views: 45,
     type: '질문',
   },
+  {
+    id: 27,
+    title: '정부 청년 지원금 총정리',
+    author: '알뜰정보',
+    date: '2025.02.12',
+    views: 45,
+    type: '질문',
+  },
 ];

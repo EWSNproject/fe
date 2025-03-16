@@ -32,7 +32,7 @@ const Mypage = () => {
           <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md">
             <div className="flex items-center gap-10">
               <div className="relative w-[738px]">
-                <div className="absolute w-full h-[2px] bg-gray-200 top-[18px]"></div>
+                <div className="absolute w-full h-[2px] bg-black-300 top-[18px]"></div>
                 <div className="relative flex justify-between w-full">
                   {[
                     { level: 'Lv. 0', name: '?', points: '0' },
@@ -43,7 +43,7 @@ const Mypage = () => {
                     { level: 'Lv.5', name: '구름', points: '1000' }
                   ].map((item, index) => (
                     <div key={index} className="flex flex-col items-center">
-                      <div className={`w-8 h-8 rounded-full ${index <= 1 ? 'bg-yellow-400' : 'bg-gray-200'} mb-2`}></div>
+                      <div className={`w-8 h-8 rounded-full ${index <= 1 ? 'bg-yellow-700' : 'bg-black-300'} mb-2`}></div>
                       <span className="text-sm font-medium">{item.level}</span>
                       <span className="text-sm text-gray-600">{item.name}</span>
                       <span className="text-sm text-gray-500">{item.points}</span>
