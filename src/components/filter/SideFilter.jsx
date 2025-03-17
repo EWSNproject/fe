@@ -20,7 +20,7 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
     <div className="p-4 mb-4 bg-white border rounded-lg">
       {/* 필터 제목 */}
       <div className="flex items-center justify-between cursor-pointer" onClick={toggleSection}>
-        <h3 className="text-[14px] font-bold">{title}</h3>
+        <h3 className="text-[14px]">{title}</h3>
         {isOpen ? <FaChevronUp /> : <FaChevronDown />}
       </div>
 
@@ -83,7 +83,7 @@ const SideFilter = () => {
 
   return (
     <div className="w-[250px] p-4 mr-6 text-xs border rounded-lg h-full bg-gray-50">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-5 ml-1">
         <h2 className="text-sm font-semibold">필터</h2>
         <button className="text-xs text-tag-red" onClick={toggleAllSelections}>
           {isAllSelected ? "전체 해제" : "전체 선택"}
