@@ -3,16 +3,35 @@ import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
 import { user, myPosts, commentedPosts } from "./data.js";
+import { benefitDetailData } from "../../data/benefitDetailData.js";
+import Pagination from "../../components/Pagination.jsx";
 
 const Mypage = () => {
   const [activeTab, setActiveTab] = useState("liked");
   const [showDetails, setShowDetails] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+  const pageGroupSize = 5;
 
   const nextLevel = "병아리";
   const maxPoints = 300;
 
   const sortOptions = ['가나다순', '인기순', '조회수'];
   const [selectedSort, setSelectedSort] = useState('가나다');
+
+  // 북마크된 항목 필터링
+  const bookmarkedBenefits = benefitDetailData.filter(benefit => benefit.isBookmarked);
+  
+  // 페이지네이션 계산
+  const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = bookmarkedBenefits.slice(startIndex, endIndex);
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -112,13 +131,31 @@ const Mypage = () => {
         )}
 
         {activeTab === "liked" && (
-          <div className="grid grid-cols-3 gap-6 mt-6">
-            {Array(9)
-              .fill(0)
-              .map((_, index) => (
-                <Card key={index} />
+          <>
+            <div className="grid grid-cols-3 gap-6 mt-6">
+              {currentItems.map((benefit) => (
+                <Card 
+                  key={benefit.id} 
+                  data={{
+                    id: benefit.id,
+                    categories: benefit.categories,
+                    title: benefit.serviceName,
+                    description: benefit.servicePurpose,
+                    isBookmarked: benefit.isBookmarked
+                  }}
+                />
               ))}
-          </div>
+            </div>
+
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                pageGroupSize={pageGroupSize}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
