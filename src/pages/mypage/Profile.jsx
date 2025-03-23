@@ -11,8 +11,8 @@ const Mypage = () => {
   const nextLevel = "병아리";
   const maxPoints = 300;
 
-  const sortOptions = ['최신순', '인기순', '북마크순'];
-  const [selectedSort, setSelectedSort] = useState('최신순');
+  const sortOptions = ['가나다순', '인기순', '조회수'];
+  const [selectedSort, setSelectedSort] = useState('가나다');
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -54,13 +54,14 @@ const Mypage = () => {
 
               <div className="flex-1">
                 <h3 className="ml-4 text-lg font-bold">등급 및 포인트 시스템 안내</h3>
-                <p className="text-gray-600 mb-[30px] ml-4">게시판에서 활동하며 포인트를 적립하면 등급이 상승합니다.</p>
+                <p className=" mb-[30px] ml-4">게시판에서 활동하며 포인트를 적립하면 등급이 상승합니다.</p>
                 <div className="rounded-lg">
                   <ul className="pl-5 space-y-2 list-disc">
                     <li className="text-tag-red">가입 후 인사 게시판에 글을 작성하면 100점을 획득하여 바로 '알' 단계로 승급됩니다.</li>
                     <li>일반 게시판에서 글을 작성하면 <span className="text-tag-red">20점을 획득</span>합니다.</li>
                     <li>다른 사용자의 게시글에 답변을 달면 <span className="text-tag-red">10점을 획득</span>합니다. 단, 한 개의 게시글에서 받을 수 있는 <span className="text-tag-red">최대 포인트는 50점</span>입니다.</li>
                     <li className="text-tag-red">단순한 답변(무의미한 내용, 복사/붙여넣기 등)으로 포인트를 얻는 경우, 관리자 확인 후 등급이 하락할 수 있습니다.</li>
+                    <li className="text-tag-red">채택시 포인트 50점 추가로 받을 수 있습니다. </li>
                   </ul>
                 </div>
               </div>
@@ -89,19 +90,17 @@ const Mypage = () => {
               </button>
             ))}
           </div>
-          {(activeTab === 'posts' || activeTab === 'comments') && (
-            <select
-              value={selectedSort}
-              onChange={(e) => setSelectedSort(e.target.value)}
-              className="p-2 text-sm bg-white border rounded shadow-sm"
-            >
-              {sortOptions.map((option) => (
-                <option value={option} key={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          )}
+          <select
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
+            className="p-2 text-sm bg-white border rounded shadow-sm"
+          >
+            {sortOptions.map((option) => (
+              <option value={option} key={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
 
         {activeTab === "posts" && (

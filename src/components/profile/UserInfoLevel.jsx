@@ -8,7 +8,7 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
       <div className="flex flex-col w-full max-w-[341px]">
         <span className="mb-5 text-2xl font-bold">회원정보</span>
         <div className="flex flex-col items-start gap-4 bg-white p-6 rounded-lg shadow-md min-h-[230px] bg-black-50">
-          <div className="flex gap-4">
+          <div className="flex gap-[30px]">
             <div className="flex flex-col items-center">
               <img
                 className="border-2 border-gray-300 rounded-full max-w-[100px] max-h-[100px]"
@@ -19,8 +19,11 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
               <button className="px-4 py-2 mt-5 text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
                 개인정보 수정
               </button>
+              <button className="px-4 py-2 mt-3 w-full text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
+                로그아웃
+              </button>
             </div>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 mt-7">
               <div>
                 <p className="text-sm text-black-400">환영합니다</p>
                 <h3 className="text-xl font-bold">{user.name} 님</h3>
@@ -28,9 +31,6 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
               <div className="flex flex-col gap-2">
                 <p className="flex gap-1 text-sm">
                   <p className="text-black-400">닉네임:</p> {user.nickname}
-                </p>
-                <p className="flex gap-1 text-sm">
-                  <p className="text-black-400">아이디:</p> {user.id}
                 </p>
                 <p className="flex gap-1 text-sm">
                   <p className="text-black-400">나이:</p> {user.age}
@@ -47,7 +47,7 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
       {/* 회원등급 */}
       <div className="flex flex-col w-full max-w-[803px]">
         <span className="mb-5 text-2xl font-bold">회원등급</span>
-        <div className="bg-black-50 p-6 rounded-lg shadow-md flex flex-row items-center gap-6 min-h-[230px]">
+        <div className="bg-black-50 p-6 rounded-lg shadow-md flex flex-row items-center gap-6 min-h-[260px]">
           <img className="max-w-[150px] max-h-[150px]" src={eggLevel} alt="회원 등급" />
           <div className="flex flex-col w-full">
             <p>{user.name}님의 등급은</p>

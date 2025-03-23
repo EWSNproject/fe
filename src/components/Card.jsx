@@ -31,7 +31,7 @@ const Card = () => {
         </h3>
 
         {/* 설명 */}
-        <p className="text-xs sm:text-sm min-h-[60px] max-w-[280px]">
+        <p className="text-xs sm:text-sm min-h-[60px] max-w-[356px]">
           우울/불안 등 정서적 어려움으로 인해 심리상담이 필요한 국민에게
           전문적인 심리상담 서비스를 제공합니다.
         </p>
@@ -39,7 +39,7 @@ const Card = () => {
 
       {/* 자세히 보기 버튼 */}
       <div className="flex justify-end h-[40px] mt-auto">
-        <button className="w-[150px] h-full text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">
+        <button className="w-full h-full text-xs sm:text-sm font-medium text-gray-700 bg-white border bg-gray-200 rounded-lg hover:bg-black-50">
           자세히 보기
         </button>
       </div>
