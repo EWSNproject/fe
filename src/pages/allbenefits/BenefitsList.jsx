@@ -4,25 +4,36 @@ import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
 import Pagination from "../../components/Pagination";
 import { cardData } from '../../data/cardData';
+import InfoIcon from "../../assets/images/Info.svg";
 
 const SortOptions = ({ selected, onSelect }) => {
   const options = ["최신순", "인기순", "북마크순"];
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 mb-4 text-lg md:justify-end">
-      {options.map((option) => (
-        <button
-          key={option}
-          onClick={() => onSelect(option)}
-          className={`${
-            selected === option
-              ? "text-black font-bold underline"
-              : "text-gray-400"
-          }`}
-        >
-          {option}
-        </button>
-      ))}
+    <div className="flex justify-between items-center gap-4 mb-4 text-lg">
+      <div className="relative group">
+        <img src={InfoIcon} alt="Info" className="w-5 h-5 cursor-pointer" />
+        <div className="absolute left-0 hidden min-w-[368px] min-h-[61px] p-4 mt-3 text-sm text-black-50 bg-black-900 rounded group-hover:block z-10">
+          *나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.
+          <br />
+          *수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.
+        </div>
+      </div>
+      <div className="flex gap-4">
+        {options.map((option) => (
+          <button
+            key={option}
+            onClick={() => onSelect(option)}
+            className={`${
+              selected === option
+                ? "text-black font-bold underline"
+                : "text-gray-400"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

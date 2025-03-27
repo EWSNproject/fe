@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
@@ -157,6 +158,19 @@ const Mypage = () => {
             )}
           </>
         )}
+      </div>
+
+      {/* Footer */}
+      <div className="w-full max-w-[1224px] bg-yellow-400 flex items-center">
+        <div className="items-center mx-auto px-6 py-4">
+          <div className="flex items-center gap-4 text-sm ">
+            <button>로그아웃</button>
+            <div className="w-[1px] h-3 bg-gray-300" />
+            <button >회원탈퇴</button>
+            <div className="w-[1px] h-3 bg-gray-300" />
+            <button >관리자페이지</button>
+          </div>
+        </div>
       </div>
     </div>
   );
