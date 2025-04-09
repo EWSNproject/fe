@@ -1,6 +1,6 @@
 import "./index.css";
 import { Routes, Route } from "react-router-dom";
-import Main from "./pages/main";
+import Main from "./pages/main/Home";
 import Signup from "./pages/signup/SignupForm";
 import Login from "./pages/login/LoginForm";
 import BenefitsList from "./pages/allbenefits/BenefitsList";
