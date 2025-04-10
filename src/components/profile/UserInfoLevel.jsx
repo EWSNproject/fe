@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import eggLevel from "../../assets/images/egg.svg";
+import UserInfoModal from "./UserInfoModal";
 
 const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div className="flex gap-[80px] w-full max-w-[1224px]">
       {/* 회원정보 */}
@@ -16,7 +22,10 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
                 alt="프로필 이미지"
               />
               
-              <button className="px-4 py-2 mt-5 text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
+              <button
+                onClick={openModal}
+                className="px-4 py-2 mt-5 text-white transition bg-yellow-500 rounded hover:bg-yellow-600"
+              >
                 개인정보 수정
               </button>
             </div>
@@ -65,6 +74,7 @@ const UserInfoLevel = ({ user, maxPoints, nextLevel }) => {
           </div>
         </div>
       </div>
+      <UserInfoModal isOpen={isModalOpen} onRequestClose={closeModal} />
     </div>
   );
 };
