@@ -52,7 +52,14 @@ export default {
         green: '#55BC8A',
         blue: '#529FCD',
         purple: '#A67DC1',
-      }
+      },
+      'tag-bg-orange': '#FFF6EB',
+      'tag-bg-green': '#E4FFF2',
+      'tag-bg-blue': '#DCF2FF',
+      'tag-bg-checkorange' : '#FFD8A8',
+      'tag-bg-checkgreen' : '#97F0C3',
+      'tag-bg-checkblue' : '#8DD4FF'
+
     },
     extend: {},
   },

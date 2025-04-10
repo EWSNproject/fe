@@ -1,0 +1,7 @@
+.slick-slide > div {
+    margin: 0 12px; /* 카드 사이의 간격 설정 */
+  }
+  
+  .slick-list {
+    margin: 0 -10px; /* 전체 슬라이드의 마진을 조정하여 정렬 유지 */
+  }
