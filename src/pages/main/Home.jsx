@@ -44,13 +44,13 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 max-w-[1920px]  mx-auto">
+    <div className="flex flex-col items-center max-w-[1920px]  mx-auto">
       <InterestModal isOpen={isModalOpen} onRequestClose={closeModal} />
 
       <div className="bg-yellow-300 w-full  min-h-[400px] mb-8"></div> {/* 상단 배너 */}
       
       <div className="w-full max-w-[1236px] mb-8">
-        <h2 className="mb-4 text-xl font-semibold">혜택온만의 맞춤서비스</h2>
+        <h2 className="mb-4 text-xl ">혜택온만의 맞춤서비스</h2>
         <Slider {...settings}>
           {cardData.slice(0, 6).map((card) => (
             <div key={card.id}>
@@ -61,7 +61,7 @@ const Home = () => {
       </div>
 
       <div className="w-full max-w-[1236px] mb-8">
-        <h2 className="mb-4 text-xl font-semibold">인기 혜택복지서비스</h2>
+        <h2 className="mb-4 text-xl ">인기 혜택복지서비스</h2>
         <div className="grid grid-cols-3 gap-6">
           {cardData.slice(6,12).map((card) => (
             <Card key={card.id} data={card} />
