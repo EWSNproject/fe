@@ -348,7 +348,7 @@ export default function SignupForm() {
                   </Button>
                 ))}
               </div>
-              {!gender && <p className="text-xs text-red-500 ml-1">성별을 선택해주세요</p>}
+              {!gender}
             </div>
 
             {/* 생년월일 */}
@@ -359,7 +359,7 @@ export default function SignupForm() {
                 <Dropdown options={monthOptions} selected={month} setSelected={setMonth} placeholder="월"/>
                 <Dropdown options={dayOptions} selected={day} setSelected={setDay} placeholder="일"/>
               </div> 
-              {(!year || !month || !day) && <p className="text-xs text-red-500 ml-1">생년월일을 선택해주세요</p>}
+              {(!year || !month || !day)}
             </div>
             
             {/* 지역 */}
@@ -369,14 +369,14 @@ export default function SignupForm() {
                 <Dropdown options={regionOptions} selected={region} setSelected={setRegion} placeholder="시/도 선택"/>
                 <Dropdown options={districtOptions} selected={district} setSelected={setDistrict} placeholder="시/군/구 선택"/>
               </div>
-              {(!region || !district) && <p className="text-xs text-red-500 ml-1">지역을 선택해주세요</p>}
+              {(!region || !district)}
             </div>
 
             {/* 직업 */}
             <div className="flex flex-col gap-1">
               <div className="text-base font-normal text-black-950">직업</div>
               <Dropdown options={jobOptions} selected={job} setSelected={setJob} placeholder="직업 선택"/>
-              {!job && <p className="text-xs text-red-500 ml-1">직업을 선택해주세요</p>}
+              {!job}
             </div>
           </span>
           
