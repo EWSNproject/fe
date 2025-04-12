@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
 import Search from "../../assets/images/ic_search.svg";
-import { Menu } from "lucide-react"; // 햄버거 아이콘
+import { Menu } from "lucide-react"; 
+import UserIcon from '../../assets/images/UserIcon.svg';
 
-const Header = () => {
+const Header = ({ isLoggedIn, userData, handleLogout }) => {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false); // 모바일 메뉴 상태
-
+  const [menuOpen, setMenuOpen] = useState(false); 
   return (
     <header className="w-full bg-white border-b">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-16 sm:h-20 max-w-[1680px] mx-auto">
@@ -43,11 +43,23 @@ const Header = () => {
             />
           </div>
 
-          {/* 로그인 & 회원가입 */}
+          {/* 로그인 & 회원가입 또는 사용자 정보 */}
           <div className="hidden sm:flex items-center gap-3 text-black-500">
-            <button onClick={() => navigate("/login")} className="hover:text-black-950">로그인</button>
-            <span className="text-black-400">|</span>
-            <button onClick={() => navigate("/signup")} className="hover:text-black-950">회원가입</button>
+            {isLoggedIn ? (
+              <div className="flex items-center gap-2">
+                <button onClick={() => navigate("/mypage")}>
+                  <img src={UserIcon} alt="User Icon" className="w-6 h-6" />
+                </button>
+                <span className="text-black-500">{userData.nickname}</span>
+                
+              </div>
+            ) : (
+              <>
+                <button onClick={() => navigate("/login")} className="hover:text-black-950">로그인</button>
+                <span className="text-black-400">|</span>
+                <button onClick={() => navigate("/signup")} className="hover:text-black-950">회원가입</button>
+              </>
+            )}
           </div>
         </div>
       </div>
