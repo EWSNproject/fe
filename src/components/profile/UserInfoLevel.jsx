@@ -29,15 +29,15 @@ const UserInfoLevel = ({ user,  nextLevel }) => {
                 <h3 className="text-xl font-bold">{user.name} 님</h3>
               </div>
               <div className="flex flex-col gap-2">
-                <p className="flex gap-1 text-sm">
-                  <p className="text-black-400">닉네임:</p> {user.nickname}
-                </p>
-                <p className="flex gap-1 text-sm">
-                  <p className="text-black-400">나이:</p> {user.age}
-                </p>
-                <p className="flex gap-1 text-sm">
-                  <p className="text-black-400">지역:</p> {user.cityState}
-                </p>
+                <div className="flex gap-1 text-sm">
+                  <span className="text-black-400">닉네임:</span> {user.nickname}
+                </div>
+                <div className="flex gap-1 text-sm">
+                  <span className="text-black-400">나이:</span> {user.age}
+                </div>
+                <div className="flex gap-1 text-sm">
+                  <span className="text-black-400">지역:</span> {user.cityState}
+                </div>
               </div>
             </div>
           </div>

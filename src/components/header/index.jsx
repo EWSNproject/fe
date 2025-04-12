@@ -5,7 +5,7 @@ import Search from "../../assets/images/ic_search.svg";
 import { Menu } from "lucide-react"; 
 import UserIcon from '../../assets/images/UserIcon.svg';
 
-const Header = ({ isLoggedIn, userData, handleLogout }) => {
+const Header = ({ isLoggedIn, userData}) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false); 
   return (
