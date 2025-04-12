@@ -51,8 +51,8 @@ export default function SignupForm() {
   const [region, setRegion] = useState("");
   const [district, setDistrict] = useState("");
   const [job, setJob] = useState("");
-  const [isNicknameChecked, setIsNicknameChecked] = useState(false);
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+  const [setIsNicknameChecked] = useState(false);
+  const [setIsNicknameAvailable] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
