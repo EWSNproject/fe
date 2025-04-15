@@ -14,6 +14,9 @@ import Layout from "./layouts/Layout";
 import BenefitsDetail from "./pages/allbenefits/BenefitsDetail"
 import Cookies from 'js-cookie';
 import {getUserInfo} from './api/auth'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,6 +48,8 @@ function App() {
   };
 
   return (
+    <>
+    <ToastContainer position="top-center" autoClose={2000} /> 
     <Routes>
       <Route path="/" element={<Layout isLoggedIn={isLoggedIn} userData={userData} handleLogout={handleLogout} />}>
         <Route index element={<Main />} />
@@ -59,7 +64,12 @@ function App() {
         <Route path="mypage" element={<Mypage handleLogout={handleLogout} />} />
       </Route>
     </Routes>
+    
+    </>
+    
   );
 }
+
+
 
 export default App;

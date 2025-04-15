@@ -48,9 +48,11 @@ const Header = ({ isLoggedIn, userData}) => {
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
-                  <img src={UserIcon} alt="User Icon" className="w-6 h-6" />
+                  <div className="flex flex-row gap-1">
+                    <img src={UserIcon} alt="User Icon" className="w-6 h-6" />
+                    <span className="text-black-500">{userData.nickname}</span>
+                  </div>
                 </button>
-                <span className="text-black-500">{userData.nickname}</span>
                 
               </div>
             ) : (
