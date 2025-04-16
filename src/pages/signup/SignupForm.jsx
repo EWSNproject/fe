@@ -39,7 +39,7 @@ const schema = z
 const genderOptions = ["남자", "여자"];
 const regionOptions = ["서울", "경기", "부산"];
 const districtOptions = ["강남구", "서초구", "종로구"];
-const jobOptions = ["학생", "개발자", "무직"];
+const jobOptions = ["학생", "직장인", "자영업자","전업주부","무직","기타"];
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
