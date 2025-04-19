@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import DuplicateModal from "./DuplicateModal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import regionData from "../../data/regionDistricts_full.json";
 
 const schema = z
   .object({
@@ -37,23 +38,30 @@ const schema = z
   });
 
 const genderOptions = ["남자", "여자"];
-const regionOptions = ["서울", "경기", "부산"];
-const districtOptions = ["강남구", "서초구", "종로구"];
-const jobOptions = ["학생", "직장인", "자영업자","전업주부","무직","기타"];
+const jobOptions = ["학생", "직장인", "자영업자", "전업주부", "무직", "기타"];
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showOncePassword, setOnceShowPassword] = useState(false);
   const [gender, setGender] = useState("");
   const [birthDate, setBirthDate] = useState(null);
-  const [region, setRegion] = useState("");
-  const [district, setDistrict] = useState("");
   const [job, setJob] = useState("");
   const [isNicknameChecked, setIsNicknameChecked] = useState(false);
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
+
+  const [region, setRegion] = useState("");
+  const [district, setDistrict] = useState("");
+  const [districtList, setDistrictList] = useState([]);
+
+  const regionOptions = regionData.map((r) => r.region);
+
+  useEffect(() => {
+    const selectedRegion = regionData.find((r) => r.region === region);
+    setDistrictList(selectedRegion ? selectedRegion.districts : []);
+  }, [region]);
 
   const {
     register,
@@ -389,7 +397,6 @@ export default function SignupForm() {
               showYearDropdown
               dropdownMode="select"
             />
-            
           </div>
 
           {/* 지역 */}
@@ -403,7 +410,7 @@ export default function SignupForm() {
                 placeholder="시/도 선택"
               />
               <Dropdown
-                options={districtOptions}
+                options={districtList}
                 selected={district}
                 setSelected={setDistrict}
                 placeholder="시/군/구 선택"
