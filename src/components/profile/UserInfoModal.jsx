@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { Eye, EyeOff, X } from "tabler-icons-react";
@@ -146,7 +147,6 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
 
     try {
       const isDuplicate = await checkDuplicate("nickname", nickname);
-      setIsNicknameAvailable(!isDuplicate);
       setNicknameCheckMessage(
         isDuplicate
           ? "이미 존재하는 닉네임입니다."
