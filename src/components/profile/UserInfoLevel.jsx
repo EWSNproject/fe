@@ -20,7 +20,6 @@ const UserInfoLevel = ({ user, nextLevel }) => {
                 src={eggLevel}
                 alt="프로필 이미지"
               />
-
               <button
                 onClick={openModal}
                 className="px-4 py-2 mt-5 text-white transition bg-yellow-500 rounded hover:bg-yellow-600"
