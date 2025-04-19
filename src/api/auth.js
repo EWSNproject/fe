@@ -1,50 +1,61 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api'; // 실제 API URL로 변경하세요
+const BASE_URL = 'http://localhost:8080/api';
 
-// 로그인
-export const login = async (username, password) => {
+export const checkDuplicate = async (type, value) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/login`, {
-      username,
-      password,
+    const response = await axios.get(`${BASE_URL}/users/check-duplicate`, {
+      params: {
+        type,
+        value
+      }
     });
     return response.data;
   } catch (error) {
-    console.error('로그인 오류:', error);
-    throw error;
+    if (error.response) {
+      throw new Error(error.response.data.message || '중복 확인에 실패했습니다.');
+    }
+    throw new Error('서버와의 통신에 실패했습니다.');
   }
 };
 
-// 회원가입
 export const signup = async (userData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/signup`, userData);
+    console.log(userData)
+    const response = await axios.post(`${BASE_URL}/signup`, userData);
     return response.data;
   } catch (error) {
-    console.error('회원가입 오류:', error);
-    throw error;
+    if (error.response) {
+      throw new Error(error.response.data.message || '회원가입에 실패했습니다.');
+    }
+    throw new Error('서버와의 통신에 실패했습니다.');
   }
 };
 
-// 로그아웃
-export const logout = async () => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/logout`);
-    return response.data;
-  } catch (error) {
-    console.error('로그아웃 오류:', error);
-    throw error;
-  }
-};
+export const login = async (userData) => {
+    try {
+      const { realId, password } = userData;
+      const response = await axios.post(`${BASE_URL}/login`, { realId, password });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw new Error(error.response.data.message || '로그인에 실패했습니다.');
+      }
+      throw new Error('서버와의 통신에 실패했습니다.');
+    }
+  };
+  export const getUserInfo = async (token) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // 토큰을 Authorization 헤더에 추가
+        },
+      });
+      return response.data; // 사용자 정보 반환
+    } catch (error) {
+      throw new Error('사용자 정보를 가져오는 데 실패했습니다.');
+    }
+  };
 
-// 토큰 재발급
-export const refreshToken = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/token/refresh`);
-    return response.data;
-  } catch (error) {
-    console.error('토큰 재발급 오류:', error);
-    throw error;
-  }
-};
+
+  
