@@ -40,7 +40,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // 중복 확인 상태
-  const [isNicknameAvailable, setIsNicknameAvailable] = useState(false);
+  const [setIsNicknameAvailable] = useState(false);
   const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] =
