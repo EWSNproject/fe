@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../../components/Card";
 import { cardData } from "../../data/cardData";
 import Slider from "react-slick";
@@ -6,9 +6,24 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Home.css";
 import InterestModal from "./InterestModal";
+import Cookies from "js-cookie";
 
 const Home = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true); // 모달 초기 상태
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken');
+    const currentUserId = Cookies.get('userId'); // 현재 로그인한 사용자의 ID
+    const lastSeenModalUserId = Cookies.get('lastSeenModalUserId'); // 마지막으로 모달을 본 사용자의 ID
+
+    // 로그인 상태이고, 현재 사용자가 모달을 보지 않았거나 다른 사용자인 경우
+    if (accessToken && currentUserId && currentUserId !== lastSeenModalUserId) {
+      setIsModalOpen(true);
+      // 현재 사용자 ID로 모달 표시 기록 업데이트
+      Cookies.set('lastSeenModalUserId', currentUserId, { expires: 1 });
+      Cookies.set('hasSeenInterestModal', 'true', { expires: 1 });
+    }
+  }, []);
 
   const closeModal = () => {
     setIsModalOpen(false);

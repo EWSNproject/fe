@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { saveUserInterests } from "../../api/main";
+import { toast } from "react-toastify";
 
 Modal.setAppElement("#root");
 
@@ -24,6 +26,20 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
 
   const isSelected = (category, item) => selected[category].includes(item);
 
+  const handleSubmit = async () => {
+    try {
+      await saveUserInterests(selected);
+      toast.success("관심사가 성공적으로 저장되었습니다.");
+      onRequestClose();
+    } catch (error) {
+      toast.error(error.message || "관심사 저장에 실패했습니다.");
+    }
+  };
+
+  const handleSkip = () => {
+    onRequestClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -44,7 +60,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
 
       <div className="flex flex-col gap-[30px]">
         <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
-          <h3 className="text-[20px] mb-4">가구상황</h3>
+          <h3 className="text-[20px] mb-4">가구형태</h3>
           <div className="flex flex-wrap gap-8">
             {["다문화가족", "북한이탈주민", "한부모가정/조손가정", "1인가구", "장애인", "국가보훈대상자", "질병/환자"].map((item) => (
               <button
@@ -63,7 +79,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
         </div>
 
         <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
-          <h3 className="text-[20px] mb-4">가구형태</h3>
+          <h3 className="text-[20px] mb-4">가구상황</h3>
           <div className="flex flex-wrap gap-5">
             {["다자녀가구", "무주택세대", "신규전입", "확대가족"].map((item) => (
               <button
@@ -102,8 +118,18 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       </div>
 
       <div className="flex justify-end gap-2 mt-9">
-        <button className="bg-gray-300 text-black-50 max-w-[159px] px-12 py-2 rounded-[10px]">건너뛰기</button>
-        <button className="bg-yellow-700 text-black-50 px-12 py-2 max-w-[159px] rounded-[10px]">선택완료</button>
+        <button 
+          onClick={handleSkip}
+          className="bg-gray-300 text-black-50 max-w-[159px] px-12 py-2 rounded-[10px]"
+        >
+          건너뛰기
+        </button>
+        <button 
+          onClick={handleSubmit}
+          className="bg-yellow-700 text-black-50 px-12 py-2 max-w-[159px] rounded-[10px]"
+        >
+          선택완료
+        </button>
       </div>
     </Modal>
   );

@@ -1,41 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
-import { user, myPosts, commentedPosts } from "./data.js";
+import { getUserInfo } from '../../api/auth'; 
 import { benefitDetailData } from "../../data/benefitDetailData.js";
 import Pagination from "../../components/Pagination.jsx";
+import Cookies from 'js-cookie'; 
+import { myPosts, commentedPosts } from "./data.js";
+import DuplicateModal from '../signup/DuplicateModal';
 
-const Mypage = () => {
+const Mypage = ({ handleLogout }) => {
   const [activeTab, setActiveTab] = useState("liked");
   const [showDetails, setShowDetails] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
   const pageGroupSize = 5;
+  const navigate = useNavigate();
 
-  const nextLevel = "병아리";
-  const maxPoints = 300;
+  const [user, setUser] = useState(null); 
+  const [modalMessage, setModalMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const sortOptions = ['가나다순', '인기순', '조회수'];
   const [selectedSort, setSelectedSort] = useState('가나다');
 
-  // 북마크된 항목 필터링
   const bookmarkedBenefits = benefitDetailData.filter(benefit => benefit.isBookmarked);
   
-  // 페이지네이션 계산
   const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = bookmarkedBenefits.slice(startIndex, endIndex);
 
-  // 페이지 변경 핸들러
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  useEffect(() => {
+    const token = Cookies.get('accessToken'); 
+    if (token) {
+      getUserInfo(token)
+        .then(userInfo => {
+          const age = new Date().getFullYear() - new Date(userInfo.birthAt).getFullYear();
+          const cityState = `${userInfo.city} ${userInfo.state}`;
+          const points = userInfo.point;
+
+          setUser({
+            ...userInfo,
+            age,
+            cityState,
+            points,
+          });
+        })
+        .catch(err => {
+          console.error("사용자 정보를 가져오는 데 실패했습니다.", err);
+        });
+    }
+  }, []);
+
+  const handleLogoutClick = () => {
+    handleLogout();
+    setModalMessage("로그아웃 되었습니다.");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    navigate("/");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-6">
-      <UserInfoLevel user={user} maxPoints={maxPoints} nextLevel={nextLevel} />
+      {user && (
+        <UserInfoLevel user={user} />
+      )}
 
       <div className="w-full max-w-[1224px] flex justify-end">
         <button
@@ -163,7 +201,7 @@ const Mypage = () => {
       <div className="w-full max-w-[1224px] bg-yellow-400 flex items-center">
         <div className="items-center px-6 py-4 mx-auto">
           <div className="flex items-center gap-4 text-sm ">
-            <button>로그아웃</button>
+            <button onClick={handleLogoutClick}>로그아웃</button>
             <div className="w-[1px] h-3 bg-gray-300" />
             <button >회원탈퇴</button>
             <div className="w-[1px] h-3 bg-gray-300" />
@@ -171,6 +209,12 @@ const Mypage = () => {
           </div>
         </div>
       </div>
+
+      <DuplicateModal
+        isOpen={isModalOpen}
+        message={modalMessage}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 };
