@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { getInterestCategories } from '../../api/main';
 
 const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,16 +46,33 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
   );
 };
 
-const SideFilter = () => {
-  const filterCategories = {
-    "생애주기": ["임신, 출산", "영유아", "아동", "청소년", "청년", "중장년", "노년"],
-    "가구상황": ["저소득", "장애인", "한부모, 조손", "다자녀", "다문화, 탈북민", "보훈대상자"],
-    "관심주제": ["신체건강", "생활지원", "일자리", "안전, 위기", "보육", "임차, 위탁", "에너지", "정신건강", "주거", "문화, 여가", "임신, 출산", "교육", "보호, 돌봄", "법률"],
-  };
+const SideFilter = ({ onFilterChange }) => {
+  // 빈 배열로 초기화
+  const [filterCategories, setFilterCategories] = useState({
+    "가구형태": [],
+    "가구상황": [],
+    "관심주제": []
+  });
 
-  const [selectedFilters, setSelectedFilters] = useState(
-    Object.fromEntries(Object.keys(filterCategories).map((key) => [key, []]))
-  );
+  // 컴포넌트 마운트 시 카테고리 데이터 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getInterestCategories();
+        setFilterCategories(data);
+      } catch (error) {
+        console.error('카테고리 데이터를 불러오는데 실패했습니다:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    "가구형태": [],
+    "가구상황": [],
+    "관심주제": []
+  });
 
   const isAllSelected = Object.values(selectedFilters).every(
     (selected) => selected.length > 0 && selected.length === filterCategories[Object.keys(selectedFilters).find((key) => selectedFilters[key] === selected)]?.length

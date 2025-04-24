@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { saveUserInterests } from "../../api/main";
+import { saveUserInterests, getInterestCategories } from "../../api/main";
 import { toast } from "react-toastify";
 
 Modal.setAppElement("#root");
@@ -11,6 +11,28 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
     familyType: [],
     interestTopics: [],
   });
+
+  const [categories, setCategories] = useState({
+    "가구형태": [],
+    "가구상황": [],
+    "관심주제": []
+  });
+
+  // 컴포넌트 마운트 시 관심사 카테고리 데이터 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getInterestCategories();
+        setCategories(data);
+      } catch (error) {
+        toast.error("관심사 목록을 불러오는데 실패했습니다.");
+      }
+    };
+
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen]);
 
   const toggleSelection = (category, item) => {
     setSelected((prev) => {
@@ -62,7 +84,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
         <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
           <h3 className="text-[20px] mb-4">가구형태</h3>
           <div className="flex flex-wrap gap-8">
-            {["다문화가족", "북한이탈주민", "한부모가정/조손가정", "1인가구", "장애인", "국가보훈대상자", "질병/환자"].map((item) => (
+            {categories["가구형태"].map((item) => (
               <button
                 key={item}
                 onClick={() => toggleSelection("familyStatus", item)}
@@ -81,7 +103,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
         <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
           <h3 className="text-[20px] mb-4">가구상황</h3>
           <div className="flex flex-wrap gap-5">
-            {["다자녀가구", "무주택세대", "신규전입", "확대가족"].map((item) => (
+            {categories["가구상황"].map((item) => (
               <button
                 key={item}
                 onClick={() => toggleSelection("familyType", item)}
@@ -100,7 +122,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
         <div className="pt-5 pb-5 pr-10 pl-10 max-w-[816px] rounded-[8px] outline outline-1 outline-black-200">
           <h3 className="text-[20px] mb-4">관심주제</h3>
           <div className="flex flex-wrap gap-5">
-            {["보육·교육", "주거·지원", "행정·안전", "농림축산어업", "고용·창업", "보건·의료", "문화·환경", "생활안정"].map((item) => (
+            {categories["관심주제"].map((item) => (
               <button
                 key={item}
                 onClick={() => toggleSelection("interestTopics", item)}

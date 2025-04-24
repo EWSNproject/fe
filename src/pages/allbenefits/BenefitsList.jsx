@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
 import Pagination from "../../components/Pagination";
-import { cardData } from '../../data/cardData';
+import { getAllBenefits } from '../../api/BenefitsService';
 import InfoIcon from "../../assets/images/Info.svg";
 
 const SortOptions = ({ selected, onSelect }) => {
@@ -41,16 +41,43 @@ const SortOptions = ({ selected, onSelect }) => {
 const CardListPage = () => {
   const [sortOption, setSortOption] = useState("최신순");
   const [currentPage, setCurrentPage] = useState(1);
+  const [benefits, setBenefits] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 9;
-  const totalPages = Math.ceil(cardData.length / itemsPerPage);
+  const totalPages = Math.ceil(benefits.length / itemsPerPage);
   const pageGroupSize = 5;
 
-  // 현재 페이지에 해당하는 카드 데이터만 필터링
+  useEffect(() => {
+    const fetchBenefits = async () => {
+      try {
+        setIsLoading(true);
+        const data = await getAllBenefits();
+        setBenefits(data);
+      } catch (error) {
+        console.error('Failed to fetch benefits:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchBenefits();
+  }, []);
+
+  // 현재 페이지의 데이터만 반환
   const getCurrentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return cardData.slice(startIndex, endIndex);
+    return benefits.slice(startIndex, endIndex);
   };
+
+  // 로딩 중일 때 표시할 내용
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
@@ -74,7 +101,18 @@ const CardListPage = () => {
         {/* 카드 리스트 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 w-full max-w-[1200px]">
           {getCurrentPageData().map((card) => (
-            <Card key={card.id} data={card} />
+            <Card 
+              key={card.publicServiceId} 
+              data={{
+                id: card.publicServiceId,
+                title: card.serviceName,
+                description: card.summaryPurpose,
+                category: card.serviceCategory,
+                specialGroup: card.specialGroup,
+                familyType: card.familyType,
+                isBookmarked: card.bookmarked
+              }} 
+            />
           ))}
         </div>
 
