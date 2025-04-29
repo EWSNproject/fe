@@ -89,14 +89,25 @@ export const getFilteredBenefits = async (filters) => {
     // 각 필터 카테고리별로 선택된 값들을 쿼리 파라미터에 추가
     Object.entries(filters).forEach(([category, selectedOptions]) => {
       if (selectedOptions.length > 0) {
-        // 카테고리 이름을 API에 맞게 변환
-        const categoryParam = category === "가구형태" ? "familyType" :
-                            category === "가구상황" ? "specialGroup" :
-                            category === "관심주제" ? "categories" : category;
+        // 카테고리별로 다른 파라미터 이름 사용
+        let categoryParam;
+        switch(category) {
+          case "가구형태":
+            categoryParam = "familyType";
+            break;
+          case "가구상황":
+            categoryParam = "specialGroup";
+            break;
+          case "관심주제":
+            categoryParam = "categories";
+            break;
+          default:
+            categoryParam = category;
+        }
         
-        // 선택된 옵션들을 각각 별도의 쿼리 파라미터로 추가
+        // 선택된 옵션들의 code 값을 쿼리 파라미터로 추가
         selectedOptions.forEach(option => {
-          queryParams.append(categoryParam, option);
+          queryParams.append(categoryParam, option.code);
         });
       }
     });
@@ -108,6 +119,16 @@ export const getFilteredBenefits = async (filters) => {
     return response.data.content;
   } catch (error) {
     console.error('Error fetching filtered benefits:', error);
+    throw error;
+  }
+};
+
+export const getFilterData = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/services/filters`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching filter data:', error);
     throw error;
   }
 };

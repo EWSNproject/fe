@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { getInterestCategories } from '../../api/main';
+import { getFilterData } from '../../api/BenefitsService';
 
 const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,8 +10,8 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
   };
 
   const handleCheckboxChange = (option) => {
-    const newSelectedOptions = selectedOptions.includes(option)
-      ? selectedOptions.filter((item) => item !== option)
+    const newSelectedOptions = selectedOptions.some(selected => selected.code === option.code)
+      ? selectedOptions.filter((item) => item.code !== option.code)
       : [...selectedOptions, option];
 
     onSelectionChange(title, newSelectedOptions);
@@ -29,15 +29,15 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
       {isOpen && (
         <ul className="mt-2">
           {options.map((option) => (
-            <li key={option} className="flex items-center gap-2 my-1">
+            <li key={option.code} className="flex items-center gap-2 my-1">
               <input
                 type="checkbox"
-                id={option}
-                checked={selectedOptions.includes(option)}
+                id={option.code}
+                checked={selectedOptions.some(selected => selected.code === option.code)}
                 onChange={() => handleCheckboxChange(option)}
                 className="w-4 h-4 accent-tag-green"
               />
-              <label htmlFor={option} className="text-sm">{option}</label>
+              <label htmlFor={option.code} className="text-sm">{option.label}</label>
             </li>
           ))}
         </ul>
@@ -47,25 +47,28 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
 };
 
 const SideFilter = ({ onFilterChange }) => {
-  // 빈 배열로 초기화
   const [filterCategories, setFilterCategories] = useState({
     "가구형태": [],
     "가구상황": [],
     "관심주제": []
   });
 
-  // 컴포넌트 마운트 시 카테고리 데이터 가져오기
+  // 컴포넌트 마운트 시 필터 데이터 가져오기
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchFilterData = async () => {
       try {
-        const data = await getInterestCategories();
-        setFilterCategories(data);
+        const data = await getFilterData();
+        setFilterCategories({
+          "가구형태": data.familyTypes,
+          "가구상황": data.specialGroups,
+          "관심주제": data.categories
+        });
       } catch (error) {
-        console.error('카테고리 데이터를 불러오는데 실패했습니다:', error);
+        console.error('필터 데이터를 불러오는데 실패했습니다:', error);
       }
     };
 
-    fetchCategories();
+    fetchFilterData();
   }, []);
 
   const [selectedFilters, setSelectedFilters] = useState({
@@ -95,7 +98,12 @@ const SideFilter = ({ onFilterChange }) => {
       onFilterChange(emptyFilters);
     } else {
       // 전체 선택
-      const allSelected = Object.fromEntries(Object.entries(filterCategories).map(([key, options]) => [key, options]));
+      const allSelected = Object.fromEntries(
+        Object.entries(filterCategories).map(([key, options]) => [
+          key,
+          options
+        ])
+      );
       setSelectedFilters(allSelected);
       onFilterChange(allSelected);
     }
