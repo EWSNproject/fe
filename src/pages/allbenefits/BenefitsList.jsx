@@ -3,7 +3,7 @@ import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
 import Pagination from "../../components/Pagination";
-import { getAllBenefits } from '../../api/BenefitsService';
+import { getAllBenefits, getFilteredBenefits } from '../../api/BenefitsService';
 import InfoIcon from "../../assets/images/Info.svg";
 
 const SortOptions = ({ selected, onSelect }) => {
@@ -46,20 +46,25 @@ const CardListPage = () => {
   const itemsPerPage = 9;
   const totalPages = Math.ceil(benefits.length / itemsPerPage);
   const pageGroupSize = 5;
+  const [selectedFilters, setSelectedFilters] = useState({
+    "가구형태": [],
+    "가구상황": [],
+    "관심주제": []
+  });
+
+  const fetchBenefits = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAllBenefits();
+      setBenefits(data);
+    } catch (error) {
+      console.error('Failed to fetch benefits:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBenefits = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getAllBenefits();
-        setBenefits(data);
-      } catch (error) {
-        console.error('Failed to fetch benefits:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
     fetchBenefits();
   }, []);
 
@@ -68,6 +73,33 @@ const CardListPage = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return benefits.slice(startIndex, endIndex);
+  };
+
+  const handleFilterChange = (filters) => {
+    setSelectedFilters(filters);
+  };
+
+  const handleSearch = async () => {
+    try {
+      setIsLoading(true);
+      const filteredData = await getFilteredBenefits(selectedFilters);
+      setBenefits(filteredData);
+      setCurrentPage(1); // 필터링 후 첫 페이지로 이동
+    } catch (error) {
+      console.error('Failed to fetch filtered benefits:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setSelectedFilters({
+      "가구형태": [],
+      "가구상황": [],
+      "관심주제": []
+    });
+    // 초기화 후 전체 데이터 다시 불러오기
+    fetchBenefits();
   };
 
   // 로딩 중일 때 표시할 내용
@@ -82,7 +114,7 @@ const CardListPage = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
       {/* 사이드 필터 */}
-      <SideFilter />
+      <SideFilter onFilterChange={handleFilterChange} />
 
       {/* 메인 컨텐츠 영역 */}
       <div className="flex flex-col flex-1">
@@ -91,7 +123,10 @@ const CardListPage = () => {
         </span>
 
         {/* 필터 및 검색창 */}
-        <SearchFilter />
+        <SearchFilter 
+          onSearch={handleSearch}
+          onReset={handleReset}
+        />
 
         {/* 정렬 옵션 */}
         <div className="w-full max-w-[1200px]">

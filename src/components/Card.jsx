@@ -1,60 +1,101 @@
 import React, { useState } from "react";
 import { BookmarkIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
+import Tooltip from "./ui/Tooltip";
+import { addBookmark, removeBookmark } from "../api/BenefitsService";
+import { toast } from "react-toastify";
 
 const Card = ({ data }) => {
   // data가 undefined일 경우를 대비한 기본값 설정
   const {
-    id = '',
-    title = '',
-    description = '',
-    category = '',
-    specialGroup = null,
-    familyType = null,
+    id = "",
+    title = "",
+    description = "",
+    category = "",
+    specialGroup = [],
+    familyType = [],
   } = data || {};
 
-  const [bookmarked, setIsBookmarked] = useState(data?.isBookmarked || false);
+  const [bookmarked, setBookmarked] = useState(data?.isBookmarked || false);
 
   // data가 없는 경우 렌더링하지 않음
   if (!data) {
     return null;
   }
 
+  // 북마크 토글 함수
+  const toggleBookmark = async () => {
+    try {
+      if (bookmarked) {
+        await removeBookmark(id);
+      } else {
+        await addBookmark(id);
+      }
+      setBookmarked(!bookmarked);
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      toast.error('북마크 처리 중 오류가 발생했습니다.');
+    }
+  };
+
   // 제목에서 괄호와 그 안의 내용을 제거하는 함수
   const formatTitle = (title) => {
-    return title?.replace(/^\([^)]*\)\s*/, '') || '';
+    return title?.replace(/^\([^)]*\)\s*/, "") || "";
+  };
+
+  // 태그 목록을 문자열로 변환하는 함수
+  const formatTagList = (tags) => {
+    return tags.join(", ");
   };
 
   return (
     <div className="relative p-6 border shadow-md rounded-2xl w-full max-w-[404px] min-h-[285px] gap-[24px] flex flex-col bg-black-50">
       {/* 카테고리 태그들 */}
       <div className="flex justify-between">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
           {/* 서비스 카테고리 - 항상 표시 (빨간색) */}
-          <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-red">
-            {category}
-          </span>
-
-          {/* Special Group - 있을 때만 표시 (주황색) */}
-          {specialGroup && (
-            <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-orange">
-              {specialGroup}
+          <Tooltip content="">
+            <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-red inline-flex items-center">
+              {category}
             </span>
+          </Tooltip>
+
+          {/* Special Group - 첫 번째 태그만 표시 (주황색) */}
+          {specialGroup.length > 0 && (
+            <Tooltip
+              content={
+                specialGroup.length > 1
+                  ? formatTagList(specialGroup.slice(1))
+                  : ""
+              }
+            >
+              <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-orange inline-flex items-center">
+                {specialGroup[0]}
+              </span>
+            </Tooltip>
           )}
 
-          {/* Family Type - 있을 때만 표시 (초록색) */}
-          {familyType && (
-            <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-green">
-              {familyType}
-            </span>
+          {/* Family Type - 첫 번째 태그만 표시 (초록색) */}
+          {familyType.length > 0 && (
+            <Tooltip
+              content={
+                familyType.length > 1 ? formatTagList(familyType.slice(1)) : ""
+              }
+            >
+              <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-green inline-flex items-center">
+                {familyType[0]}
+              </span>
+            </Tooltip>
           )}
         </div>
 
         {/* 북마크 아이콘 */}
         <div>
-          <BookmarkIcon 
-            className={`w-6 h-6 ${bookmarked ? 'text-yellow-500' : 'text-gray-300'}`}
-            onClick={() => setIsBookmarked(!bookmarked)} 
+          <BookmarkIcon
+            className={`w-6 h-6 cursor-pointer ${
+              bookmarked ? "text-yellow-500" : "text-gray-300"
+            }`}
+            onClick={toggleBookmark}
           />
         </div>
       </div>

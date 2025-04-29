@@ -79,23 +79,25 @@ const SideFilter = ({ onFilterChange }) => {
   );
 
   const handleSelectionChange = (category, selectedOptions) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
+    const newSelectedFilters = {
+      ...selectedFilters,
       [category]: selectedOptions,
-    }));
+    };
+    setSelectedFilters(newSelectedFilters);
+    onFilterChange(newSelectedFilters);
   };
 
   const toggleAllSelections = () => {
     if (isAllSelected) {
       // 전체 해제
-      setSelectedFilters(
-        Object.fromEntries(Object.keys(filterCategories).map((key) => [key, []]))
-      );
+      const emptyFilters = Object.fromEntries(Object.keys(filterCategories).map((key) => [key, []]));
+      setSelectedFilters(emptyFilters);
+      onFilterChange(emptyFilters);
     } else {
       // 전체 선택
-      setSelectedFilters(
-        Object.fromEntries(Object.entries(filterCategories).map(([key, options]) => [key, options]))
-      );
+      const allSelected = Object.fromEntries(Object.entries(filterCategories).map(([key, options]) => [key, options]));
+      setSelectedFilters(allSelected);
+      onFilterChange(allSelected);
     }
   };
 

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
 const BASE_URL = 'http://localhost:8080/api';
 
@@ -14,33 +16,98 @@ export const getBenefitDetail = async (serviceId) => {
 
 export const getAllBenefits = async () => {
   try {
-    // 여러 페이지의 데이터를 가져오기
-    const pages = [11,50,102,34,200]; // 0~4 페이지 데이터
-    const size = 50; // 각 페이지당 50개
+    const response = await axios.get(`${BASE_URL}/services?size=50`);
+    return response.data.content;
+  } catch (error) {
+    console.error('Error fetching benefits:', error);
+    throw error;
+  }
+};
 
-    // 모든 페이지의 데이터를 병렬로 가져오기
-    const responses = await Promise.all(
-      pages.map(page => 
-        axios.get(`${BASE_URL}/services?size=${size}&page=${page}`)
-      )
+export const addBookmark = async (serviceId) => {
+  try {
+    const token = Cookies.get('accessToken');
+    const response = await axios.post(
+      `${BASE_URL}/services/${serviceId}/bookmark`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     );
+    toast.success('북마크가 추가되었습니다.', {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error adding bookmark:', error);
+    toast.error('북마크 추가에 실패했습니다.');
+    throw error;
+  }
+};
 
-    // 모든 데이터 합치기
-    let allBenefits = [];
-    responses.forEach(response => {
-      if (response.data.content) {
-        allBenefits = [...allBenefits, ...response.data.content];
+export const removeBookmark = async (serviceId) => {
+  try {
+    const token = Cookies.get('accessToken');
+    const response = await axios.delete(
+      `${BASE_URL}/services/${serviceId}/bookmark`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    toast.error('북마크가 삭제되었습니다.', {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error removing bookmark:', error);
+    toast.error('북마크 삭제에 실패했습니다.');
+    throw error;
+  }
+};
+
+export const getFilteredBenefits = async (filters) => {
+  try {
+    // 필터 객체에서 선택된 값들을 쿼리 파라미터로 변환
+    const queryParams = new URLSearchParams();
+    
+    // 각 필터 카테고리별로 선택된 값들을 쿼리 파라미터에 추가
+    Object.entries(filters).forEach(([category, selectedOptions]) => {
+      if (selectedOptions.length > 0) {
+        // 카테고리 이름을 API에 맞게 변환
+        const categoryParam = category === "가구형태" ? "familyType" :
+                            category === "가구상황" ? "specialGroup" :
+                            category === "관심주제" ? "categories" : category;
+        
+        // 선택된 옵션들을 각각 별도의 쿼리 파라미터로 추가
+        selectedOptions.forEach(option => {
+          queryParams.append(categoryParam, option);
+        });
       }
     });
 
-    // 데이터 랜덤하게 섞기
-    const shuffledBenefits = allBenefits
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 50); // 최대 50개만 반환
+    // size 파라미터 추가
+    queryParams.append('size', '50');
 
-    return shuffledBenefits;
+    const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`);
+    return response.data.content;
   } catch (error) {
-    console.error('Error fetching benefits:', error);
+    console.error('Error fetching filtered benefits:', error);
     throw error;
   }
 };
