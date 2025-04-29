@@ -59,9 +59,9 @@ const SideFilter = ({ onFilterChange }) => {
       try {
         const data = await getFilterData();
         setFilterCategories({
-          "가구형태": data.familyTypes,
-          "가구상황": data.specialGroups,
-          "관심주제": data.categories
+          "가구형태": data.familyTypes || [],
+          "가구상황": data.specialGroups || [],
+          "관심주제": data.categories || []
         });
       } catch (error) {
         console.error('필터 데이터를 불러오는데 실패했습니다:', error);
@@ -72,9 +72,9 @@ const SideFilter = ({ onFilterChange }) => {
   }, []);
 
   const [selectedFilters, setSelectedFilters] = useState({
-    "가구형태": [],
-    "가구상황": [],
-    "관심주제": []
+    familyTypes: [],
+    specialGroups: [],
+    categories: []
   });
 
   const isAllSelected = Object.values(selectedFilters).every(
@@ -82,10 +82,17 @@ const SideFilter = ({ onFilterChange }) => {
   );
 
   const handleSelectionChange = (category, selectedOptions) => {
+    // 현재 선택된 옵션의 label 값만 추출
+    const selectedLabels = selectedOptions.map(option => option.label);
+
+    // 새로운 필터 상태 생성
     const newSelectedFilters = {
       ...selectedFilters,
-      [category]: selectedOptions,
+      [category === "가구형태" ? "familyTypes" : 
+       category === "가구상황" ? "specialGroups" : 
+       "categories"]: selectedLabels
     };
+
     setSelectedFilters(newSelectedFilters);
     onFilterChange(newSelectedFilters);
   };
@@ -93,17 +100,20 @@ const SideFilter = ({ onFilterChange }) => {
   const toggleAllSelections = () => {
     if (isAllSelected) {
       // 전체 해제
-      const emptyFilters = Object.fromEntries(Object.keys(filterCategories).map((key) => [key, []]));
+      const emptyFilters = {
+        familyTypes: [],
+        specialGroups: [],
+        categories: []
+      };
       setSelectedFilters(emptyFilters);
       onFilterChange(emptyFilters);
     } else {
       // 전체 선택
-      const allSelected = Object.fromEntries(
-        Object.entries(filterCategories).map(([key, options]) => [
-          key,
-          options
-        ])
-      );
+      const allSelected = {
+        familyTypes: filterCategories["가구형태"].map(option => option.label),
+        specialGroups: filterCategories["가구상황"].map(option => option.label),
+        categories: filterCategories["관심주제"].map(option => option.label)
+      };
       setSelectedFilters(allSelected);
       onFilterChange(allSelected);
     }
@@ -123,7 +133,13 @@ const SideFilter = ({ onFilterChange }) => {
           key={title}
           title={title}
           options={options}
-          selectedOptions={selectedFilters[title]}
+          selectedOptions={options.filter(option => 
+            selectedFilters[
+              title === "가구형태" ? "familyTypes" : 
+              title === "가구상황" ? "specialGroups" : 
+              "categories"
+            ].includes(option.label)
+          )}
           onSelectionChange={handleSelectionChange}
         />
       ))}

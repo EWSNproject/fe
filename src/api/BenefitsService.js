@@ -87,27 +87,11 @@ export const getFilteredBenefits = async (filters) => {
     const queryParams = new URLSearchParams();
     
     // 각 필터 카테고리별로 선택된 값들을 쿼리 파라미터에 추가
-    Object.entries(filters).forEach(([category, selectedOptions]) => {
-      if (selectedOptions.length > 0) {
-        // 카테고리별로 다른 파라미터 이름 사용
-        let categoryParam;
-        switch(category) {
-          case "가구형태":
-            categoryParam = "familyType";
-            break;
-          case "가구상황":
-            categoryParam = "specialGroup";
-            break;
-          case "관심주제":
-            categoryParam = "categories";
-            break;
-          default:
-            categoryParam = category;
-        }
-        
-        // 선택된 옵션들의 code 값을 쿼리 파라미터로 추가
-        selectedOptions.forEach(option => {
-          queryParams.append(categoryParam, option.code);
+    Object.entries(filters).forEach(([paramName, selectedLabels]) => {
+      if (selectedLabels && selectedLabels.length > 0) {
+        // 선택된 label 값들을 쿼리 파라미터로 추가
+        selectedLabels.forEach(label => {
+          queryParams.append(paramName, label);
         });
       }
     });

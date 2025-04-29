@@ -146,7 +146,8 @@ const CardListPage = () => {
                 specialGroup: card.specialGroup,
                 familyType: card.familyType,
                 isBookmarked: card.bookmarked
-              }} 
+              }}
+              selectedFilters={selectedFilters}
             />
           ))}
         </div>
