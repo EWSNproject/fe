@@ -51,15 +51,14 @@ export default function Post() {
 
   const handleSubmit = () => {
     const postData = {
-      category: selected,
+      nickName: "동동이",
+      postType: selected,
       title: limitedTitle,
       content,
-      tags,
       files,
-      link: {
-        title: limitedLinkTitle,
-        url: linkUrl,
-      },
+      tags,
+      urlTitle: limitedLinkTitle,
+      urlPath: linkUrl,
     };
     console.log("✅ 저장된 데이터:", postData);
   };

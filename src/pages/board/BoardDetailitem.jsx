@@ -19,9 +19,9 @@ export default function BoardDetailitem({ item }) {
       <div className='flex flex-col gap-4 mb-5'>
         <h1 className='text-3xl'>{item.title}</h1>
         <div className='flex gap-5 text-xl text-black-300'>
-            <span className='text-tag-green'>{item.author}</span>
-            <div className='flex gap-[5px]'><Clock2 /><span>{item.date}</span></div>
-            <div className='flex gap-[5px]'><Eye /><span>{item.views}</span></div>
+            <span className='text-tag-green'>{item.nickName}</span>
+            <div className='flex gap-[5px]'><Clock2 /><span>{item.createdAt.split('T')[0]}</span></div>
+            <div className='flex gap-[5px]'><Eye /><span>{item.viewCnt}</span></div>
         </div>
       </div>
   
@@ -31,13 +31,13 @@ export default function BoardDetailitem({ item }) {
 
       <div className='flex justify-center gap-4 text-xl'>
         <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 bg-black-400'>
-            <ThumbsUp /> {item.good}
+            <ThumbsUp /> {item.recommendCnt}
         </button>
 
-        {item.link && item.link.url && (
-        <a href={item.link.url} target='_blank' rel='noopener noreferrer'>
+        {item.uriTitle && (
+        <a href={item.urlPath} target='_blank' rel='noopener noreferrer'>
             <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-gray-400 bg-black-100'>
-            {item.link.label} <ExternalLink />
+            {item.uriTitle} <ExternalLink />
             </button>
         </a>
         )}

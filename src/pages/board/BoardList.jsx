@@ -23,8 +23,14 @@ export default function Boardlist() {
     setCurrentPage(pageNumber);
   };
 
-  const filteredBoardList = dummyBoardList.filter((item) => {
-    const isCategoryMatch = activeButton === '전체' || item.type === activeButton.replace('게시판', '');
+  const sortedBoardList = [...dummyBoardList].sort((a, b) => {
+    const dateA = new Date(a.createdAt.split('T')[0].replaceAll('.', '-'));
+    const dateB = new Date(b.createdAt.split('T')[0].replaceAll('.', '-'));
+    return dateB - dateA; // 오래된 글이 뒤로 (최신순)
+  });
+    
+  const filteredBoardList = sortedBoardList.filter((item) => {
+    const isCategoryMatch = activeButton === '전체' || item.postType === activeButton.replace('게시판', '');
     const isSearchMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
     return isCategoryMatch && isSearchMatch;
   });
@@ -98,18 +104,18 @@ export default function Boardlist() {
 
             {currentItems.map((item, idx) => (
               <BoardItem
-                key={item.id}
-                id={item.id}
+                key={item.postId}
+                id={item.postId}
                 number={filteredBoardList.length - (startIndex + idx)}
                 title={item.title}
-                writer={item.author}
-                date={item.date}
-                views={item.views}
-                type={item.type}
+                writer={item.nickName}
+                date={item.createdAt.split('T')[0]}
+                views={item.viewCnt}
+                type={item.postType}
               />
             ))}
           </div>
-            
+
           <div className="flex justify-end text-center mt-[15px]">
             <button onClick={() => navigate("/post")} 
             className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 transform hover:scale-105">글쓰기</button>
