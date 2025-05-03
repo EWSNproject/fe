@@ -7,6 +7,7 @@ import {
   Button,
 } from "@mantine/core";
 import { useState } from "react";
+import { createPost } from "../../api/postApi";
 
 export default function Post() {
   const [title, setTitle] = useState("");
@@ -49,18 +50,29 @@ export default function Post() {
   const limitedTitle = title.slice(0, 20);
   const limitedLinkTitle = linkTitle.slice(0, 12);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const postData = {
-      nickName: "동동이",
       postType: selected,
       title: limitedTitle,
       content,
-      files,
-      tags,
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
+      tags: tags.join(','),
+      imageUrls: [],         //현재 이미지 추가는 안됨.
+      recommendCnt: 0,
+      viewCnt: 0,
+      recommended: false,
     };
-    console.log("✅ 저장된 데이터:", postData);
+
+    try {
+      const result = await createPost(postData); 
+      console.log("✅ 등록 성공:", result);
+      alert("게시글이 등록되었습니다.");
+      // 글 목록 페이지 이동 추가예정
+    } catch (error) {
+      console.error("❌ 등록 실패:", error);
+      alert("게시글 등록에 실패했습니다.");
+    }
   };
 
   return (
