@@ -7,9 +7,9 @@ import { TextInput, PasswordInput, Button } from "@mantine/core";
 import { Eye, EyeOff } from "lucide-react";
 import { login,getUserInfo } from '../../api/auth'; 
 import DuplicateModal from '../signup/DuplicateModal'; 
-import Cookies from 'js-cookie'; // js-cookie 임포트
+import Cookies from 'js-cookie'; 
 
-// Zod 유효성 검사 스키마
+
 const schema = z.object({
   username: z.string().min(1, "아이디를 입력해주세요."),
   password: z.string()
@@ -37,11 +37,17 @@ export default function LoginForm({ handleLogin }) {
       const { username, password } = data;
       const response = await login({ realId: username, password });
       
-      // 로그인 성공 시 토큰을 쿠키에 저장
-      Cookies.set('accessToken', response.accessToken, { expires: 1/24 }); // 7일 동안 유효
+      // 로그인 성공 시 토큰과 사용자 ID를 쿠키에 저장
+      Cookies.set('accessToken', response.accessToken, { expires: 1/24 }); 
 
       // 사용자 정보 요청
       const userInfo = await getUserInfo(response.accessToken);
+      
+      // 사용자 ID와 이전 모달 표시 기록 초기화
+      Cookies.set('userId', userInfo.realId, { expires: 1/24 });
+      Cookies.remove('lastSeenModalUserId'); // 이전 사용자의 모달 표시 기록 삭제
+      Cookies.remove('hasSeenInterestModal'); // 이전 모달 표시 기록 삭제
+
       setModalMessage("로그인 성공하였습니다.");
       setIsModalOpen(true);
       handleLogin({ nickname: userInfo.nickname });

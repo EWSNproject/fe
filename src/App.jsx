@@ -1,7 +1,7 @@
 import "./index.css";
 import { Routes, Route } from "react-router-dom";
+import Main from "./pages/main/Home";
 import { useState, useEffect } from "react";
-import Main from "./pages/main";
 import Signup from "./pages/signup/SignupForm";
 import LoginForm from "./pages/login/LoginForm";
 import BenefitsList from "./pages/allbenefits/BenefitsList";
