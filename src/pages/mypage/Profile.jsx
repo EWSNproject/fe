@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
-import { getUserInfo } from '../../api/auth'; 
-import { benefitDetailData } from "../../data/benefitDetailData.js";
+import { getUserInfo, deleteUser } from '../../api/auth'; 
+import { getbookmarked } from '../../api/mypage';
 import Pagination from "../../components/Pagination.jsx";
 import Cookies from 'js-cookie'; 
 import { myPosts, commentedPosts } from "./data.js";
@@ -21,12 +21,8 @@ const Mypage = ({ handleLogout }) => {
   const [user, setUser] = useState(null); 
   const [modalMessage, setModalMessage] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bookmarkedBenefits, setBookmarkedBenefits] = useState([]);
 
-  const sortOptions = ['가나다순', '인기순', '조회수'];
-  const [selectedSort, setSelectedSort] = useState('가나다');
-
-  const bookmarkedBenefits = benefitDetailData.filter(benefit => benefit.isBookmarked);
-  
   const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -56,6 +52,17 @@ const Mypage = ({ handleLogout }) => {
           console.error("사용자 정보를 가져오는 데 실패했습니다.", err);
         });
     }
+
+    const fetchBookmarkedBenefits = async () => {
+      try {
+        const data = await getbookmarked();
+        setBookmarkedBenefits(data);
+      } catch (error) {
+        console.error("북마크된 복지서비스를 가져오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchBookmarkedBenefits();
   }, []);
 
   const handleLogoutClick = () => {
@@ -67,6 +74,19 @@ const Mypage = ({ handleLogout }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     navigate("/");
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUser();
+      setModalMessage("회원탈퇴가 완료되었습니다.");
+      setIsModalOpen(true);
+      handleLogout();
+    } catch (error) {
+      console.error(error.message);
+      setModalMessage("회원탈퇴에 실패했습니다.");
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -138,26 +158,15 @@ const Mypage = ({ handleLogout }) => {
                   activeTab === key ? "text-black" : "text-gray-500"
                 }`}
               >
-                {key === "liked" && "좋아요 표시한 복지서비스"}
+                {key === "liked" && "북마크 표시한 복지서비스"}
                 {key === "posts" && "내가 쓴 게시판글"}
-                {key === "comments" && "댓글 단 글"}
+                {key === "comments" && "좋아요 한 게시판글"}
                 {activeTab === key && (
                   <span className="absolute bottom-0 left-0 w-full h-1 bg-yellow-400"></span>
                 )}
               </button>
             ))}
           </div>
-          <select
-            value={selectedSort}
-            onChange={(e) => setSelectedSort(e.target.value)}
-            className="p-2 text-sm bg-white border rounded shadow-sm"
-          >
-            {sortOptions.map((option) => (
-              <option value={option} key={option}>
-                {option}
-              </option>
-            ))}
-          </select>
         </div>
 
         {activeTab === "posts" && (
@@ -173,13 +182,15 @@ const Mypage = ({ handleLogout }) => {
             <div className="grid grid-cols-3 gap-6 mt-6">
               {currentItems.map((benefit) => (
                 <Card 
-                  key={benefit.id} 
+                  key={benefit.publicServiceId} 
                   data={{
-                    id: benefit.id,
-                    categories: benefit.categories,
+                    id: benefit.publicServiceId,
                     title: benefit.serviceName,
-                    description: benefit.servicePurpose,
-                    isBookmarked: benefit.isBookmarked
+                    description: benefit.summaryPurpose,
+                    isBookmarked: benefit.bookmarked,
+                    category : benefit.serviceCategory,
+                    specialGroup : benefit.specialGroup,
+                    familyType : benefit.familyType
                   }}
                 />
               ))}
@@ -198,12 +209,12 @@ const Mypage = ({ handleLogout }) => {
       </div>
 
       {/* Footer */}
-      <div className="w-full max-w-[1224px] bg-yellow-400 flex items-center">
+      <div className="w-full max-w-[1224px] bg-yellow-400 flex items-center mt-6">
         <div className="items-center px-6 py-4 mx-auto">
           <div className="flex items-center gap-4 text-sm ">
             <button onClick={handleLogoutClick}>로그아웃</button>
             <div className="w-[1px] h-3 bg-gray-300" />
-            <button >회원탈퇴</button>
+            <button onClick={handleDeleteAccount}>회원탈퇴</button>
             <div className="w-[1px] h-3 bg-gray-300" />
             <button >관리자페이지</button>
           </div>
