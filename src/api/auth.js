@@ -108,3 +108,23 @@ export const changePassword = async ({
     throw new Error("서버와의 통신에 실패했습니다.");
   }
 };
+
+export const deleteUser = async () => {
+  const token = Cookies.get("accessToken");
+
+  try {
+    const response = await axios.delete(`${BASE_URL}/users/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // 성공적으로 삭제된 경우의 응답 반환
+  } catch (error) {
+    if (error.response) {
+      throw new Error(
+        error.response.data.message || "회원탈퇴에 실패했습니다."
+      );
+    }
+    throw new Error("서버와의 통신에 실패했습니다.");
+  }
+};
