@@ -13,9 +13,10 @@ const SortOptions = ({ selected, onSelect }) => {
     <div className="flex justify-between items-center gap-4 mb-4 text-lg">
       <div className="relative group">
         <img src={InfoIcon} alt="Info" className="w-5 h-5 cursor-pointer" />
-        <div className="absolute left-0 hidden min-w-[368px] min-h-[61px] p-4 mt-3 text-sm text-black-50 bg-black-900 rounded group-hover:block z-10">
-          *나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.<br />
-          *수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.
+        <div className="absolute left-0 hidden min-w-[380px] min-h-[61px] p-4 mt-3 text-sm text-black-50 bg-black-900 rounded group-hover:block z-10">
+          * 나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.<br />
+          * 수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.<br />
+          * 사이드 필터 선택 후 검색 버튼 클릭 시 해당하는 복지혜택만 나타납니다.
         </div>
       </div>
       <div className="flex gap-4">
