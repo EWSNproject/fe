@@ -14,16 +14,6 @@ export const getBenefitDetail = async (serviceId) => {
   }
 };
 
-export const getAllBenefits = async () => {
-  try {
-    const response = await axios.get(`${BASE_URL}/services?size=50`);
-    return response.data.content;
-  } catch (error) {
-    console.error('Error fetching benefits:', error);
-    throw error;
-  }
-};
-
 export const addBookmark = async (serviceId) => {
   try {
     const token = Cookies.get('accessToken');
@@ -81,23 +71,21 @@ export const removeBookmark = async (serviceId) => {
   }
 };
 
-export const getFilteredBenefits = async (filters) => {
+export const getFilteredBenefits = async (filters = {}, sort = '') => {
   try {
-    // 필터 객체에서 선택된 값들을 쿼리 파라미터로 변환
     const queryParams = new URLSearchParams();
-    
-    // 각 필터 카테고리별로 선택된 값들을 쿼리 파라미터에 추가
+
     Object.entries(filters).forEach(([paramName, selectedLabels]) => {
-      if (selectedLabels && selectedLabels.length > 0) {
-        // 선택된 label 값들을 쿼리 파라미터로 추가
+      if (Array.isArray(selectedLabels) && selectedLabels.length > 0) {
         selectedLabels.forEach(label => {
           queryParams.append(paramName, label);
         });
       }
     });
 
-    // size 파라미터 추가
     queryParams.append('size', '50');
+
+    if (sort) queryParams.append('sort', sort);
 
     const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`);
     return response.data.content;
@@ -113,6 +101,16 @@ export const getFilterData = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching filter data:', error);
+    throw error;
+  }
+};
+
+export const searchBenefits = async (searchTerm) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/mongo/services/search?searchTerm=${encodeURIComponent(searchTerm)}&size=50`);
+    return response.data.content;
+  } catch (error) {
+    console.error('Error fetching searched benefits:', error);
     throw error;
   }
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "../../components/Card";
 import { cardData } from "../../data/cardData";
+import { getPopularBenefits } from "../../api/main";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -10,6 +11,7 @@ import Cookies from "js-cookie";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [popularBenefits, setPopularBenefits] = useState([]); // 인기 혜택 상태 추가
 
   useEffect(() => {
     const accessToken = Cookies.get('accessToken');
@@ -23,6 +25,19 @@ const Home = () => {
       Cookies.set('lastSeenModalUserId', currentUserId, { expires: 1 });
       Cookies.set('hasSeenInterestModal', 'true', { expires: 1 });
     }
+  }, []);
+
+  useEffect(() => {
+    const fetchPopularBenefits = async () => {
+      try {
+        const data = await getPopularBenefits(); // API 호출
+        setPopularBenefits(data); // 상태 업데이트
+      } catch (error) {
+        console.error("Error fetching popular benefits:", error);
+      }
+    };
+
+    fetchPopularBenefits(); // 컴포넌트 마운트 시 데이터 가져오기
   }, []);
 
   const closeModal = () => {
@@ -78,8 +93,16 @@ const Home = () => {
       <div className="w-full max-w-[1236px] mb-8">
         <h2 className="mb-4 text-xl ">인기 혜택복지서비스</h2>
         <div className="grid grid-cols-3 gap-6">
-          {cardData.slice(6,12).map((card) => (
-            <Card key={card.id} data={card} />
+          {popularBenefits.map((card) => (
+            <Card key={card.publicServiceId} data={{
+              id: card.publicServiceId,
+              title: card.serviceName,
+              description: card.summaryPurpose,
+              category: card.serviceCategory,
+              specialGroup: card.specialGroup,
+              familyType: card.familyType,
+              isBookmarked: card.bookmarked
+            }} />
           ))}
         </div>
       </div>

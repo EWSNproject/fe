@@ -1,4 +1,14 @@
-const SearchFilter = ({ onSearch, onReset }) => {
+import React, { useState } from 'react';
+
+const SearchFilter = ({ onSearch, onReset, setSearchTerm }) => {
+    const [searchInput, setSearchInput] = useState('');
+
+    const handleSearch = () => {
+        setSearchTerm(searchInput);
+        onSearch(searchInput);
+        setSearchInput('');
+    };
+
     return (
         <div className="pt-6 pb-6 px-[30px] mb-6 border rounded max-w-[1200px] min-h-[180px] bg-black-50">
             <div className="flex flex-col w-full gap-4">
@@ -9,6 +19,8 @@ const SearchFilter = ({ onSearch, onReset }) => {
                         type="text"
                         placeholder="검색어 입력"
                         className="flex-1 px-3 py-2 h-10 border rounded-[12px] w-full"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                     />
                 </div>
             </div>
@@ -24,7 +36,7 @@ const SearchFilter = ({ onSearch, onReset }) => {
                     </button>
                     <button 
                         className="flex-1 text-black-50 bg-yellow-700 rounded-[10px] px-3 py-2 text-sm sm:text-base h-10"
-                        onClick={onSearch}
+                        onClick={handleSearch}
                     >
                         검색
                     </button>

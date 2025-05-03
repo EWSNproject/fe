@@ -56,7 +56,7 @@ export const getUserInfo = async (token) => {
   try {
     const response = await axios.get(`${BASE_URL}/users/me`, {
       headers: {
-        Authorization: `Bearer ${token}`, // 토큰을 Authorization 헤더에 추가
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data; // 사용자 정보 반환

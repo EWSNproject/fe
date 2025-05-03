@@ -38,11 +38,6 @@ const Card = ({ data }) => {
     }
   };
 
-  // 제목에서 괄호와 그 안의 내용을 제거하는 함수
-  const formatTitle = (title) => {
-    return title?.replace(/^\([^)]*\)\s*/, "") || "";
-  };
-
   // 태그 목록을 문자열로 변환하는 함수
   const formatTagList = (tags) => {
     return tags.join(", ");
@@ -103,7 +98,7 @@ const Card = ({ data }) => {
       {/* 제목과 설명 */}
       <div className="space-y-4">
         <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
-          {formatTitle(title)}
+          {title}
         </h3>
         <p className="text-gray-600">{description}</p>
       </div>

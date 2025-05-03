@@ -3,19 +3,18 @@ import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
 import Pagination from "../../components/Pagination";
-import { getAllBenefits, getFilteredBenefits } from '../../api/BenefitsService';
+import { getFilteredBenefits, searchBenefits } from '../../api/BenefitsService';
 import InfoIcon from "../../assets/images/Info.svg";
 
 const SortOptions = ({ selected, onSelect }) => {
-  const options = ["최신순", "인기순", "북마크순"];
+  const options = ["가나다순", "인기순", "조회수 높은순"];
 
   return (
     <div className="flex justify-between items-center gap-4 mb-4 text-lg">
       <div className="relative group">
         <img src={InfoIcon} alt="Info" className="w-5 h-5 cursor-pointer" />
         <div className="absolute left-0 hidden min-w-[368px] min-h-[61px] p-4 mt-3 text-sm text-black-50 bg-black-900 rounded group-hover:block z-10">
-          *나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.
-          <br />
+          *나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.<br />
           *수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.
         </div>
       </div>
@@ -24,11 +23,7 @@ const SortOptions = ({ selected, onSelect }) => {
           <button
             key={option}
             onClick={() => onSelect(option)}
-            className={`${
-              selected === option
-                ? "text-black font-bold underline"
-                : "text-gray-400"
-            }`}
+            className={`${selected === option ? "text-black font-bold underline" : "text-gray-400"}`}
           >
             {option}
           </button>
@@ -39,70 +34,89 @@ const SortOptions = ({ selected, onSelect }) => {
 };
 
 const CardListPage = () => {
-  const [sortOption, setSortOption] = useState("최신순");
+  const [sortOption, setSortOption] = useState("가나다순");
   const [currentPage, setCurrentPage] = useState(1);
   const [benefits, setBenefits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 9;
-  const totalPages = Math.ceil(benefits.length / itemsPerPage);
   const pageGroupSize = 5;
+
   const [selectedFilters, setSelectedFilters] = useState({
     "가구형태": [],
     "가구상황": [],
     "관심주제": []
   });
 
-  const fetchBenefits = async () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const fetchFilteredData = async (filters = selectedFilters, sort = '') => {
     try {
       setIsLoading(true);
-      const data = await getAllBenefits();
-      setBenefits(data);
+      const filteredData = await getFilteredBenefits(filters, sort);
+      setBenefits(filteredData);
+      setCurrentPage(1);
     } catch (error) {
-      console.error('Failed to fetch benefits:', error);
+      console.error("Failed to fetch filtered benefits:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchBenefits();
-  }, []);
-
-  // 현재 페이지의 데이터만 반환
-  const getCurrentPageData = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return benefits.slice(startIndex, endIndex);
+  const handleSearch = async (searchTerm) => {
+    if (searchTerm) {
+      try {
+        setIsLoading(true);
+        const searchedData = await searchBenefits(searchTerm);
+        setBenefits(searchedData);
+      } catch (error) {
+        console.error('Failed to fetch searched benefits:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      fetchFilteredData();
+    }
   };
 
   const handleFilterChange = (filters) => {
     setSelectedFilters(filters);
   };
 
-  const handleSearch = async () => {
-    try {
-      setIsLoading(true);
-      const filteredData = await getFilteredBenefits(selectedFilters);
-      setBenefits(filteredData);
-      setCurrentPage(1); // 필터링 후 첫 페이지로 이동
-    } catch (error) {
-      console.error('Failed to fetch filtered benefits:', error);
-    } finally {
-      setIsLoading(false);
+  const handleSortChange = (option) => {
+    setSortOption(option);
+    let sortParam = ''; // 기본값 설정
+
+    // 선택된 옵션에 따라 sortParam 설정
+    if (option === "인기순") {
+        sortParam = 'bookmark';
+    } else if (option === "조회수 높은순") {
+        sortParam = 'view';
+    } else {
+        sortParam = ''; // 기본 정렬
     }
+
+    fetchFilteredData(selectedFilters, sortParam); // 수정된 sortParam을 사용하여 데이터 가져오기
   };
 
   const handleReset = () => {
-    setSelectedFilters({
+    const resetFilters = {
       "가구형태": [],
       "가구상황": [],
       "관심주제": []
-    });
-    // 초기화 후 전체 데이터 다시 불러오기
-    fetchBenefits();
+    };
+    setSelectedFilters(resetFilters);
+    fetchFilteredData(resetFilters);
   };
 
-  // 로딩 중일 때 표시할 내용
+  useEffect(() => {
+    fetchFilteredData();
+  }, []);
+
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return benefits.slice(startIndex, startIndex + itemsPerPage);
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -113,31 +127,25 @@ const CardListPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
-      {/* 사이드 필터 */}
       <SideFilter onFilterChange={handleFilterChange} />
 
-      {/* 메인 컨텐츠 영역 */}
       <div className="flex flex-col flex-1">
-        <span className="text-[24px] mb-5 font-semibold">
-          복지혜택 전체보기
-        </span>
+        <span className="text-[24px] mb-5 font-semibold">복지혜택 전체보기</span>
 
-        {/* 필터 및 검색창 */}
         <SearchFilter 
           onSearch={handleSearch}
           onReset={handleReset}
+          setSearchTerm={setSearchTerm}
         />
 
-        {/* 정렬 옵션 */}
         <div className="w-full max-w-[1200px]">
-          <SortOptions selected={sortOption} onSelect={setSortOption} />
+          <SortOptions selected={sortOption} onSelect={handleSortChange} />
         </div>
 
-        {/* 카드 리스트 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 w-full max-w-[1200px]">
           {getCurrentPageData().map((card) => (
-            <Card 
-              key={card.publicServiceId} 
+            <Card
+              key={card.publicServiceId}
               data={{
                 id: card.publicServiceId,
                 title: card.serviceName,
@@ -147,16 +155,14 @@ const CardListPage = () => {
                 familyType: card.familyType,
                 isBookmarked: card.bookmarked
               }}
-              selectedFilters={selectedFilters}
             />
           ))}
         </div>
 
-        {/* 페이지네이션 */}
         <div className="flex justify-center mt-8 max-w-[1200px]">
           <Pagination
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={Math.ceil(benefits.length / itemsPerPage)}
             onPageChange={setCurrentPage}
             pageGroupSize={pageGroupSize}
           />
