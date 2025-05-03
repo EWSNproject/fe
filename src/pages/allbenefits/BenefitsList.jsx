@@ -47,8 +47,6 @@ const CardListPage = () => {
     "관심주제": []
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
-
   const fetchFilteredData = async (filters = selectedFilters, sort = '') => {
     try {
       setIsLoading(true);
@@ -62,12 +60,14 @@ const CardListPage = () => {
     }
   };
 
-  const handleSearch = async (searchTerm) => {
-    if (searchTerm) {
+  const handleSearch = async (keyword) => {
+    const trimmed = keyword.trim();
+    if (trimmed) {
       try {
         setIsLoading(true);
-        const searchedData = await searchBenefits(searchTerm);
+        const searchedData = await searchBenefits(trimmed);
         setBenefits(searchedData);
+        setCurrentPage(1);
       } catch (error) {
         console.error('Failed to fetch searched benefits:', error);
       } finally {
@@ -84,18 +84,15 @@ const CardListPage = () => {
 
   const handleSortChange = (option) => {
     setSortOption(option);
-    let sortParam = ''; // 기본값 설정
+    let sortParam = '';
 
-    // 선택된 옵션에 따라 sortParam 설정
     if (option === "인기순") {
-        sortParam = 'bookmark';
+      sortParam = 'bookmark';
     } else if (option === "조회수 높은순") {
-        sortParam = 'view';
-    } else {
-        sortParam = ''; // 기본 정렬
+      sortParam = 'view';
     }
 
-    fetchFilteredData(selectedFilters, sortParam); // 수정된 sortParam을 사용하여 데이터 가져오기
+    fetchFilteredData(selectedFilters, sortParam);
   };
 
   const handleReset = () => {
@@ -110,6 +107,7 @@ const CardListPage = () => {
 
   useEffect(() => {
     fetchFilteredData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCurrentPageData = () => {
@@ -135,7 +133,6 @@ const CardListPage = () => {
         <SearchFilter 
           onSearch={handleSearch}
           onReset={handleReset}
-          setSearchTerm={setSearchTerm}
         />
 
         <div className="w-full max-w-[1200px]">

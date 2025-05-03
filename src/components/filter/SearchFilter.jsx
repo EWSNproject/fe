@@ -4,7 +4,6 @@ const SearchFilter = ({ onSearch, onReset, setSearchTerm }) => {
     const [searchInput, setSearchInput] = useState('');
 
     const handleSearch = () => {
-        setSearchTerm(searchInput);
         onSearch(searchInput);
         setSearchInput('');
     };
