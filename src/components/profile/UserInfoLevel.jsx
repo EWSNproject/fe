@@ -1,12 +1,17 @@
 import eggLevel from "../../assets/images/egg.svg";
 import React, { useState } from "react";
 import UserInfoModal from "./UserInfoModal";
+import InterestModal from '../modal/InterestModal';
 
 const UserInfoLevel = ({ user, nextLevel }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInterestModalOpen, setIsInterestModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openInterestModal = () => setIsInterestModalOpen(true);
+  const closeInterestModal = () => setIsInterestModalOpen(false);
+
   return (
     <div className="flex gap-[80px] w-full max-w-[1224px]">
       {/* 회원정보 */}
@@ -26,7 +31,10 @@ const UserInfoLevel = ({ user, nextLevel }) => {
               >
                 개인정보 수정
               </button>
-              <button className="px-4 py-2 mt-3 w-full text-white transition bg-yellow-500 rounded hover:bg-yellow-600">
+              <button
+                className="px-4 py-2 mt-3 w-full text-white transition bg-yellow-500 rounded hover:bg-yellow-600"
+                onClick={openInterestModal}
+              >
                 키워드 수정
               </button>
             </div>
@@ -72,19 +80,26 @@ const UserInfoLevel = ({ user, nextLevel }) => {
                 style={{ width: `${(user.points / user.remainPoint) * 100}%` }}
               ></div>
             </div>
-            <p className="flex justify-end mt-2 text-sm">
-              <div className="flex gap-1">
+            <div className="flex justify-end mt-2 text-sm">
+              <span className="flex gap-1">
                 {user.remainPoint}포인트 모으면{" "}
-                <p className="text-yellow-800">{nextLevel}</p>등급으로 승급!
-              </div>
-            </p>
+                <span className="text-yellow-800">{nextLevel}</span> 등급으로
+                승급!
+              </span>
+            </div>
           </div>
         </div>
       </div>
+
       <UserInfoModal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         user={user}
+      />
+      <InterestModal
+        isOpen={isInterestModalOpen}
+        onRequestClose={closeInterestModal}
+        categorizedInterests={user.categorizedInterests}
       />
     </div>
   );

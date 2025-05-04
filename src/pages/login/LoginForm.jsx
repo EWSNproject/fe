@@ -6,7 +6,7 @@ import { z } from "zod";
 import { TextInput, PasswordInput, Button } from "@mantine/core";
 import { Eye, EyeOff } from "lucide-react";
 import { login,getUserInfo } from '../../api/auth'; 
-import DuplicateModal from '../signup/DuplicateModal'; 
+import DuplicateModal from '../../components/modal/DuplicateModal'; 
 import Cookies from 'js-cookie'; 
 
 

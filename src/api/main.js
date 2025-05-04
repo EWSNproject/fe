@@ -49,3 +49,16 @@ export const getPopularBenefits = async () => {
     throw error;
   }
 };
+export const getMatchServices = async () => {
+  try {
+    const token = Cookies.get("accessToken");
+    const response = await axios.get(`${BASE_URL}/mongo/services/matched`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '관심사 목록을 가져오는데 실패했습니다.');
+  }
+};

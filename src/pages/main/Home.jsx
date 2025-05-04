@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Card from "../../components/Card";
-import { cardData } from "../../data/cardData";
-import { getPopularBenefits } from "../../api/main";
+import { getPopularBenefits, getMatchServices } from "../../api/main";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Home.css";
-import InterestModal from "./InterestModal";
+import InterestModal from "../../components/modal/InterestModal";
 import Cookies from "js-cookie";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popularBenefits, setPopularBenefits] = useState([]); // 인기 혜택 상태 추가
+  const [cardData, setCardData] = useState([]); // 카드 데이터를 저장할 상태
 
   useEffect(() => {
     const accessToken = Cookies.get('accessToken');
@@ -38,6 +38,19 @@ const Home = () => {
     };
 
     fetchPopularBenefits(); // 컴포넌트 마운트 시 데이터 가져오기
+  }, []);
+
+  useEffect(() => {
+    const fetchCardData = async () => {
+      try {
+        const data = await getMatchServices(); // API 호출
+        setCardData(data); // 가져온 데이터 상태에 저장
+      } catch (error) {
+        console.error("카드 데이터를 가져오는 데 실패했습니다.", error);
+      }
+    };
+
+    fetchCardData(); // 데이터 가져오기
   }, []);
 
   const closeModal = () => {
@@ -82,9 +95,19 @@ const Home = () => {
       <div className="w-full max-w-[1236px] mb-8">
         <h2 className="mb-4 text-xl ">혜택온만의 맞춤서비스</h2>
         <Slider {...settings}>
-          {cardData.slice(0, 6).map((card) => (
-            <div key={card.id}>
-              <Card data={card} />
+          {cardData.map((card) => (
+            <div key={card.publicServiceId}>
+              <Card 
+                data={{
+                  id: card.publicServiceId,
+                  title: card.serviceName,
+                  description: card.summaryPurpose,
+                  category: card.serviceCategory,
+                  specialGroup: card.specialGroup,
+                  familyType: card.familyType,
+                  isBookmarked: card.bookmarked
+                }} 
+              />
             </div>
           ))}
         </Slider>

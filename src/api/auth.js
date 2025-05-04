@@ -109,22 +109,27 @@ export const changePassword = async ({
   }
 };
 
-export const deleteUser = async () => {
+export const deleteUser = async (reasonText) => {
   const token = Cookies.get("accessToken");
 
   try {
-    const response = await axios.delete(`${BASE_URL}/users/me`, {
+    const response = await axios({
+      method: 'delete',
+      url: `${BASE_URL}/users/me`,
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'text/plain'
       },
+      data: reasonText  // 여기: 순수한 텍스트 값
     });
-    return response.data; // 성공적으로 삭제된 경우의 응답 반환
+
+    return response.data;
   } catch (error) {
-    if (error.response) {
-      throw new Error(
-        error.response.data.message || "회원탈퇴에 실패했습니다."
-      );
-    }
-    throw new Error("서버와의 통신에 실패했습니다.");
+    console.error("Axios Error Response:", error.response); // 여기 꼭 로그 찍어
+    throw new Error("회원탈퇴 요청 실패");
   }
 };
+
+
+
+
