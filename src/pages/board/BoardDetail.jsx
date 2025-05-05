@@ -43,7 +43,7 @@ export default function BoardDetail() {
         <span className='text-xl font-semibold'>댓글 (3)</span>
         <div className='flex items-end gap-5'>
           <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
-            채
+            {userNickname?.charAt(0) || "?"}
           </span>
           <TextInput
               placeholder="댓글추가..."
