@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { FilePen } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { TextInput } from '@mantine/core';
+import { FilePen } from "lucide-react";
 import Search from "../../assets/images/ic_search.svg";
 import BoardItem from "./BoardItem";
-import { dummyBoardList } from "./data";
-import { useNavigate } from "react-router-dom";
 import Pagination from '../../components/Pagination';
 import SortDropdown from '../../components/SortDropdown';
+import { getPostsByType } from "../../api/postApi";
 
 export default function Boardlist() {
   const navigate = useNavigate();
@@ -16,6 +16,8 @@ export default function Boardlist() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const sortOptions = ["최신순", "인기순", "조회수"];
   const itemsPerPage = 10;
+  const [postList, setPostList] = useState([]); 
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
@@ -26,28 +28,46 @@ export default function Boardlist() {
     setCurrentPage(pageNumber);
   };
 
-  const sortedBoardList = [...dummyBoardList].sort((a, b) => {
+  const sortedBoardList = [...postList].sort((a, b) => {
     if (selectedSort === "최신순") {
-      const dateA = new Date(a.createdAt.split("T")[0].replaceAll(".", "-"));
-      const dateB = new Date(b.createdAt.split("T")[0].replaceAll(".", "-"));
-      return dateB - dateA; // 오래된 글이 뒤로 (최신순)
-    } else if (selectedSort === "인기순") {
-      return b.recommendCnt - a.recommendCnt;
+      return new Date(b.createdAt) - new Date(a.createdAt);
     } else if (selectedSort === "조회수") {
       return b.viewCnt - a.viewCnt;
     }
-    return 0;
-  });  
-    
+    return 0; // 인기순은 현재 없음 -> 추가예정
+  });
+  
   const filteredBoardList = sortedBoardList.filter((item) => {
     const isCategoryMatch = activeButton === '전체' || item.postType === activeButton.replace('게시판', '');
     const isSearchMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
     return isCategoryMatch && isSearchMatch;
-  });
+  });  
 
-  const totalPages = Math.ceil(filteredBoardList.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredBoardList.slice(startIndex, startIndex + itemsPerPage);
+  useEffect(() => {
+    const fetchData = async () => {
+      const postType = activeButton === '전체' ? '전체' : activeButton.replace('게시판', '');
+      try {
+        const data = await getPostsByType({
+          postType,
+          page: currentPage - 1,
+          size: itemsPerPage
+        });
+        setPostList(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("게시글 불러오기 실패", error);
+      }
+    };
+
+    fetchData();
+  }, [activeButton, currentPage]);
+
+  const filteredList = postList.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const startIndex = 0;
+  const currentItems = filteredBoardList;
 
   return (
     <div className="flex justify-center bg-black-50">
@@ -75,7 +95,7 @@ export default function Boardlist() {
             <div className="flex items-end gap-4 text-base font-medium text-black-500">
               <div className="flex gap-1">
                 <FilePen className="text-black-300"/>
-                <p>총 게시물 <span className="text-tag-red">{filteredBoardList.length}</span>건</p>
+                <p>총 게시물 <span className="text-tag-red">{filteredList.length}</span>건</p>
               </div>
               <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
             </div>
@@ -124,7 +144,7 @@ export default function Boardlist() {
               <BoardItem
                 key={item.postId}
                 id={item.postId}
-                number={filteredBoardList.length - (startIndex + idx)}
+                number={filteredList.length - (startIndex + idx)}
                 title={item.title}
                 writer={item.nickName}
                 date={item.createdAt.split('T')[0]}
