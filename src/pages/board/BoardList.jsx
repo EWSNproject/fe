@@ -18,6 +18,7 @@ export default function Boardlist() {
   const itemsPerPage = 10;
   const [postList, setPostList] = useState([]); 
   const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
@@ -54,6 +55,7 @@ export default function Boardlist() {
         });
         setPostList(data.content);
         setTotalPages(data.totalPages);
+        setTotalElements(data.totalElements);
       } catch (error) {
         console.error("게시글 불러오기 실패", error);
       }
@@ -62,11 +64,7 @@ export default function Boardlist() {
     fetchData();
   }, [activeButton, currentPage]);
 
-  const filteredList = postList.filter((item) =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const startIndex = 0;
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = filteredBoardList;
 
   return (
@@ -95,7 +93,7 @@ export default function Boardlist() {
             <div className="flex items-end gap-4 text-base font-medium text-black-500">
               <div className="flex gap-1">
                 <FilePen className="text-black-300"/>
-                <p>총 게시물 <span className="text-tag-red">{filteredList.length}</span>건</p>
+                <p>총 게시물 <span className="text-tag-red">{totalElements}</span>건</p>
               </div>
               <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
             </div>
@@ -144,7 +142,7 @@ export default function Boardlist() {
               <BoardItem
                 key={item.postId}
                 id={item.postId}
-                number={filteredList.length - (startIndex + idx)}
+                number={totalElements - (startIndex + idx)}
                 title={item.title}
                 writer={item.nickName}
                 date={item.createdAt.split('T')[0]}
