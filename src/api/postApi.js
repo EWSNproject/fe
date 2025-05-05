@@ -79,3 +79,29 @@ export const cancelRecommendPost = async (postId) => {
     throw error;
   }
 };
+
+// 게시글 수정
+export const updatePost = async (postId, postData) => {
+  const token = Cookies.get("accessToken");
+
+  const formData = new FormData();
+  formData.append("title", postData.title);
+  formData.append("content", postData.content);
+  formData.append("postType", postData.postType);
+  formData.append("urlTitle", postData.urlTitle);
+  formData.append("urlPath", postData.urlPath);
+  formData.append("tags", postData.tags);
+
+  postData.images.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  const response = await axios.put(`${BASE_URL}/posts/${postId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

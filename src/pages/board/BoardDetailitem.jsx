@@ -34,7 +34,7 @@ export default function BoardDetailitem({ item, userNickname }) {
         </div>
         <div>
           {isAuthor ? (
-            <button className="gap-1.5 flex">
+            <button className="gap-1.5 flex" onClick={() => navigate(`/postEdit/${item.postId}`)}>
               <FilePen /> 수정하기
             </button>
           ) : (
