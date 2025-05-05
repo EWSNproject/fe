@@ -58,12 +58,9 @@ export default function Post() {
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
       tags: tags.join(','),
-      imageUrls: [],         //현재 이미지 추가는 안됨.
-      recommendCnt: 0,
-      viewCnt: 0,
-      recommended: false,
+      images: files,       //현재 이미지 추가는 안됨.
     };
-
+  
     try {
       const result = await createPost(postData); 
       console.log("✅ 등록 성공:", result);
