@@ -83,7 +83,7 @@ export const getFilteredBenefits = async (filters = {}, sort = '') => {
       }
     });
 
-    queryParams.append('size', '50');
+    queryParams.append('size', '30');
 
     if (sort) queryParams.append('sort', sort);
 

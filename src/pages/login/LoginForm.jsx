@@ -36,24 +36,28 @@ export default function LoginForm({ handleLogin }) {
     try {
       const { username, password } = data;
       const response = await login({ realId: username, password });
-      
-      // 로그인 성공 시 토큰과 사용자 ID를 쿠키에 저장
-      Cookies.set('accessToken', response.accessToken, { expires: 1/24 }); 
-
-      // 사용자 정보 요청
+  
+      Cookies.set('accessToken', response.accessToken, { expires: 1 / 24 });
+  
       const userInfo = await getUserInfo(response.accessToken);
-      
-      // 사용자 ID와 이전 모달 표시 기록 초기화
-      Cookies.set('userId', userInfo.realId, { expires: 1/24 });
-      Cookies.remove('lastSeenModalUserId'); // 이전 사용자의 모달 표시 기록 삭제
-      Cookies.remove('hasSeenInterestModal'); // 이전 모달 표시 기록 삭제
-
+      Cookies.set('userId', userInfo.realId, { expires: 1 / 24 });
+      Cookies.remove('lastSeenModalUserId');
+      Cookies.remove('hasSeenInterestModal');
+  
+      const hasLoggedIn = localStorage.getItem('hasLoggedIn');
       setModalMessage("로그인 성공하였습니다.");
       setIsModalOpen(true);
+      if (!hasLoggedIn) {
+        // 처음 로그인인 경우
+        
+        localStorage.setItem('hasLoggedIn', 'true');
+      }
+  
       handleLogin({ nickname: userInfo.nickname });
+  
       setTimeout(() => {
-        setIsModalOpen(false); 
-        navigate("/"); 
+        setIsModalOpen(false);
+        navigate("/");
       }, 1500);
     } catch (error) {
       console.error("로그인 실패:", error.message);
@@ -61,6 +65,7 @@ export default function LoginForm({ handleLogin }) {
       setIsModalOpen(true);
     }
   };
+  
 
   const handleCloseModal = () => {
     setIsModalOpen(false);

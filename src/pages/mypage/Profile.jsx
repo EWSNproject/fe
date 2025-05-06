@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
-import { getUserInfo, deleteUser } from "../../api/auth";
+import { getUserInfo, deleteUser, logout } from "../../api/auth";
 import { getbookmarked } from "../../api/mypage";
 import Pagination from "../../components/Pagination.jsx";
 import Cookies from "js-cookie";
@@ -68,10 +68,17 @@ const Mypage = ({ handleLogout }) => {
     fetchBookmarkedBenefits();
   }, []);
 
-  const handleLogoutClick = () => {
-    handleLogout();
-    setModalMessage("로그아웃 되었습니다.");
-    setIsModalOpen(true);
+  const handleLogoutClick = async () => {
+    try {
+      await logout();
+      handleLogout();
+      setModalMessage("로그아웃 되었습니다.");
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error(error.message);
+      setModalMessage("로그아웃에 실패했습니다.");
+      setIsModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -98,7 +105,7 @@ const Mypage = ({ handleLogout }) => {
 
       <div className="w-full max-w-[1224px] flex justify-end">
         <button
-          className="mt-2 text-sm text-blue-600"
+          className="mt-2 text-sm "
           onClick={() => setShowDetails(!showDetails)}
         >
           등급별 상세보기 {showDetails ? "▲" : "▼"}
@@ -249,7 +256,7 @@ const Mypage = ({ handleLogout }) => {
         opened={isWithdrawOpen}
         onClose={() => setIsWithdrawOpen(false)}
         onConfirm={(reasonText) => {
-          handleDeleteAccount(reasonText); // reasonText = '서비스 불만족' 또는 '직접 입력한 기타 사유'
+          handleDeleteAccount(reasonText); 
           setIsWithdrawOpen(false);
         }}
         title="회원탈퇴"

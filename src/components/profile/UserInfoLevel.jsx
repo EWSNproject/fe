@@ -17,7 +17,7 @@ const UserInfoLevel = ({ user, nextLevel }) => {
       {/* 회원정보 */}
       <div className="flex flex-col w-full max-w-[341px]">
         <span className="mb-5 text-2xl font-bold">회원정보</span>
-        <div className="flex flex-col items-start gap-4 bg-white p-6 rounded-lg shadow-md min-h-[230px] bg-black-50">
+        <div className="flex flex-col items-start gap-4 p-6 rounded-lg shadow-md min-h-[230px] bg-black-50">
           <div className="flex gap-[30px]">
             <div className="flex flex-col items-center">
               <img
@@ -27,12 +27,12 @@ const UserInfoLevel = ({ user, nextLevel }) => {
               />
               <button
                 onClick={openModal}
-                className="px-4 py-2 mt-5 text-white transition bg-yellow-500 rounded hover:bg-yellow-600"
+                className="px-4 py-2 mt-5 transition bg-yellow-500 rounded hover:bg-yellow-600"
               >
                 개인정보 수정
               </button>
               <button
-                className="px-4 py-2 mt-3 w-full text-white transition bg-yellow-500 rounded hover:bg-yellow-600"
+                className="px-4 py-2 mt-3 w-full  transition bg-yellow-500 rounded hover:bg-yellow-600"
                 onClick={openInterestModal}
               >
                 키워드 수정
@@ -77,7 +77,7 @@ const UserInfoLevel = ({ user, nextLevel }) => {
             <div className="w-full bg-yellow-400 rounded-full h-2.5 mt-4">
               <div
                 className="bg-yellow-700 h-2.5 rounded-full"
-                style={{ width: `${(user.points / user.remainPoint) * 100}%` }}
+                style={{ width: `${(user.point / user.remainPoint) * 100}%` }}
               ></div>
             </div>
             <div className="flex justify-end mt-2 text-sm">

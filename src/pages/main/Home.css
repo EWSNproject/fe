@@ -5,3 +5,11 @@
   .slick-list {
     margin: 0 -10px; /* 전체 슬라이드의 마진을 조정하여 정렬 유지 */
   }
+  /* Home.css에 추가 */
+.card-highlight {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-highlight:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}

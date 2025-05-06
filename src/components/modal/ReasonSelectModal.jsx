@@ -22,7 +22,7 @@ const ReasonSelectModal = ({
   if (!opened) return null;
 
   const handleSubmit = () => {
-    if (selectedReason === "기타") {
+    if (selectedReason === "직접 입력") {
       onConfirm(etcText.trim() || "기타");
     } else {
       onConfirm(selectedReason);
@@ -82,11 +82,11 @@ const ReasonSelectModal = ({
             onClick={handleSubmit}
             disabled={
               !selectedReason ||
-              (selectedReason === "기타" && etcText.trim() === "")
+              (selectedReason === "직접 입력" && etcText.trim() === "")
             }
             className={`max-w-[180px] w-full px-4 py-2 rounded-2xl ${
               !selectedReason ||
-              (selectedReason === "기타" && etcText.trim() === "")
+              (selectedReason === "직접 입력" && etcText.trim() === "")
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                 : "bg-yellow-700 text-white"
             }`}
