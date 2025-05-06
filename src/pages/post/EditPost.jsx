@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getPostById, updatePost } from "../../api/postApi";
 import { SlNote } from "react-icons/sl";
 import { X } from "lucide-react";
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -6,10 +9,10 @@ import {
   Textarea,
   Button,
 } from "@mantine/core";
-import { useState } from "react";
-import { createPost } from "../../api/postApi";
 
-export default function Post() {
+export default function EditPost() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [charCount, setCharCount] = useState(0);
@@ -50,25 +53,42 @@ export default function Post() {
   const limitedTitle = title.slice(0, 20);
   const limitedLinkTitle = linkTitle.slice(0, 12);
 
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const post = await getPostById(id);
+        setTitle(post.title);
+        setContent(post.content);
+        setSelected(post.postType);
+        setTags(post.tags?.split(',').filter(Boolean) || []);
+        setLinkTitle(post.urlTitle);
+        setLinkUrl(post.urlPath);
+        setCharCount(post.content.length);
+      } catch (error) {
+        console.error("수정용 데이터 로딩 실패:", error);
+      }
+    };
+    fetchPost();
+  }, [id]);
+  
   const handleSubmit = async () => {
     const postData = {
-      postType: selected,
       title: limitedTitle,
       content,
+      postType: selected,
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
       tags: tags.join(','),
-      images: files,       //현재 이미지 추가는 안됨.
+      images: files, 
     };
   
     try {
-      const result = await createPost(postData); 
-      console.log("✅ 등록 성공:", result);
-      alert("게시글이 등록되었습니다.");
-      // 글 목록 페이지 이동 추가예정
+      await updatePost(id, postData); 
+      alert("게시글이 수정되었습니다.");
+      navigate(`/board/${id}`);
     } catch (error) {
-      console.error("❌ 등록 실패:", error);
-      alert("게시글 등록에 실패했습니다.");
+      console.error("수정 실패:", error);
+      alert("게시글 수정에 실패했습니다.");
     }
   };
 
@@ -77,7 +97,7 @@ export default function Post() {
       {/* 제목 */}
       <div className="flex items-center gap-2 mb-3 text-2xl">
         <SlNote />
-        게시판 글쓰기
+        게시글 수정하기
       </div>
 
       <div className="mb-6 border-t border-black-400" />
@@ -252,4 +272,4 @@ export default function Post() {
       </div>
     </div>
   );
-}
+} 

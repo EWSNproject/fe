@@ -9,6 +9,7 @@ import Search from "./pages/search/Search";
 import BoardList from "./pages/board/BoardList";
 import BoardDetail from "./pages/board/BoardDetail";  
 import PostList from "./pages/post/PostList";
+import EditPost from "./pages/post/EditPost";
 import Mypage from "./pages/mypage/Profile";
 import Layout from "./layouts/Layout";
 import BenefitsDetail from "./pages/allbenefits/BenefitsDetail"
@@ -61,6 +62,7 @@ function App() {
         <Route path="boardList" element={<BoardList />} />
         <Route path="board/:id" element={<BoardDetail />} /> 
         <Route path="post" element={<PostList />} />
+        <Route path="postEdit/:id" element={<EditPost />} />
         <Route path="mypage" element={<Mypage handleLogout={handleLogout} />} />
       </Route>
     </Routes>
