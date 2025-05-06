@@ -28,6 +28,9 @@ const Card = ({ data }) => {
     try {
       if (bookmarked) {
         await removeBookmark(id);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         await addBookmark(id);
       }
