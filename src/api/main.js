@@ -42,10 +42,28 @@ export const saveUserInterests = async (interests) => {
 
 export const getPopularBenefits = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/services/popular`);
+    const token = Cookies.get("accessToken");
+    const response = await axios.get(`${BASE_URL}/services/popular`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data; // 필요한 데이터 형식에 맞게 반환
   } catch (error) {
     console.error('Error fetching popular benefits:', error);
     throw error;
+  }
+};
+export const getMatchServices = async () => {
+  try {
+    const token = Cookies.get("accessToken");
+    const response = await axios.get(`${BASE_URL}/mongo/services/matched`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '관심사 목록을 가져오는데 실패했습니다.');
   }
 };

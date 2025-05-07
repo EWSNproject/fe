@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { signup, checkDuplicate } from "../../api/auth";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DuplicateModal from "./DuplicateModal";
+import DuplicateModal from "../../components/modal/DuplicateModal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import regionData from "../../data/regionDistricts_full.json";

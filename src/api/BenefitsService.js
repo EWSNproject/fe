@@ -83,11 +83,20 @@ export const getFilteredBenefits = async (filters = {}, sort = '') => {
       }
     });
 
-    queryParams.append('size', '50');
+    queryParams.append('size', '30');
 
     if (sort) queryParams.append('sort', sort);
 
-    const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`);
+    const token = Cookies.get('accessToken');
+    const config = {
+      headers: {}
+    };
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`, config);
     return response.data.content;
   } catch (error) {
     console.error('Error fetching filtered benefits:', error);

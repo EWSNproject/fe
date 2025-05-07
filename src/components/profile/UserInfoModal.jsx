@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { Eye, EyeOff, X } from "tabler-icons-react";
 import Dropdown from "../../pages/signup/Dropdown";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import DuplicateModal from "../../pages/signup/DuplicateModal";
+import DuplicateModal from "../modal/DuplicateModal";
 import { toast } from "react-toastify";
 import {
   changePassword,

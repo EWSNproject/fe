@@ -28,6 +28,9 @@ const Card = ({ data }) => {
     try {
       if (bookmarked) {
         await removeBookmark(id);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         await addBookmark(id);
       }
@@ -107,7 +110,7 @@ const Card = ({ data }) => {
       <div className="flex justify-end h-[40px] mt-auto">
         <Link
           to={`/benefitsList/${id}`}
-          className="w-full h-full text-xs sm:text-sm font-medium text-gray-700 bg-white border bg-gray-200 rounded-lg hover:bg-black-50 flex items-center justify-center"
+          className="w-full h-full text-xs sm:text-sm font-medium text-gray-700  border bg-gray-200 rounded-lg hover:bg-black-50 flex items-center justify-center"
         >
           자세히 보기
         </Link>

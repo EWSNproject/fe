@@ -54,7 +54,7 @@ export default function Dropdown({
       </div>
 
       {isOpen && (
-        <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-md bg-black-50 max-h-[150px] overflow-y-auto">
+        <ul className="absolute z-10 w-full mt-1 border border-gray-300 rounded-lg shadow-md bg-black-50 max-h-[150px] overflow-y-auto">
           {options.map((option) => (
             <li
               key={option}

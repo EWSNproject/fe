@@ -40,10 +40,15 @@ export const signup = async (userData) => {
 export const login = async (userData) => {
   try {
     const { realId, password } = userData;
-    const response = await axios.post(`${BASE_URL}/login`, {
-      realId,
-      password,
-    });
+
+    const response = await axios.post(
+      `${BASE_URL}/login`,
+      { realId, password }, 
+      {
+        withCredentials: true, 
+      }
+    );
+
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -52,6 +57,7 @@ export const login = async (userData) => {
     throw new Error("서버와의 통신에 실패했습니다.");
   }
 };
+
 export const getUserInfo = async (token) => {
   try {
     const response = await axios.get(`${BASE_URL}/users/me`, {
@@ -108,3 +114,51 @@ export const changePassword = async ({
     throw new Error("서버와의 통신에 실패했습니다.");
   }
 };
+
+export const deleteUser = async (reasonText) => {
+  const token = Cookies.get("accessToken");
+  console.log(token)
+  try {
+    const response = await axios.delete(`${BASE_URL}/users/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      data: { deleteReason: reasonText },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(
+        error.response.data.message || "회원탈퇴에 실패했습니다."
+      );
+    }
+    throw new Error("서버와의 통신에 실패했습니다.");
+  }
+};
+
+export const logout = async () => {
+  const token = Cookies.get("accessToken");
+  if (!token) throw new Error("인증 토큰이 없습니다.");
+
+  try {
+    await axios.post(`${BASE_URL}/logout`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
+    Cookies.remove("accessToken");
+  } catch (error) {
+    if (error.response) {
+      throw new Error(
+        error.response.data.message || "로그아웃에 실패했습니다."
+      );
+    }
+    throw new Error("서버와의 통신에 실패했습니다.");
+  }
+};
+
+
+
+

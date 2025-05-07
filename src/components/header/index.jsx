@@ -9,7 +9,7 @@ const Header = ({ isLoggedIn, userData}) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false); 
   return (
-    <header className="w-full bg-white border-b">
+    <header className="w-full  border-b">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-16 sm:h-20 max-w-[1680px] mx-auto">
         {/* 왼쪽 로고 & 메뉴 버튼 */}
         <div className="flex items-center gap-4 sm:gap-8">
@@ -68,7 +68,7 @@ const Header = ({ isLoggedIn, userData}) => {
 
       {/* 모바일 네비게이션 메뉴 (햄버거 메뉴) */}
       {menuOpen && (
-        <div className="md:hidden flex flex-col items-center bg-white border-t p-4 space-y-4">
+        <div className="md:hidden flex flex-col items-center border-t p-4 space-y-4">
           <button onClick={() => navigate("/benefitsList")} className="w-full text-center hover:text-black-950">복지혜택 전체보기</button>
           <button onClick={() => navigate("/boardList")} className="w-full text-center hover:text-black-950">게시판</button>
           <button onClick={() => navigate("/login")} className="w-full text-center hover:text-black-950">로그인</button>
