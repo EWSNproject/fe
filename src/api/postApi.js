@@ -105,3 +105,15 @@ export const updatePost = async (postId, postData) => {
 
   return response.data;
 };
+
+export const searchPosts = async (word) => {
+
+  try {
+    const response = await axios.get(`${BASE_URL}/mongo/search/posts?searchTerm=${encodeURIComponent(word)}`);
+    return response.data.content; 
+  } catch (error) {
+    console.error('Error fetching autocomplete suggestions:', error);
+    throw error;
+  }
+
+};
