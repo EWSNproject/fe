@@ -4,10 +4,9 @@ import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
 import MyPostsList from "../../components/profile/PostList.jsx";
 import { getUserInfo, deleteUser, logout } from "../../api/auth";
-import { getbookmarked } from "../../api/mypage";
+import { getbookmarked, getUserPosts, getliked } from "../../api/mypage";
 import Pagination from "../../components/Pagination.jsx";
 import Cookies from "js-cookie";
-import { myPosts, commentedPosts } from "./data.js";
 import DuplicateModal from "../../components/modal/DuplicateModal.jsx";
 import ReasonSelectModal from "../../components/modal/ReasonSelectModal.jsx";
 
@@ -24,6 +23,9 @@ const Mypage = ({ handleLogout }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [bookmarkedBenefits, setBookmarkedBenefits] = useState([]);
+  const [myPosts, setMyPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -56,16 +58,23 @@ const Mypage = ({ handleLogout }) => {
         });
     }
 
-    const fetchBookmarkedBenefits = async () => {
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
         const data = await getbookmarked();
         setBookmarkedBenefits(data);
+        const userPosts = await getUserPosts();
+        const likedPostsData = await getliked();
+        setMyPosts(userPosts);
+        setLikedPosts(likedPostsData);
       } catch (error) {
-        console.error("북마크된 복지서비스를 가져오는 데 실패했습니다.", error);
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchBookmarkedBenefits();
+    fetchData();
   }, []);
 
   const handleLogoutClick = async () => {
@@ -98,6 +107,10 @@ const Mypage = ({ handleLogout }) => {
       setIsModalOpen(true);
     }
   };
+
+  if (isLoading) {
+    return <p>로딩 중...</p>;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -206,7 +219,7 @@ const Mypage = ({ handleLogout }) => {
 
         {activeTab === "posts" && <MyPostsList posts={myPosts} />}
 
-        {activeTab === "comments" && <MyPostsList posts={commentedPosts} />}
+        {activeTab === "comments" && <MyPostsList posts={likedPosts} />}
 
         {activeTab === "liked" && (
           <>
@@ -240,7 +253,7 @@ const Mypage = ({ handleLogout }) => {
       </div>
 
       {/* Footer */}
-      <div className="w-full max-w-[1224px] bg-yellow-400 flex items-center mt-6">
+      <div className="w-full max-w-[1236px] bg-yellow-400 flex items-center mt-6">
         <div className="items-center px-6 py-4 mx-auto">
           <div className="flex items-center gap-4 text-sm ">
             <button onClick={handleLogoutClick}>로그아웃</button>

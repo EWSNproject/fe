@@ -16,3 +16,30 @@ export const getbookmarked = async () => {
       throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
     }
   };
+  
+export const getUserPosts = async () => {
+    try {
+        const token = Cookies.get('accessToken');
+        const response = await axios.get(`${BASE_URL}/users/me/posts`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.content; 
+    } catch (error) {
+        throw new Error("사용자 게시글을 가져오는 데 실패했습니다.");
+    }
+};
+export const getliked = async () => {
+  try {
+      const token = Cookies.get('accessToken');
+      const response = await axios.get(`${BASE_URL}/users/me/recommended/posts`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      });
+      return response.data.content; 
+  } catch (error) {
+      throw new Error("사용자 게시글을 가져오는 데 실패했습니다.");
+  }
+};

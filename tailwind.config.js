@@ -1,6 +1,4 @@
 // tailwind.config.js
-import defaultTheme from 'tailwindcss/defaultTheme'
-
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   content: [
