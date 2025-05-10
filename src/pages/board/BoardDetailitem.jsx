@@ -28,7 +28,7 @@ export default function BoardDetailitem({ item, userNickname }) {
   return (
     <div className='w-[1000px] mx-auto flex flex-col py-8 mt-8'>
       <div className='flex justify-between w-full mb-8 text-xl font-medium text-gray-400'>
-        <div className='flex gap-1.5 cursor-pointer' onClick={() => navigate('/boardList')}>
+        <div className='flex gap-1.5 cursor-pointer' onClick={() => navigate('/board')}>
             <span className='border-gray-400 border-[3px]'><List /></span>
             목록
         </div>

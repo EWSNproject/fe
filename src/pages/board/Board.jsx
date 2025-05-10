@@ -34,8 +34,10 @@ export default function Boardlist() {
       return new Date(b.createdAt) - new Date(a.createdAt);
     } else if (selectedSort === "조회수") {
       return b.viewCnt - a.viewCnt;
+    } else if (selectedSort === "인기순"){
+      return b.recommendCnt - a.recommendCnt;
     }
-    return 0; // 인기순은 현재 없음 -> 추가예정
+    return 0; 
   });
   
   const filteredBoardList = sortedBoardList.filter((item) => {

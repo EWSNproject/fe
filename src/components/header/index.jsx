@@ -18,9 +18,9 @@ const Header = ({ isLoggedIn, userData}) => {
           </button>
 
           {/* 데스크탑 네비게이션 메뉴 */}
-          <nav className="hidden md:flex items-center gap-6 sm:gap-10 text-gray-800">
+          <nav className="items-center hidden gap-6 text-gray-800 md:flex sm:gap-10">
             <button onClick={() => navigate("/benefitsList")} className="hover:text-black-950">복지혜택 전체보기</button>
-            <button onClick={() => navigate("/boardList")} className="hover:text-black-950">게시판</button>
+            <button onClick={() => navigate("/board")} className="hover:text-black-950">게시판</button>
           </nav>
 
           {/* 모바일 메뉴 버튼 */}
@@ -32,7 +32,7 @@ const Header = ({ isLoggedIn, userData}) => {
         {/* 검색창 & 로그인 */}
         <div className="flex items-center gap-6 sm:gap-12">
           {/* 검색창 */}
-          <div className="relative text-black-400 hidden sm:block">
+          <div className="relative hidden text-black-400 sm:block">
             <span className="absolute left-3 top-3">
               <img src={Search} alt="검색" className="w-4 h-4" />
             </span>
@@ -44,7 +44,7 @@ const Header = ({ isLoggedIn, userData}) => {
           </div>
 
           {/* 로그인 & 회원가입 또는 사용자 정보 */}
-          <div className="hidden sm:flex items-center gap-3 text-black-500">
+          <div className="items-center hidden gap-3 sm:flex text-black-500">
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
@@ -68,9 +68,9 @@ const Header = ({ isLoggedIn, userData}) => {
 
       {/* 모바일 네비게이션 메뉴 (햄버거 메뉴) */}
       {menuOpen && (
-        <div className="md:hidden flex flex-col items-center bg-white border-t p-4 space-y-4">
+        <div className="flex flex-col items-center p-4 space-y-4 bg-white border-t md:hidden">
           <button onClick={() => navigate("/benefitsList")} className="w-full text-center hover:text-black-950">복지혜택 전체보기</button>
-          <button onClick={() => navigate("/boardList")} className="w-full text-center hover:text-black-950">게시판</button>
+          <button onClick={() => navigate("/board")} className="w-full text-center hover:text-black-950">게시판</button>
           <button onClick={() => navigate("/login")} className="w-full text-center hover:text-black-950">로그인</button>
           <button onClick={() => navigate("/signup")} className="w-full text-center hover:text-black-950">회원가입</button>
         </div>
