@@ -25,7 +25,6 @@ const Mypage = ({ handleLogout }) => {
   const [bookmarkedBenefits, setBookmarkedBenefits] = useState([]);
   const [myPosts, setMyPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -59,7 +58,6 @@ const Mypage = ({ handleLogout }) => {
     }
 
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const data = await getbookmarked();
         setBookmarkedBenefits(data);
@@ -69,8 +67,6 @@ const Mypage = ({ handleLogout }) => {
         setLikedPosts(likedPostsData);
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -107,10 +103,6 @@ const Mypage = ({ handleLogout }) => {
       setIsModalOpen(true);
     }
   };
-
-  if (isLoading) {
-    return <p>로딩 중...</p>;
-  }
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
