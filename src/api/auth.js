@@ -108,3 +108,13 @@ export const changePassword = async ({
     throw new Error("서버와의 통신에 실패했습니다.");
   }
 };
+
+// 타회원 조회
+export const getOtherUserInfo = async (userId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${userId}`);
+    return response.data; 
+  } catch (error) {
+    throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+  }
+};
