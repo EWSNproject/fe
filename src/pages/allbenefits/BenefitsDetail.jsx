@@ -71,7 +71,7 @@ const BenefitsDetail = () => {
   };
 
   return (
-    <div className="max-w-[1000px] mt-10 mx-auto p-6 bg-white">
+    <div className="max-w-[1000px] mt-10 mx-auto p-6 ">
       <div className="flex flex-col gap-6">
         <div className="flex min-w-[322px] min-h-[40px]">
           <div className="flex items-center px-4 py-2 text-lg bg-yellow-700 text-black-50">

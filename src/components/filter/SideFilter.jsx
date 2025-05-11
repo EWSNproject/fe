@@ -18,7 +18,7 @@ const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) =
   };
 
   return (
-    <div className="p-4 mb-4 bg-white border rounded-lg">
+    <div className="p-4 mb-4 border rounded-lg">
       {/* 필터 제목 */}
       <div className="flex items-center justify-between cursor-pointer" onClick={toggleSection}>
         <h3 className="text-[14px]">{title}</h3>

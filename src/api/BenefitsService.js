@@ -83,11 +83,20 @@ export const getFilteredBenefits = async (filters = {}, sort = '') => {
       }
     });
 
-    queryParams.append('size', '50');
+    queryParams.append('size', '30');
 
     if (sort) queryParams.append('sort', sort);
 
-    const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`);
+    const token = Cookies.get('accessToken');
+    const config = {
+      headers: {}
+    };
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await axios.get(`${BASE_URL}/services?${queryParams.toString()}`, config);
     return response.data.content;
   } catch (error) {
     console.error('Error fetching filtered benefits:', error);
@@ -105,12 +114,29 @@ export const getFilterData = async () => {
   }
 };
 
-export const searchBenefits = async (searchTerm) => {
+export const searchBenefits = async (searchTerm,size) => {
+  const token = Cookies.get('accessToken')
+
   try {
-    const response = await axios.get(`${BASE_URL}/mongo/services/search?searchTerm=${encodeURIComponent(searchTerm)}&size=50`);
+    const response = await axios.get(`${BASE_URL}/mongo/search/services?searchTerm=${encodeURIComponent(searchTerm)}&size=${size}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data.content;
   } catch (error) {
     console.error('Error fetching searched benefits:', error);
+    throw error;
+  }
+};
+
+export const autocompleteSearch = async (word) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/mongo/search/services/autocomplete?word=${encodeURIComponent(word)}`);
+    return response.data; 
+  } catch (error) {
+    console.error('Error fetching autocomplete suggestions:', error);
     throw error;
   }
 };
