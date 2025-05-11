@@ -28,8 +28,13 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     try {
       const res = await postReply(postId, parentId, replyText, userId, nickname);
       console.log("✅ 대댓글 등록 성공:", res);
-      setReplyOpenId(null); 
-      setReplyText("");    
+      setReplyOpenId(null);
+      setReplyText("");
+
+      // ✅ 대댓글을 comments 상태에 바로 추가
+      setComments(prev => [...prev, res]);
+
+      setCommentCount(prev => prev + 1); // 선택사항
     } catch (error) {
       console.error("❌ 대댓글 등록 실패:", error.response?.data || error.message);
     }
@@ -119,7 +124,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                 className='flex flex-col gap-1.5 py-3.5 px-5 border border-gray-200'
               >
                 <div className='flex justify-between text-sm font-normal'>
-                  <span className="text-tag-green">{nickname || "알 수 없음"}</span>
+                  <span className="text-tag-green">{comment.nickname || "알 수 없음"}</span>
                   <span className='text-gray-400'>{formattedDate}</span>
                 </div>
                 <div className='font-normal text-black-950'>{comment.content}</div>
@@ -135,12 +140,18 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         대댓글
                       </button>
                     )}
-                    <button
-                      className='flex items-center hover:underline'
-                      onClick={() => handleDelete(comment.id)}
-                    >
-                      삭제
-                    </button>
+                    {comment.nickname === nickname ? (
+                      <button
+                        className='flex items-center hover:underline'
+                        onClick={() => handleDelete(comment.id)}
+                      >
+                        삭제
+                      </button>
+                    ) : (
+                      <button className='flex items-center hover:underline'>
+                        신고
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -170,7 +181,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                     <ReplyItem
                       key={reply.id}
                       reply={reply}
-                      nickname={reply.nickname}
+                      nickname={nickname}
                     />
                 ))}
               </div>

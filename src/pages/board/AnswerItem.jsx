@@ -120,12 +120,18 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               <div className='font-normal text-black-950'>{comment.content}</div>
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
-                  <button
-                    onClick={() => handleDelete(comment.id)}
-                    className='flex items-center hover:underline'
-                  >
-                    삭제
-                  </button>
+                  {userMap[comment.userId] === nickname ? (
+                    <button
+                      onClick={() => handleDelete(comment.id)}
+                      className='flex items-center hover:underline'
+                    >
+                      삭제
+                    </button>
+                  ) : (
+                    <button className='flex items-center hover:underline'>
+                      신고
+                    </button>
+                  )}
                 </div>
                 {/* 하나라도 채택된 댓글이 있으면 모두 숨김 */}
                 {!isAnySelected && (
