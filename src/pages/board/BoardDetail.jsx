@@ -2,8 +2,10 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import BoardDetailitem from './BoardDetailitem';
 import CommentItem from './CommentItem';
-import { TextInput } from "@mantine/core";
+import AnswerItem from './AnswerItem';
 import { getPostById } from '../../api/postApi';
+import { getCommentsByPostId } from "../../api/commentApi";
+import { getAnswersByPostId } from "../../api/answerApi";
 import { getUserInfo } from '../../api/auth'; 
 import Cookies from 'js-cookie'; 
 
@@ -11,8 +13,13 @@ export default function BoardDetail() {
   const { id } = useParams();  
   const [item, setItem] = useState(null);
   const [userNickname, setUserNickname] = useState(""); 
+  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const [commentCount, setCommentCount] = useState(0);
+  const [comments, setComments] = useState([]);
+
+  const isQuestionBoard = item?.postType === "질문";
+
   useEffect(() => {
     const fetchPostAndUser = async () => {
       try {
@@ -22,7 +29,8 @@ export default function BoardDetail() {
         const token = Cookies.get("accessToken");
         if (token) {
           const user = await getUserInfo(token);
-          setUserNickname(user.nickname); // 닉네임 저장
+          setUserNickname(user.nickname); 
+          setUserId(user.id); 
         }
       } catch (error) {
         console.error("데이터 로딩 실패:", error);
@@ -32,31 +40,61 @@ export default function BoardDetail() {
     };
     fetchPostAndUser();
   }, [id])
+  
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const post = await getPostById(id);
+        setItem(post);
 
+        const token = Cookies.get("accessToken");
+        if (token) {
+          const user = await getUserInfo(token);
+          setUserNickname(user.nickname);
+          setUserId(user.id);
+        }
+
+        const commentApi = post.postType === "질문" ? getAnswersByPostId : getCommentsByPostId;
+        const res = await commentApi(id);
+        setComments(res.content);
+        setCommentCount(res.totalElements);
+      } catch (error) {
+        console.error("로딩 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, [id]);
+  
   if (loading) return <div className='mt-20 text-center'>로딩 중...</div>;
   if (!item) return <div className='mt-20 text-center'>해당 게시글을 찾을 수 없습니다.</div>;
 
   return (
-    <div className='w-full'>
+    <div className='w-full mb-10'>
       <BoardDetailitem item={item} userNickname={userNickname} />
       <div className='w-[1000px] mx-auto flex flex-col gap-[30px]'>
-        <span className='text-xl font-semibold'>댓글 (3)</span>
-        <div className='flex items-end gap-5'>
-          <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
-            {userNickname?.charAt(0) || "?"}
-          </span>
-          <TextInput
-              placeholder="댓글추가..."
-              classNames={{
-                input: "h-[40px] w-full flex-grow bg-[#FAFAFA] border-0 text-base rounded-none font-normal focus:ring-0 focus:outline-none ",
-              }}
-              className="flex-grow border-b border-gray-400"
-            />
-          <button className='font-semibold rounded px-4 h-[30px] text-sm bg-gray-300 text-black-50'>
-            저장
-          </button>
-        </div>
-        <CommentItem postType={item.postType}/>
+      <span className='text-xl font-semibold'>댓글 ({commentCount})</span>
+        {isQuestionBoard ? (
+          <AnswerItem 
+            postId={id} 
+            answers={comments} 
+            userId={userId}
+            nickname={userNickname}
+            setCommentCount={setCommentCount}
+            setComments={setComments}
+          />
+        ) : (
+          <CommentItem 
+            postId={id} 
+            comments={comments} 
+            postType={item.postType}
+            userId={userId}
+            nickname={userNickname}
+            setCommentCount={setCommentCount}
+            setComments={setComments}
+          />
+        )}
       </div>
     </div>
   );
