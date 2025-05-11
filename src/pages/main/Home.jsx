@@ -98,26 +98,26 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-w-[2000px] w-full">
+    <div className="flex flex-col justify-center items-center max-w-[2000px] w-full">
       <InterestModal isOpen={isModalOpen} onRequestClose={closeModal} />
 
       {/* 카테고리 필터 섹션 */}
       <div className="w-full max-w-[1236px] mt-12 items-center flex flex-col">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 빠른 복지 서비스 검색</h2>
-        <ul className="flex gap-3 flex-wrap mb-6 justify-center">
-  {categories.map((category) => (
-    <li
-      key={category}
-      onClick={() => handleCategoryClick(category)}
-      className={`px-5 py-2 rounded-full border text-sm transition duration-200 cursor-pointer shadow-sm
-        ${selectedCategory === category
-          ? "bg-yellow-400  border-yellow-500 font-semibold shadow-md"
-          : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-100 hover:shadow-sm"}`}
-    >
-      #{category}
-    </li>
-  ))}
-</ul>
+        <h2 className="mb-4 text-2xl font-bold text-gray-800">🔍 빠른 복지 서비스 검색</h2>
+        <ul className="flex flex-wrap justify-center gap-3 mb-6">
+          {categories.map((category) => (
+            <li
+              key={category}
+              onClick={() => handleCategoryClick(category)}
+              className={`px-5 py-2 rounded-full border text-sm transition duration-200 cursor-pointer shadow-sm
+                ${selectedCategory === category
+                  ? "bg-yellow-400  border-yellow-500 font-semibold shadow-md"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-100 hover:shadow-sm"}`}
+            >
+              #{category}
+            </li>
+          ))}
+        </ul>
         {categoryCards.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -128,17 +128,17 @@ const Home = () => {
             <div className="grid grid-cols-3 gap-6">
               {categoryCards.map((card) => (
                 <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
-                   <Card
-                data={{
-                  id: card.publicServiceId,
-                  title: card.serviceName,
-                  description: card.summaryPurpose,
-                  category: card.serviceCategory,
-                  specialGroup: card.specialGroup,
-                  familyType: card.familyType,
-                  isBookmarked: card.bookmarked,
-                }}
-              />
+                  <Card
+                    data={{
+                      id: card.publicServiceId,
+                      title: card.serviceName,
+                      description: card.summaryPurpose,
+                      category: card.serviceCategory,
+                      specialGroup: card.specialGroup,
+                      familyType: card.familyType,
+                      isBookmarked: card.bookmarked,
+                    }}
+                  />
                 </div>
               ))}
             </div>
@@ -154,13 +154,13 @@ const Home = () => {
           viewport={{ once: true }}
           className="w-full max-w-[1236px] mb-10 mt-12"
         >
-          <div className="bg-gradient-to-r from-yellow-300 via-white to-green-200 py-16 px-10 rounded-2xl shadow-xl">
+          <div className="px-10 py-16 shadow-xl bg-gradient-to-r from-yellow-300 via-white to-green-200 rounded-2xl">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-3xl font-extrabold text-yellow-900">
                 ✨ 혜택온 맞춤 복지 추천
               </h2>
             </div>
-            <p className="text-lg text-gray-700 mb-8">
+            <p className="mb-8 text-lg text-gray-700">
               관심 키워드, 회원정보, 검색어 기반으로 당신에게 꼭 맞는 복지 서비스를 추천해드려요!
             </p>
             <Slider {...settings}>
@@ -186,11 +186,11 @@ const Home = () => {
         </motion.div>
       ) : (
         <div className="w-full max-w-[1236px] mb-8 mt-8 text-center">
-          <div className="bg-gradient-to-r to-green-100 via-white from-yellow-100 py-10 px-6 rounded-2xl shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+            <h2 className="mb-2 text-2xl font-bold text-gray-800">
               현재 맞춤 복지 서비스가 없습니다.
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               회원가입을 통해 관심 있는 서비스를 추천 받으세요!
             </p>
           </div>
@@ -205,7 +205,7 @@ const Home = () => {
         <div className="grid grid-cols-3 gap-6">
           {popularBenefits.map((card) => (
             <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-md">
-               <Card
+              <Card
                 data={{
                   id: card.publicServiceId,
                   title: card.serviceName,

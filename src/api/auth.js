@@ -115,6 +115,7 @@ export const changePassword = async ({
   }
 };
 
+
 export const deleteUser = async (reasonText) => {
   const token = Cookies.get("accessToken");
   console.log(token)
@@ -159,6 +160,12 @@ export const logout = async () => {
   }
 };
 
-
-
-
+// 타회원 조회
+export const getOtherUserInfo = async (userId) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/users/${userId}`);
+    return response.data; 
+  } catch (error) {
+    throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
+  }
+};

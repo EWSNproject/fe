@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from '@mantine/core';
 import { FilePen } from "lucide-react";
@@ -6,7 +6,7 @@ import Search from "../../assets/images/ic_search.svg";
 import BoardItem from "./BoardItem";
 import Pagination from '../../components/Pagination';
 import SortDropdown from '../../components/SortDropdown';
-import { getPostsByType } from "../../api/postApi";
+import { getPostsByType, searchPosts } from "../../api/postApi";
 
 export default function Boardlist() {
   const navigate = useNavigate();
@@ -16,56 +16,45 @@ export default function Boardlist() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const sortOptions = ["최신순", "인기순", "조회수"];
   const itemsPerPage = 10;
-  const [postList, setPostList] = useState([]); 
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalElements, setTotalElements] = useState(0);
+  const [allPosts, setAllPosts] = useState([]);
 
-  const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
-    setCurrentPage(1);
-  };
+  const fetchAllData = useCallback(async () => {
+    const postType = activeButton === '전체' ? '전체' : activeButton.replace('게시판', '');
+    const fetchFn = searchTerm.trim() ? searchPosts : getPostsByType;
+    let page = 0, all = [], hasNext = true;
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+    while (hasNext) {
+      const data = searchTerm.trim()
+        ? await fetchFn(searchTerm, page, 50)
+        : await fetchFn({ postType, page, size: 50 });
 
-  const sortedBoardList = [...postList].sort((a, b) => {
-    if (selectedSort === "최신순") {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    } else if (selectedSort === "조회수") {
-      return b.viewCnt - a.viewCnt;
+      all.push(...data.content);
+      hasNext = !data.last;
+      page++;
     }
-    return 0; // 인기순은 현재 없음 -> 추가예정
-  });
-  
-  const filteredBoardList = sortedBoardList.filter((item) => {
-    const isCategoryMatch = activeButton === '전체' || item.postType === activeButton.replace('게시판', '');
-    const isSearchMatch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return isCategoryMatch && isSearchMatch;
-  });  
+    setAllPosts(all);
+  }, [activeButton, searchTerm]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const postType = activeButton === '전체' ? '전체' : activeButton.replace('게시판', '');
-      try {
-        const data = await getPostsByType({
-          postType,
-          page: currentPage - 1,
-          size: itemsPerPage
-        });
-        setPostList(data.content);
-        setTotalPages(data.totalPages);
-        setTotalElements(data.totalElements);
-      } catch (error) {
-        console.error("게시글 불러오기 실패", error);
-      }
-    };
+    setCurrentPage(1);
+    fetchAllData();
+  }, [fetchAllData]);
 
-    fetchData();
-  }, [activeButton, currentPage]);
+  const sortedPosts = [...allPosts].sort((a, b) => {
+    if (selectedSort === "최신순") return new Date(b.createdAt) - new Date(a.createdAt);
+    if (selectedSort === "조회수") return b.viewCnt - a.viewCnt;
+    if (selectedSort === "인기순") return b.recommendCnt - a.recommendCnt;
+    return 0;
+  });
 
+  const filteredPosts = sortedPosts.filter((item) => {
+    const isCategoryMatch = activeButton === '전체' || item.postType === activeButton.replace('게시판', '');
+    return isCategoryMatch;
+  });
+
+  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredBoardList;
+  const currentItems = filteredPosts.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="flex justify-center bg-black-50">
@@ -79,7 +68,7 @@ export default function Boardlist() {
               <button
                 key={buttonName}
                 className={`${activeButton === buttonName ? 'pb-2.5 border-b-4 border-yellow-700 text-black-950 font-medium' : ''}`}
-                onClick={() => handleButtonClick(buttonName)}
+                onClick={() => setActiveButton(buttonName)}
               >
                 {buttonName}
               </button>
@@ -93,7 +82,7 @@ export default function Boardlist() {
             <div className="flex items-end gap-4 text-base font-medium text-black-500">
               <div className="flex gap-1">
                 <FilePen className="text-black-300"/>
-                <p>총 게시물 <span className="text-tag-red">{totalElements}</span>건</p>
+                <p>총 게시물 <span className="text-tag-red">{filteredPosts.length}</span>건</p>
               </div>
               <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
             </div>
@@ -105,12 +94,15 @@ export default function Boardlist() {
                   placeholder="검색"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && fetchAllData()}
                   classNames={{
                     root: "ml-2 flex-1 mr-2",
                     input: "border-0 focus:ring-0 focus:border-0 hover:border-0 shadow-none outline-none",
                   }}
                 />
-                <button className="px-4 py-2 font-bold bg-yellow-700 rounded-r text-black-50 w-[94px]">
+                <button 
+                  onClick={fetchAllData}
+                  className="px-4 py-2 font-bold bg-yellow-700 rounded-r text-black-50 w-[94px]">
                   검색
                 </button>
               </div>
@@ -142,7 +134,7 @@ export default function Boardlist() {
               <BoardItem
                 key={item.postId}
                 id={item.postId}
-                number={totalElements - (startIndex + idx)}
+                number={filteredPosts.length - (startIndex + idx)}
                 title={item.title}
                 writer={item.nickName}
                 date={item.createdAt.split('T')[0]}
@@ -152,15 +144,19 @@ export default function Boardlist() {
             ))}
           </div>
 
-          <div className="flex justify-end text-center mt-[15px]">
-            <button onClick={() => navigate("/post")} 
-            className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 transform hover:scale-105">글쓰기</button>
+          <div className="flex justify-end mt-[15px]">
+            <button
+              onClick={() => navigate("/post")}
+              className="w-[94px] h-[40px] text-base font-bold bg-yellow-900 text-black-50 rounded-xl transition-transform duration-200 hover:scale-105"
+            >
+              글쓰기
+            </button>
           </div>
 
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
+            onPageChange={(page) => setCurrentPage(page)}
             pageGroupSize={10}
           />
         </div>

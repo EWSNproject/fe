@@ -5,7 +5,7 @@ import MyPostsList from "../../components/profile/PostList";
 import SearchIcon from "../../assets/images/ic_search_white.svg";
 import CancelIcon from "../../assets/images/Cancle.svg";
 import { getPopularBenefits } from "../../api/main";
-import { searchPosts } from "../../api/postApi";
+import { searchAllPosts } from "../../api/postApi";
 import {searchBenefits, autocompleteSearch} from "../../api/BenefitsService"
 
 const Search = () => {
@@ -61,7 +61,7 @@ const Search = () => {
     }
   
     try {
-      const posts = await searchPosts(term);
+      const posts = await searchAllPosts(term);
       setPostResults(posts);
     } catch (e) {
       console.warn("❌ 게시글 검색 실패:", e);
@@ -135,7 +135,7 @@ const Search = () => {
               <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 cursor-pointer hover:bg-yellow-100 transition-colors duration-200"
+                className="p-3 transition-colors duration-200 cursor-pointer hover:bg-yellow-100"
               >
                 {suggestion}
               </li>

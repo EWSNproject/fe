@@ -28,7 +28,7 @@ export default function BoardDetailitem({ item, userNickname }) {
   return (
     <div className='w-[1000px] mx-auto flex flex-col py-8 mt-8'>
       <div className='flex justify-between w-full mb-8 text-xl font-medium text-gray-400'>
-        <div className='flex gap-1.5 cursor-pointer' onClick={() => navigate('/boardList')}>
+        <div className='flex gap-1.5 cursor-pointer' onClick={() => navigate('/board')}>
             <span className='border-gray-400 border-[3px]'><List /></span>
             목록
         </div>
@@ -54,11 +54,24 @@ export default function BoardDetailitem({ item, userNickname }) {
         </div>
       </div>
   
-      <div className='mb-16 text-xl font-light'>
+      <div className='mb-10 text-xl font-light'>
         {item.content}
       </div>
 
-      <div className="flex flex-wrap gap-2 mt-2">
+      {item.imageUrls && item.imageUrls.length > 0 && (
+        <div className="flex gap-2.5 mt-4">
+          {item.imageUrls.slice(0, 5).map((url, index) => (
+            <img
+              key={index}
+              src={url}
+              alt={`이미지 ${index + 1}`}
+              className="w-[120px] h-[120px] border rounded border-black-800 object-cover bg-black-50"
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2 mt-4">
         {item.tags
           ?.split(',')
           .map(tag => tag.trim())

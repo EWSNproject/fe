@@ -6,7 +6,7 @@ import Signup from "./pages/signup/SignupForm";
 import LoginForm from "./pages/login/LoginForm";
 import BenefitsList from "./pages/allbenefits/BenefitsList";
 import Search from "./pages/search/Search";
-import BoardList from "./pages/board/BoardList";
+import Board from "./pages/board/Board";
 import BoardDetail from "./pages/board/BoardDetail";  
 import PostList from "./pages/post/PostList";
 import EditPost from "./pages/post/EditPost";
@@ -59,7 +59,7 @@ function App() {
         <Route path="benefitsList" element={<BenefitsList />} />
         <Route path="benefitsList/:id" element={<BenefitsDetail />} />
         <Route path="search" element={<Search />} />
-        <Route path="boardList" element={<BoardList />} />
+        <Route path="board" element={<Board />} />
         <Route path="board/:id" element={<BoardDetail />} /> 
         <Route path="post" element={<PostList />} />
         <Route path="postEdit/:id" element={<EditPost />} />
