@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from '@mantine/core';
 import { FilePen } from "lucide-react";
@@ -18,7 +18,7 @@ export default function Boardlist() {
   const itemsPerPage = 10;
   const [allPosts, setAllPosts] = useState([]);
 
-  const fetchAllData = async () => {
+  const fetchAllData = useCallback(async () => {
     const postType = activeButton === '전체' ? '전체' : activeButton.replace('게시판', '');
     const fetchFn = searchTerm.trim() ? searchPosts : getPostsByType;
     let page = 0, all = [], hasNext = true;
@@ -33,12 +33,12 @@ export default function Boardlist() {
       page++;
     }
     setAllPosts(all);
-  };
+  }, [activeButton, searchTerm]);
 
   useEffect(() => {
     setCurrentPage(1);
     fetchAllData();
-  }, [activeButton, searchTerm, fetchAllData]);
+  }, [fetchAllData]);
 
   const sortedPosts = [...allPosts].sort((a, b) => {
     if (selectedSort === "최신순") return new Date(b.createdAt) - new Date(a.createdAt);
