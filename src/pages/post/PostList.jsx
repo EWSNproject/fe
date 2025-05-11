@@ -7,9 +7,11 @@ import {
   Button,
 } from "@mantine/core";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPost } from "../../api/postApi";
 
 export default function Post() {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [charCount, setCharCount] = useState(0);
@@ -66,6 +68,8 @@ export default function Post() {
       console.log("✅ 등록 성공:", result);
       alert("게시글이 등록되었습니다.");
       // 글 목록 페이지 이동 추가예정
+      navigate("/board"); 
+      
     } catch (error) {
       console.error("❌ 등록 실패:", error);
       alert("게시글 등록에 실패했습니다.");

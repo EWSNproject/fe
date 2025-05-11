@@ -5,8 +5,8 @@ import MyPostsList from "../../components/profile/PostList";
 import SearchIcon from "../../assets/images/ic_search_white.svg";
 import CancelIcon from "../../assets/images/Cancle.svg";
 import { getPopularBenefits } from "../../api/main";
-import { searchPosts } from "../../api/postApi";
-import {searchBenefits, autocompleteSearch} from "../../api/BenefitsService"
+import { searchAllPosts } from "../../api/postApi";
+import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 
 const Search = () => {
   const [visibleItems, setVisibleItems] = useState(6);
@@ -52,25 +52,24 @@ const Search = () => {
     setSearchResults([]);
     setPostResults([]);
     setAutocompleteResults([]);
-  
+
     try {
-      const benefits = await searchBenefits(term,10);
+      const benefits = await searchBenefits(term, 10);
       setSearchResults(benefits);
       setVisibleItems(6);
     } catch (e) {
       console.warn("❌ 복지서비스 검색 실패:", e);
     }
-  
+
     try {
-      const posts = await searchPosts(term);
+      const posts = await searchAllPosts(term);
       setPostResults(posts);
     } catch (e) {
       console.warn("❌ 게시글 검색 실패:", e);
     }
-  
+
     setIsLoading(false);
   };
-  
 
   const handleInputChange = async (e) => {
     const term = e.target.value;
@@ -136,7 +135,7 @@ const Search = () => {
               <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 cursor-pointer hover:bg-yellow-100 transition-colors duration-200"
+                className="p-3 transition-colors duration-200 cursor-pointer hover:bg-yellow-100"
               >
                 {suggestion}
               </li>
@@ -169,7 +168,7 @@ const Search = () => {
           </div>
         )}
 
-{visibleItems < searchResults.length && (
+        {visibleItems < searchResults.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}

@@ -114,7 +114,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-w-[2000px] w-full">
+    <div className="flex flex-col justify-center items-center max-w-[2000px] w-full">
       <InterestModal isOpen={isModalOpen} onRequestClose={closeModal} />
 
       {/* 카테고리 필터 섹션 */}
@@ -138,7 +138,6 @@ const Home = () => {
             </li>
           ))}
         </ul>
-
         {categoryCards.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -233,11 +232,11 @@ const Home = () => {
         </motion.div>
       ) : (
         <div className="w-full max-w-[1236px] mb-8 mt-8 text-center">
-          <div className="bg-gradient-to-r to-green-100 via-white from-yellow-100 py-10 px-6 rounded-2xl shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+            <h2 className="mb-2 text-2xl font-bold text-gray-800">
               현재 맞춤 복지 서비스가 없습니다.
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6 text-gray-600">
               회원가입을 통해 관심 있는 서비스를 추천 받으세요!
             </p>
           </div>
