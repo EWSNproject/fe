@@ -77,7 +77,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     };
 
     fetchMissingNicknames();
-  }, [comments]);
+  }, [comments, setComments]);
 
   return (
     <div className='flex flex-col gap-[30px]'>

@@ -65,7 +65,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
       }
     };
     loadNicknames();
-  }, [answers]);
+  }, [answers, userMap]);
 
   
   return (

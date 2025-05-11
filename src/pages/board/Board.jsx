@@ -38,7 +38,7 @@ export default function Boardlist() {
   useEffect(() => {
     setCurrentPage(1);
     fetchAllData();
-  }, [activeButton, searchTerm]);
+  }, [activeButton, searchTerm, fetchAllData]);
 
   const sortedPosts = [...allPosts].sort((a, b) => {
     if (selectedSort === "최신순") return new Date(b.createdAt) - new Date(a.createdAt);
