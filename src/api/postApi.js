@@ -16,7 +16,6 @@ export const createPost = async (postData) => {
   formData.append("urlPath", postData.urlPath);
   formData.append("tags", postData.tags);
 
-  // 이미지 여러 개 추가 : 아직안됨
   postData.images.forEach((file) => {
     formData.append("images", file);
   });
@@ -104,4 +103,20 @@ export const updatePost = async (postId, postData) => {
   });
 
   return response.data;
+};
+
+// 게시글 검색
+export const searchPosts = async (searchTerm, page = 0, size = 10) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/mongo/search/posts`, {
+      params: {
+        searchTerm,
+        page,
+        size,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error("게시글 검색 실패");
+  }
 };

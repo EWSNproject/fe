@@ -54,11 +54,24 @@ export default function BoardDetailitem({ item, userNickname }) {
         </div>
       </div>
   
-      <div className='mb-16 text-xl font-light'>
+      <div className='mb-10 text-xl font-light'>
         {item.content}
       </div>
 
-      <div className="flex flex-wrap gap-2 mt-2">
+      {item.imageUrls && item.imageUrls.length > 0 && (
+        <div className="flex gap-2.5 mt-4">
+          {item.imageUrls.slice(0, 5).map((url, index) => (
+            <img
+              key={index}
+              src={url}
+              alt={`이미지 ${index + 1}`}
+              className="w-[120px] h-[120px] border rounded border-black-800 object-cover bg-black-50"
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2 mt-4">
         {item.tags
           ?.split(',')
           .map(tag => tag.trim())
