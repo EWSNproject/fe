@@ -18,7 +18,7 @@ const Search = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const loadMore = () => {
-    setVisibleItems((prev) => prev + 4);
+    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
   };
 
   const location = useLocation();
@@ -51,11 +51,12 @@ const Search = () => {
     setIsLoading(true);
     setSearchResults([]);
     setPostResults([]);
+    setAutocompleteResults([]);
   
     try {
-      const benefits = await searchBenefits(term);
+      const benefits = await searchBenefits(term,10);
       setSearchResults(benefits);
-      setVisibleItems(benefits.length);
+      setVisibleItems(6);
     } catch (e) {
       console.warn("❌ 복지서비스 검색 실패:", e);
     }
@@ -168,7 +169,7 @@ const Search = () => {
           </div>
         )}
 
-        {visibleItems < searchResults.length && (
+{visibleItems < searchResults.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}
