@@ -63,6 +63,8 @@ const Search = () => {
   }, [query]);
 
   const handleSearch = async (term) => {
+    if (!term.trim()) return;
+
     setIsLoading(true);
     setSearchResults([]);
     setPostResults([]);
@@ -72,15 +74,14 @@ const Search = () => {
       const benefits = await searchBenefits(term, 10);
       setSearchResults(benefits);
       setVisibleItems(6);
-    } catch (e) {
-      console.warn("❌ 복지서비스 검색 실패:", e);
-    }
 
-    try {
       const posts = await searchAllPosts(term);
       setPostResults(posts);
+
+      const updatedSearches = await getSearchHistory();
+      setRecentSearches(updatedSearches);
     } catch (e) {
-      console.warn("❌ 게시글 검색 실패:", e);
+      console.warn("❌ 검색 실패:", e);
     }
 
     setIsLoading(false);
@@ -160,10 +161,10 @@ const Search = () => {
       </div>
 
       {/* Recent Searches */}
-      {recentSearches.length > 0 && (
-        <div className="mb-6 w-full max-w-[1236px]">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-semibold mb-3">최근 검색어</h2>
+      <div className="mb-6 w-full max-w-[1236px]">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl font-semibold mb-3">최근 검색어</h2>
+          {recentSearches.length > 0 && (
             <button
               className="text-sm text-red-500 hover:underline"
               onClick={async () => {
@@ -173,15 +174,19 @@ const Search = () => {
             >
               전체 삭제
             </button>
-          </div>
+          )}
+        </div>
+
+        {/* 태그만 조건적으로 렌더링 */}
+        {recentSearches.length > 0 ? (
           <div className="flex flex-wrap gap-3">
             {recentSearches.map((item) => (
               <span
                 key={item.id}
                 className="bg-yellow-100 text-yellow-900 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm cursor-pointer"
                 onClick={() => {
-                  setSearchTerm(item.searchTerm); // 검색창에도 반영
-                  handleSearch(item.searchTerm); // 검색 실행
+                  setSearchTerm(item.searchTerm);
+                  handleSearch(item.searchTerm);
                 }}
               >
                 #{item.searchTerm}
@@ -190,7 +195,7 @@ const Search = () => {
                   alt="삭제"
                   className="w-3 h-3 cursor-pointer ml-1"
                   onClick={(e) => {
-                    e.stopPropagation(); // 클릭 전파 방지 (검색 안되게)
+                    e.stopPropagation();
                     deleteSearchHistory(item.id);
                     setRecentSearches((prev) =>
                       prev.filter((i) => i.id !== item.id)
@@ -200,8 +205,10 @@ const Search = () => {
               </span>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-400">최근 검색어가 없습니다.</p>
+        )}
+      </div>
 
       {/* 복지서비스 */}
       <div className="w-full max-w-[1236px] mb-8">

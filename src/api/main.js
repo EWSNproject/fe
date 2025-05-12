@@ -98,7 +98,7 @@ export const deleteSearchHistory = async (historyId) => {
     const token = Cookies.get("accessToken");
     const url = historyId
       ? `${BASE_URL}/search/history/${historyId}`
-      : `${BASE_URL}/search/history/`; // ← id 없으면 전체 삭제
+      : `${BASE_URL}/search/history`; // ← id 없으면 전체 삭제
 
     const response = await axios.delete(url, {
       headers: {
