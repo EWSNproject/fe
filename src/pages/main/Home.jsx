@@ -4,7 +4,9 @@ import {
   getPopularBenefits,
   getMatchServices,
   getSearchHistory,
+  getInterestUser,
 } from "../../api/main";
+import { getUserInfo } from "../../api/auth";
 import { searchBenefits } from "../../api/BenefitsService";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -21,6 +23,8 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryCards, setCategoryCards] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
+  const [interestKeywords, setInterestKeywords] = useState([]);
   const categories = ["청년", "신혼부부", "장애인", "경력단절", "저소득층"];
 
   useEffect(() => {
@@ -75,6 +79,13 @@ const Home = () => {
   };
 
   const handleCategoryClick = async (category) => {
+    if (selectedCategory === category) {
+      setSelectedCategory(null);
+      setCategoryCards([]);
+      return;
+    }
+
+    // 새로운 카테고리 선택
     setSelectedCategory(category);
     try {
       const data = await searchBenefits(category, 6);
@@ -83,6 +94,32 @@ const Home = () => {
       console.error("카테고리 검색 실패:", err);
     }
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = Cookies.get("accessToken");
+        const user = await getUserInfo(token);
+        const interests = await getInterestUser();
+
+        setUserInfo(user);
+
+        // 선택된 관심 키워드만 추출
+        const selected = [];
+        Object.entries(interests).forEach(([category, items]) => {
+          items.forEach((item) => {
+            if (item.selected) selected.push(item.name);
+          });
+        });
+
+        setInterestKeywords(selected);
+      } catch (error) {
+        console.error("맞춤 정보 불러오기 실패:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const settings = {
     dots: true,
@@ -114,7 +151,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center max-w-[2000px] w-full">
+    <div className="flex flex-col justify-center items-center w-full">
       <InterestModal isOpen={isModalOpen} onRequestClose={closeModal} />
 
       {/* 카테고리 필터 섹션 */}
@@ -175,7 +212,7 @@ const Home = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="w-full max-w-[1236px] mb-16 mt-12"
+          className="w-full max-w-[1236px] mb-16 mt-12 r"
         >
           <div className="bg-gradient-to-r from-yellow-300 via-white to-green-200 py-16 px-10 rounded-2xl shadow-xl">
             <h2 className="text-3xl font-extrabold text-yellow-900 mb-2 ">
@@ -187,24 +224,75 @@ const Home = () => {
             </p>
 
             {/* Recent Searches */}
-            {recentSearches.length > 0 && (
-              <div className="bg-yellow-100/60 backdrop-blur-sm p-5 rounded-xl mb-8 border border-yellow-300 shadow-inner">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-yellow-700 text-xl">🕐</span>
-                  <p className="text-xl font-semibold text-yellow-900">
-                    최근 검색어
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {recentSearches.map((search) => (
-                    <span
-                      key={search.id}
-                      className="bg-yellow-300 text-yellow-900 px-4 py-2 rounded-full text-base font-medium transition hover:bg-yellow-400 hover:shadow-md"
-                    >
-                      #{search.searchTerm}
-                    </span>
-                  ))}
-                </div>
+            {(recentSearches.length > 0 ||
+              (userInfo && interestKeywords.length > 0)) && (
+              <div className="flex flex-col md:flex-row gap-4 mb-8">
+                {/* 최근 검색어 */}
+                {recentSearches.length > 0 && (
+                  <div className="flex-1 bg-yellow-100/60 backdrop-blur-sm p-5 rounded-xl border border-yellow-300 shadow-inner">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-yellow-700 text-xl">🕐</span>
+                      <p className="text-lg font-semibold text-yellow-900">
+                        최근 검색어
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {recentSearches.map((search) => (
+                        <span
+                          key={search.id}
+                          className="bg-white border border-yellow-700 text-yellow-900 px-3 py-1 rounded-full text-sm font-medium transition"
+                        >
+                          #{search.searchTerm}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 관심 키워드 */}
+                {userInfo && interestKeywords.length > 0 && (
+                  <div className="flex-1 bg-green-70 p-5 rounded-xl border border-green-200 shadow-inner">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-yellow-700 text-xl">💡</span>
+                      <p className="text-lg font-semibold text-yellow-900">
+                        관심 키워드 & 회원정보
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {interestKeywords.map((keyword, index) => (
+                        <span
+                          key={index}
+                          className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm"
+                        >
+                          #{keyword}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-3 mt-3">
+                      {/* 출생연도 */}
+                      {userInfo.birthAt && (
+                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm ">
+                          {userInfo.birthAt.slice(0, 4)}년생
+                        </span>
+                      )}
+
+                      {/* 지역 */}
+                      {userInfo.city && userInfo.state && (
+                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm ">
+                          {userInfo.city} {userInfo.state}
+                        </span>
+                      )}
+
+                      {/* 직업 */}
+                      {userInfo.job && (
+                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                          {userInfo.job}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
