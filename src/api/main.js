@@ -64,6 +64,52 @@ export const getMatchServices = async () => {
     });
     return response.data;
   } catch (error) {
+    throw new Error(error.response?.data?.message || '맞춤 서비스 목록을 가져오는데 실패했습니다.');
+  }
+};
+export const getSearchHistory = async () => {
+  try {
+    const token = Cookies.get("accessToken");
+    const response = await axios.get(`${BASE_URL}/search/history`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || '검색 이력을 가져오는데 실패했습니다.');
+  }
+};
+export const getInterestUser = async () => {
+  try {
+    const token = Cookies.get("accessToken");
+    const response = await axios.get(`${BASE_URL}/interests/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data.categorizedInterests;
+  } catch (error) {
     throw new Error(error.response?.data?.message || '관심사 목록을 가져오는데 실패했습니다.');
+  }
+};
+export const deleteSearchHistory = async (historyId) => {
+  try {
+    const token = Cookies.get("accessToken");
+    const url = historyId
+      ? `${BASE_URL}/search/history/${historyId}`
+      : `${BASE_URL}/search/history`; // ← id 없으면 전체 삭제
+
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "검색 이력을 삭제하는 데 실패했습니다."
+    );
   }
 };

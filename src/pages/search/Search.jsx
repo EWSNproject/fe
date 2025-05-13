@@ -4,9 +4,10 @@ import Card from "../../components/Card";
 import MyPostsList from "../../components/profile/PostList";
 import SearchIcon from "../../assets/images/ic_search_white.svg";
 import CancelIcon from "../../assets/images/Cancle.svg";
-import { getPopularBenefits } from "../../api/main";
+import { getPopularBenefits, deleteSearchHistory } from "../../api/main";
 import { searchAllPosts } from "../../api/postApi";
-import {searchBenefits, autocompleteSearch} from "../../api/BenefitsService"
+import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
+import { getSearchHistory } from "../../api/main";
 
 const Search = () => {
   const [visibleItems, setVisibleItems] = useState(6);
@@ -16,9 +17,10 @@ const Search = () => {
   const [postResults, setPostResults] = useState([]);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [recentSearches, setRecentSearches] = useState([]);
 
   const loadMore = () => {
-    setVisibleItems((prev) => prev + 4);
+    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
   };
 
   const location = useLocation();
@@ -39,6 +41,19 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
+    const fetchRecentSearches = async () => {
+      try {
+        const data = await getSearchHistory();
+        setRecentSearches(data);
+      } catch (error) {
+        console.error("Error fetching search history:", error);
+      }
+    };
+
+    fetchRecentSearches();
+  }, []);
+
+  useEffect(() => {
     if (query) {
       setSearchTerm(query);
       handleSearch(query);
@@ -48,28 +63,29 @@ const Search = () => {
   }, [query]);
 
   const handleSearch = async (term) => {
+    if (!term.trim()) return;
+
     setIsLoading(true);
     setSearchResults([]);
     setPostResults([]);
-  
+    setAutocompleteResults([]);
+
     try {
-      const benefits = await searchBenefits(term);
+      const benefits = await searchBenefits(term, 10);
       setSearchResults(benefits);
-      setVisibleItems(benefits.length);
-    } catch (e) {
-      console.warn("❌ 복지서비스 검색 실패:", e);
-    }
-  
-    try {
+      setVisibleItems(6);
+
       const posts = await searchAllPosts(term);
       setPostResults(posts);
+
+      const updatedSearches = await getSearchHistory();
+      setRecentSearches(updatedSearches);
     } catch (e) {
-      console.warn("❌ 게시글 검색 실패:", e);
+      console.warn("❌ 검색 실패:", e);
     }
-  
+
     setIsLoading(false);
   };
-  
 
   const handleInputChange = async (e) => {
     const term = e.target.value;
@@ -103,12 +119,12 @@ const Search = () => {
       <h1 className="text-[32px] font-bold mb-6">통합검색</h1>
 
       {/* 검색 입력 */}
-      <div className="relative w-full max-w-[1180px] mb-8">
+      <div className="relative w-full max-w-[1236px] mb-8">
         <div className="flex items-center rounded-[10px] min-h-[72px] border bg-[#FAFAFA]">
           <input
             type="text"
             placeholder="검색어를 입력하세요"
-            className="flex-1 px-4 py-2 max-w-[1008px] max-h-[24px] bg-[#FAFAFA]"
+            className="flex-1 px-4 py-2 max-w-[1070px] max-h-[24px] bg-[#FAFAFA]"
             value={searchTerm}
             onChange={handleInputChange}
             onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
@@ -120,7 +136,7 @@ const Search = () => {
             onClick={() => setSearchTerm("")}
           />
           <button
-            className="flex items-center justify-center px-4 py-2 min-w-[94px] max-h-[40px] bg-yellow-700 text-black-50 rounded-[10px]"
+            className="flex items-center justify-center py-2 min-w-[94px] max-h-[40px] bg-yellow-700 text-black-50 rounded-[10px]"
             onClick={() => handleSearch(searchTerm)}
           >
             <img src={SearchIcon} alt="Search" className="w-4 h-4 mr-2" />
@@ -141,6 +157,56 @@ const Search = () => {
               </li>
             ))}
           </ul>
+        )}
+      </div>
+
+      {/* Recent Searches */}
+      <div className="mb-6 w-full max-w-[1236px]">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl font-semibold mb-3">최근 검색어</h2>
+          {recentSearches.length > 0 && (
+            <button
+              className="text-sm text-red-500 hover:underline"
+              onClick={async () => {
+                await deleteSearchHistory();
+                setRecentSearches([]);
+              }}
+            >
+              전체 삭제
+            </button>
+          )}
+        </div>
+
+        {/* 태그만 조건적으로 렌더링 */}
+        {recentSearches.length > 0 ? (
+          <div className="flex flex-wrap gap-3">
+            {recentSearches.map((item) => (
+              <span
+                key={item.id}
+                className="bg-yellow-100 text-yellow-900 px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2 shadow-sm cursor-pointer"
+                onClick={() => {
+                  setSearchTerm(item.searchTerm);
+                  handleSearch(item.searchTerm);
+                }}
+              >
+                #{item.searchTerm}
+                <img
+                  src={CancelIcon}
+                  alt="삭제"
+                  className="w-3 h-3 cursor-pointer ml-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteSearchHistory(item.id);
+                    setRecentSearches((prev) =>
+                      prev.filter((i) => i.id !== item.id)
+                    );
+                  }}
+                />
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-400">최근 검색어가 없습니다.</p>
         )}
       </div>
 

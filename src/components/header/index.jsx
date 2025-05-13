@@ -1,23 +1,37 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
 import Search from "../../assets/images/ic_search.svg";
 import { Menu } from "lucide-react";
 import UserIcon from "../../assets/images/UserIcon.svg";
+import { searchBenefits } from "../../api/BenefitsService"; 
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 const Header = ({ isLoggedIn, userData }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
- const handleSearch = async (event) => {
-  if (event.key === "Enter") {
-    try {
-      navigate(`/search?query=${encodeURIComponent(searchTerm)}`); // 검색어 포함하여 이동
-    } catch (error) {
-      console.error("Search failed:", error);
+  const handleSearch = async (event) => {
+    if (event.key === "Enter") {
+      try {
+        await searchBenefits(searchTerm,9); 
+        navigate("/search"); 
+      } catch (error) {
+        console.error("Search failed:", error);
+      }
     }
-  }
-};
+  };
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      const decoded = jwtDecode(token);
+      if (decoded.exp < Date.now() / 1000) {
+        Cookies.remove("accessToken");
+        window.location.reload(); // 새로고침으로 상태 반영
+      }
+    }
+  }, []);
   return (
     <header className="w-full border-b">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-16 sm:h-20 max-w-[1680px] mx-auto">
@@ -40,6 +54,12 @@ const Header = ({ isLoggedIn, userData }) => {
               className="hover:text-black-950"
             >
               게시판
+            </button>
+            <button
+              onClick={() => navigate("/search")}
+              className="hover:text-black-950"
+            >
+              통합검색
             </button>
           </nav>
 
