@@ -63,7 +63,7 @@ export default {
         'tag-bg-checkblue': '#8DD4FF',
       },
       screens: {
-        md: { min: '375px', max: '743px' },
+        md: { min: '360px', max: '743px' },
         lg: { min: '744px', max: '1280px' },
         desktop: '1281px',
       },

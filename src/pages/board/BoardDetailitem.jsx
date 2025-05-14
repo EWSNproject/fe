@@ -87,21 +87,21 @@ export default function BoardDetailitem({ item, userNickname }) {
       </div>
 
       <div className='flex justify-center gap-4 text-xl'>
-      <button
-        onClick={handleRecommendClick}
-        className={`flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 transition duration-150 
-          active:scale-95 ${recommended ? "bg-yellow-700 font-bold" : "bg-black-400"}`}
-      >
-        <ThumbsUp /> {recommendCnt}
-      </button>
-      
-        {item.uriTitle && (
-        <a href={item.urlPath} target='_blank' rel='noopener noreferrer'>
-            <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-gray-400 bg-black-100'>
-            {item.uriTitle} <ExternalLink />
-            </button>
-        </a>
-        )}
+        <button
+          onClick={handleRecommendClick}
+          className={`flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 transition duration-150 
+            active:scale-95 ${recommended ? "bg-yellow-700 font-bold" : "bg-black-400"}`}
+        >
+          <ThumbsUp /> {recommendCnt}
+        </button>
+        
+          {item.urlTitle && (
+            <a href={item.urlPath} target='_blank' rel='noopener noreferrer'>
+              <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-gray-400 bg-black-100'>
+                {item.urlTitle} <ExternalLink />
+              </button>
+            </a>
+          )}
       </div>
     </div>
   );

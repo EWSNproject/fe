@@ -141,13 +141,13 @@ const Home = () => {
 
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
+    <div className="flex flex-col items-center justify-center w-full">
       <InterestModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} />
 
       {/* 🔍 빠른 복지 서비스 검색 */}
       <div className="w-full max-w-[1236px] mt-12 items-center flex flex-col">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 빠른 복지 서비스 검색</h2>
-        <ul className="flex gap-3 flex-wrap mb-6 justify-center">
+        <h2 className="mb-4 text-2xl font-bold text-gray-800">🔍 빠른 복지 서비스 검색</h2>
+        <ul className="flex flex-wrap justify-center gap-3 mb-6">
           {categories.map((category) => (
             <li
               key={category}
@@ -189,13 +189,17 @@ const Home = () => {
 
       {/* 🔥 인기 복지 & 최근 본 서비스 */}
       {popularBenefits.length > 0 && (
-        <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto flex flex-col md:flex-row gap-4">
+        <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto flex lg:flex-col flex-row gap-4">
           <div className="flex-1 bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 h-[64px] flex items-center gap-4 overflow-hidden relative">
-            <span className="text-yellow-900 font-bold text-base whitespace-nowrap">🔥 인기 복지 혜택</span>
+            <span className="text-base font-bold text-yellow-900 whitespace-nowrap">🔥 인기 복지 혜택</span>
             <div className="relative flex-1 overflow-hidden h-[28px]">
               <div className="absolute transition-all duration-500" style={{ top: `-${currentIndex * 28}px` }}>
                 {popularBenefits.slice(0, 10).map((item) => (
-                  <div key={item.publicServiceId} className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" onClick={() => navigate(`/benefits/${item.publicServiceId}`)}>
+                  <div 
+                    key={item.publicServiceId} 
+                    className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" 
+                    onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
+                  >
                     #{item.serviceName}
                   </div>
                 ))}
@@ -205,11 +209,15 @@ const Home = () => {
 
           {recentServices.length > 0 && (
             <div className="flex-1 bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 h-[64px] flex items-center gap-4 overflow-hidden relative">
-              <span className="text-yellow-900 font-bold text-base whitespace-nowrap">🕘 최근 본 서비스</span>
+              <span className="text-base font-bold text-yellow-900 whitespace-nowrap">🕘 최근 본 서비스</span>
               <div className="relative flex-1 overflow-hidden h-[28px]">
                 <div className="absolute transition-all duration-500" style={{ top: `-${recentIndex * 28}px` }}>
                   {recentServices.slice(0, 10).map((item) => (
-                    <div key={item.publicServiceId} className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" onClick={() => navigate(`/benefits/${item.publicServiceId}`)}>
+                    <div 
+                      key={item.publicServiceId} 
+                      className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" 
+                      onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
+                    >
                       #{item.serviceName}
                     </div>
                   ))}
@@ -228,11 +236,11 @@ const Home = () => {
           viewport={{ once: true }}
           className="w-full max-w-[1236px] mb-16 "
         >
-          <div className="bg-gradient-to-r from-yellow-300 via-white to-green-200 py-16 px-10 rounded-2xl shadow-xl">
-            <h2 className="text-3xl font-extrabold text-yellow-900 mb-2 ">
+          <div className="px-10 py-16 shadow-xl bg-gradient-to-r from-yellow-300 via-white to-green-200 rounded-2xl">
+            <h2 className="mb-2 text-3xl font-extrabold text-yellow-900 ">
               ✨ 혜택온 맞춤 복지 추천
             </h2>
-            <p className="text-lg text-gray-700 mb-4 ">
+            <p className="mb-4 text-lg text-gray-700 ">
               관심 키워드, 회원정보, 검색어 기반으로 당신에게 꼭 맞는 복지
               서비스를 추천해드려요!
             </p>
@@ -240,12 +248,12 @@ const Home = () => {
             {/* Recent Searches */}
             {(recentSearches.length > 0 ||
               (userInfo && interestKeywords.length > 0)) && (
-              <div className="flex flex-col md:flex-row gap-4 mb-8">
+              <div className="flex flex-col gap-4 mb-8 md:flex-row">
                 {/* 최근 검색어 */}
                 {recentSearches.length > 0 && (
-                  <div className="flex-1 bg-yellow-100/60 backdrop-blur-sm p-5 rounded-xl border border-yellow-300 shadow-inner">
+                  <div className="flex-1 p-5 border border-yellow-300 shadow-inner bg-yellow-100/60 backdrop-blur-sm rounded-xl">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-yellow-700 text-xl">🕐</span>
+                      <span className="text-xl text-yellow-700">🕐</span>
                       <p className="text-lg font-semibold text-yellow-900">
                         최근 검색어
                       </p>
@@ -254,7 +262,7 @@ const Home = () => {
                       {recentSearches.map((search) => (
                         <span
                           key={search.id}
-                          className="bg-white border border-yellow-700 text-yellow-900 px-3 py-1 rounded-full text-sm font-medium transition"
+                          className="px-3 py-1 text-sm font-medium text-yellow-900 transition bg-white border border-yellow-700 rounded-full"
                         >
                           #{search.searchTerm}
                         </span>
@@ -265,9 +273,9 @@ const Home = () => {
 
                 {/* 관심 키워드 */}
                 {userInfo && interestKeywords.length > 0 && (
-                  <div className="flex-1 bg-green-70 p-5 rounded-xl border border-green-200 shadow-inner">
+                  <div className="flex-1 p-5 border border-green-200 shadow-inner bg-green-70 rounded-xl">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-yellow-700 text-xl">💡</span>
+                      <span className="text-xl text-yellow-700">💡</span>
                       <p className="text-lg font-semibold text-yellow-900">
                         관심 키워드 & 회원정보
                       </p>
@@ -277,30 +285,30 @@ const Home = () => {
                       {interestKeywords.map((keyword, index) => (
                         <span
                           key={index}
-                          className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm"
+                          className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm"
                         >
                           #{keyword}
                         </span>
                       ))}
                     </div>
-                    <div className="flex flex-wrap gap-2 mb-3 mt-3">
+                    <div className="flex flex-wrap gap-2 mt-3 mb-3">
                       {/* 출생연도 */}
                       {userInfo.birthAt && (
-                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm ">
+                        <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm ">
                           {userInfo.birthAt.slice(0, 4)}년생
                         </span>
                       )}
 
                       {/* 지역 */}
                       {userInfo.city && userInfo.state && (
-                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm ">
+                        <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm ">
                           {userInfo.city} {userInfo.state}
                         </span>
                       )}
 
                       {/* 직업 */}
                       {userInfo.job && (
-                        <span className="bg-white text-green-900 border border-green-300 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                        <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm">
                           {userInfo.job}
                         </span>
                       )}
