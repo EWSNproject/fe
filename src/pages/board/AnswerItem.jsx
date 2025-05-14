@@ -3,7 +3,11 @@ import { TextInput } from "@mantine/core";
 import { Check } from "lucide-react";
 import { postAnswer, selectAnswer, deleteAnswer } from "../../api/answerApi";
 import { getOtherUserInfo } from "../../api/auth";
+import { reportUser } from "../../api/reportApi";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import ReportModal from "../../components/modal/ReportModal";
+import { REPORT_OPTIONS } from "../../constants/reportOptions";
+import { toast } from 'react-toastify';
 
 // 질문게시판을 택했을 경우, 답변 관련 코드
 export default function AnswerItem({ postId, answers, userId, nickname, setComments, setCommentCount }) {
@@ -11,6 +15,8 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   const [userMap, setUserMap] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportTargetId, setReportTargetId] = useState(null);
 
   // 답변 작성
   const handleSaveAnswer = async () => {
@@ -77,7 +83,32 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
     loadNicknames();
   }, [answers, userMap]);
 
-  
+  // 신고
+  const handleReportSubmit = ({ reason, detail }) => {
+    const reportedAnswer = answers.find((a) => a.id === reportTargetId);
+
+    if (!reportedAnswer) {
+      toast.error("신고 대상 답변을 찾을 수 없습니다.");
+      return;
+    }
+
+    reportUser({
+      reportedUserId: reportedAnswer.userId,
+      reason,
+      content: detail || "",
+    })
+      .then(() => {
+        toast.success("신고가 성공적으로 접수되었습니다.");
+      })
+      .catch((err) => {
+        toast.error("신고 처리 중 오류가 발생했습니다.");
+      })
+      .finally(() => {
+        setReportModalOpen(false);
+        setReportTargetId(null);
+      });
+  };
+
   return (
     <div className='flex flex-col gap-[30px]'>
       {/* 답변 입력 UI */}
@@ -141,7 +172,13 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                       삭제
                     </button>
                   ) : (
-                    <button className='flex items-center hover:underline'>
+                    <button
+                      className="flex items-center hover:underline"
+                      onClick={() => {
+                        setReportTargetId(comment.id);
+                        setReportModalOpen(true);
+                      }}
+                    >
                       신고
                     </button>
                   )}
@@ -176,6 +213,16 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         button1Action={handleConfirmDelete}
         button2Text="취소"
         button2Action={() => setDeleteModalOpen(false)}
+      />
+
+      {/* ✅ 신고 상세내용 모달 */}
+      <ReportModal
+        opened={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        onConfirm={handleReportSubmit}
+        title="답변 신고하기"
+        confirmText="신고"
+        options={REPORT_OPTIONS}
       />
 
     </div>

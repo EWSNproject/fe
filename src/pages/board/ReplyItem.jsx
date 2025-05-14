@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { CornerDownRight } from "lucide-react";
+import { reportUser } from "../../api/reportApi";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import ReportModal from "../../components/modal/ReportModal";
+import { REPORT_OPTIONS } from "../../constants/reportOptions";
+import { toast } from 'react-toastify';
 
 // 자유게시판을 택했을 경우, 대댓글 관련 코드
 export default function ReplyItem({ reply, nickname, onDelete }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportTargetId, setReportTargetId] = useState(null);
+
   const formattedDate = new Date(reply.createdAt)
     .toISOString()
     .split("T")[0]
@@ -17,6 +24,28 @@ export default function ReplyItem({ reply, nickname, onDelete }) {
     setDeleteModalOpen(false);
   };
 
+  const handleReportSubmit = ({ reason, detail }) => {
+    if (!reply || !reply.userId) {
+      toast.error("신고 대상 답변을 찾을 수 없습니다.");
+      return;
+    }
+
+    reportUser({
+      reportedUserId: reply.userId,
+      reason,
+      content: detail || "",
+    })
+      .then(() => {
+        toast.success("신고가 성공적으로 접수되었습니다.");
+      })
+      .catch((err) => {
+        toast.error("신고 처리 중 오류가 발생했습니다.");
+      })
+      .finally(() => {
+        setReportModalOpen(false);
+        setReportTargetId(null);
+      });
+  };
 
   return (
     <div className="flex w-full gap-2.5 mt-2">
@@ -37,7 +66,15 @@ export default function ReplyItem({ reply, nickname, onDelete }) {
                 삭제
               </button>
             ) : (
-              <button className="flex items-center hover:underline">신고</button>
+              <button
+                className="flex items-center hover:underline"
+                onClick={() => {
+                  setReportTargetId(reply.id);
+                  setReportModalOpen(true);
+                }}
+              >
+                신고
+              </button>
             )}
           </div>
         </div>
@@ -54,6 +91,16 @@ export default function ReplyItem({ reply, nickname, onDelete }) {
         button2Action={() => setDeleteModalOpen(false)}
       />
       
+      {/* ✅ 신고 상세내용 모달 */}
+      <ReportModal
+        opened={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        onConfirm={handleReportSubmit}
+        title="대댓글 신고하기"
+        confirmText="신고"
+        options={REPORT_OPTIONS}
+      />
+
     </div>
   );
 }

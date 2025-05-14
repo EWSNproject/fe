@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { TextInput } from "@mantine/core";
 import { postReply } from "../../api/commentApi"; 
+import { reportUser } from "../../api/reportApi"; 
 import ReplyItem from "./ReplyItem";
 import { postComment, deleteComment, getRepliesByCommentId } from "../../api/commentApi";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import ReportModal from "../../components/modal/ReportModal";
+import { REPORT_OPTIONS } from "../../constants/reportOptions";
+import { toast } from 'react-toastify';
 
 // 자유&인사게시판을 택했을 경우, 댓글 관련 코드
 export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount }) {
@@ -13,6 +17,8 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
   const [replies, setReplies] = useState({}); 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false); 
   const [deleteTargetId, setDeleteTargetId] = useState(null); 
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportTargetId, setReportTargetId] = useState(null);
 
   const handleSaveComment = async () => {
     if (!comment.trim()) return;
@@ -114,6 +120,31 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     }
   }, [comments, postId]);
 
+  const handleReportSubmit = ({ reason, detail }) => {
+    const reportedComment = comments.find((c) => c.id === reportTargetId);
+
+    if (!reportedComment) {
+      toast.error("신고 대상 답변을 찾을 수 없습니다.");
+      return;
+    }
+
+    reportUser({
+      reportedUserId: reportedComment.userId,
+      reason,
+      content: detail || "",
+    })
+      .then(() => {
+        toast.success("신고가 성공적으로 접수되었습니다.");
+      })
+      .catch((err) => {
+        toast.error("신고 처리 중 오류가 발생했습니다.");
+      })
+      .finally(() => {
+        setReportModalOpen(false);
+        setReportTargetId(null);
+      });
+  };
+
   return (
     <div className='flex flex-col gap-[30px]'>
       {/* 댓글 입력 UI */}
@@ -189,7 +220,13 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         삭제
                       </button>
                     ) : (
-                      <button className='flex items-center hover:underline'>
+                      <button
+                        className="flex items-center hover:underline"
+                        onClick={() => {
+                          setReportTargetId(comment.id);
+                          setReportModalOpen(true);
+                        }}
+                      >
                         신고
                       </button>
                     )}
@@ -241,6 +278,16 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         button2Action={() => setDeleteModalOpen(false)}
       />
       
+      {/* ✅ 신고 상세내용 모달 */}
+      <ReportModal
+        opened={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        onConfirm={handleReportSubmit}
+        title="댓글 신고하기"
+        confirmText="신고"
+        options={REPORT_OPTIONS}
+      />
+
     </div>
   );
 }
