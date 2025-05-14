@@ -30,6 +30,7 @@ const Home = () => {
   const [interestKeywords, setInterestKeywords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [recentIndex, setRecentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const categories = ["청년", "신혼부부", "장애인", "경력단절", "저소득층"];
 
   const accessToken = Cookies.get("accessToken");
@@ -105,16 +106,22 @@ const Home = () => {
 
   const handleCategoryClick = async (category) => {
     if (selectedCategory === category) {
+      // If the category is already selected, clear the selection
       setSelectedCategory(null);
-      setCategoryCards([]);
-      return;
+      setCategoryCards([]); // Clear the cards
+      return; // Exit the function
     }
+
     setSelectedCategory(category);
+    setIsLoading(true);
+
     try {
       const data = await searchBenefits(category, 6);
       setCategoryCards(data);
     } catch (err) {
       console.error("카테고리 검색 실패:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,24 +162,28 @@ const Home = () => {
             </li>
           ))}
         </ul>
-        {categoryCards.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="grid grid-cols-3 gap-6">
-              {categoryCards.map((card) => (
-                <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
-                  <Card data={{
-                    id: card.publicServiceId,
-                    title: card.serviceName,
-                    description: card.summaryPurpose,
-                    category: card.serviceCategory,
-                    specialGroup: card.specialGroup,
-                    familyType: card.familyType,
-                    isBookmarked: card.bookmarked,
-                  }} />
-                </div>
-              ))}
-            </div>
-          </motion.div>
+        {isLoading ? (
+          <p className="text-lg text-gray-500">로딩 중...</p>
+        ) : (
+          categoryCards.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              <div className="grid grid-cols-3 gap-6">
+                {categoryCards.map((card) => (
+                  <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
+                    <Card data={{
+                      id: card.publicServiceId,
+                      title: card.serviceName,
+                      description: card.summaryPurpose,
+                      category: card.serviceCategory,
+                      specialGroup: card.specialGroup,
+                      familyType: card.familyType,
+                      isBookmarked: card.bookmarked,
+                    }} />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )
         )}
       </div>
 
