@@ -124,7 +124,7 @@ const Search = () => {
           <input
             type="text"
             placeholder="검색어를 입력하세요"
-            className="flex-1 px-4 py-2 max-w-[1070px] max-h-[24px] bg-[#FAFAFA]"
+            className="flex-1 px-4 py-2 max-w-[1070px] max-h-[24px] bg-[#FAFAFA] focus:outline-none"
             value={searchTerm}
             onChange={handleInputChange}
             onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
