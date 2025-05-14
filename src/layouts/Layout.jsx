@@ -1,6 +1,6 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import Header from "../components/header";
+import ChatbotContainer from "../components/chatbot/ChatbotContainer"; 
 
 const Layout = ({ isLoggedIn, userData, handleLogout }) => {
   return (
@@ -9,6 +9,8 @@ const Layout = ({ isLoggedIn, userData, handleLogout }) => {
       <main>
         <Outlet />
       </main>
+
+      <ChatbotContainer />
     </div>
   );
 };
