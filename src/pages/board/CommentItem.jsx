@@ -3,6 +3,7 @@ import { TextInput } from "@mantine/core";
 import { postReply } from "../../api/commentApi"; 
 import ReplyItem from "./ReplyItem";
 import { postComment, deleteComment, getRepliesByCommentId } from "../../api/commentApi";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
 
 // 자유&인사게시판을 택했을 경우, 댓글 관련 코드
 export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount }) {
@@ -10,6 +11,8 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
   const [replyOpenId, setReplyOpenId] = useState(null); 
   const [replyText, setReplyText] = useState("");
   const [replies, setReplies] = useState({}); 
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false); 
+  const [deleteTargetId, setDeleteTargetId] = useState(null); 
 
   const handleSaveComment = async () => {
     if (!comment.trim()) return;
@@ -72,6 +75,13 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     } catch (err) {
       console.error("❌ 댓글 삭제 실패:", err);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    await handleDelete(deleteTargetId);
+    setDeleteModalOpen(false);
+    setDeleteTargetId(null);
   };
 
   const fetchReplies = async (commentId) => {
@@ -171,7 +181,10 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                     {comment.nickname === nickname ? (
                       <button
                         className='flex items-center hover:underline'
-                        onClick={() => handleDelete(comment.id)}
+                        onClick={() => {
+                          setDeleteTargetId(comment.id);
+                          setDeleteModalOpen(true);
+                        }}
                       >
                         삭제
                       </button>
@@ -216,6 +229,18 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
             );
         })}
       </div>
+
+      {/* ✅ 삭제 확인 모달 */}
+      <TwoSelectModal
+        isOpen={deleteModalOpen}
+        message="댓글을 삭제하시겠습니까?"
+        subMessage="삭제되면 복원은 불가능합니다."
+        button1Text="삭제"
+        button1Action={handleConfirmDelete}
+        button2Text="취소"
+        button2Action={() => setDeleteModalOpen(false)}
+      />
+      
     </div>
   );
 }

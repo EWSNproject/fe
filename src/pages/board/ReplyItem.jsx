@@ -1,13 +1,22 @@
+import { useState } from 'react';
 import { CornerDownRight } from "lucide-react";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
 
 // 자유게시판을 택했을 경우, 대댓글 관련 코드
 export default function ReplyItem({ reply, nickname, onDelete }) {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const formattedDate = new Date(reply.createdAt)
     .toISOString()
     .split("T")[0]
     .replace(/-/g, ".");
 
   const isAuthor = reply.nickname === nickname;
+
+  const handleConfirmDelete = async () => {
+    await onDelete(reply.id); 
+    setDeleteModalOpen(false);
+  };
+
 
   return (
     <div className="flex w-full gap-2.5 mt-2">
@@ -23,16 +32,28 @@ export default function ReplyItem({ reply, nickname, onDelete }) {
             {isAuthor ? (
               <button 
                 className="flex items-center hover:underline"
-                onClick={() => onDelete(reply.id)}
-                >
-                  삭제
-                </button>
+                onClick={() => setDeleteModalOpen(true)}
+              >
+                삭제
+              </button>
             ) : (
               <button className="flex items-center hover:underline">신고</button>
             )}
           </div>
         </div>
       </div>
+
+      {/* ✅ 삭제 확인 모달 */}
+      <TwoSelectModal
+        isOpen={deleteModalOpen}
+        message="대댓글을 삭제하시겠습니까?"
+        subMessage="삭제되면 복원은 불가능합니다."
+        button1Text="삭제"
+        button1Action={handleConfirmDelete}
+        button2Text="취소"
+        button2Action={() => setDeleteModalOpen(false)}
+      />
+      
     </div>
   );
 }

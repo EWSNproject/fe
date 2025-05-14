@@ -3,11 +3,14 @@ import { TextInput } from "@mantine/core";
 import { Check } from "lucide-react";
 import { postAnswer, selectAnswer, deleteAnswer } from "../../api/answerApi";
 import { getOtherUserInfo } from "../../api/auth";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
 
 // 질문게시판을 택했을 경우, 답변 관련 코드
 export default function AnswerItem({ postId, answers, userId, nickname, setComments, setCommentCount }) {
   const [answer, setAnswer] = useState("");
   const [userMap, setUserMap] = useState({});
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
 
   // 답변 작성
   const handleSaveAnswer = async () => {
@@ -40,13 +43,20 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
       setComments((prev) =>
         prev.map((a) =>
           a.id === answerId
-            ? { ...a, content: "사용자가 삭제한 댓글입니다.", deleted: true }
+            ? { ...a, content: "삭제된 댓글입니다.", deleted: true }
             : a
         )
       );
     } catch (error) {
       console.error("❌ 삭제 실패:", error);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    await handleDelete(deleteTargetId);
+    setDeleteModalOpen(false);
+    setDeleteTargetId(null);
   };
 
   // 답변 작성한 사용자의 닉네임 조회
@@ -122,7 +132,10 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
                   {userMap[comment.userId] === nickname ? (
                     <button
-                      onClick={() => handleDelete(comment.id)}
+                      onClick={() => {
+                        setDeleteTargetId(comment.id);
+                        setDeleteModalOpen(true);
+                      }}
                       className='flex items-center hover:underline'
                     >
                       삭제
@@ -153,6 +166,18 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
           );
         })}
       </div>
+
+      {/* ✅ 삭제 확인 모달 */}
+      <TwoSelectModal
+        isOpen={deleteModalOpen}
+        message="답변을 삭제하시겠습니까?"
+        subMessage="삭제되면 복원은 불가능합니다."
+        button1Text="삭제"
+        button1Action={handleConfirmDelete}
+        button2Text="취소"
+        button2Action={() => setDeleteModalOpen(false)}
+      />
+
     </div>
   );
 }
