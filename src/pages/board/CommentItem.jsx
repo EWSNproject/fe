@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { TextInput } from "@mantine/core";
 import { postReply } from "../../api/commentApi"; 
 import ReplyItem from "./ReplyItem";
-import { postComment, deleteComment } from "../../api/commentApi";
-import { getOtherUserInfo } from "../../api/auth";
+import { postComment, deleteComment, getRepliesByCommentId } from "../../api/commentApi";
 
 // 자유&인사게시판을 택했을 경우, 댓글 관련 코드
 export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount }) {
   const [comment, setComment] = useState("");
   const [replyOpenId, setReplyOpenId] = useState(null); 
   const [replyText, setReplyText] = useState("");
+  const [replies, setReplies] = useState({}); 
 
   const handleSaveComment = async () => {
     if (!comment.trim()) return;
@@ -27,14 +27,19 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     if (!replyText.trim()) return;
     try {
       const res = await postReply(postId, parentId, replyText, userId, nickname);
-      console.log("✅ 대댓글 등록 성공:", res);
       setReplyOpenId(null);
       setReplyText("");
 
       // ✅ 대댓글을 comments 상태에 바로 추가
       setComments(prev => [...prev, res]);
 
-      setCommentCount(prev => prev + 1); // 선택사항
+      // ✅ replies 상태에도 대댓글 추가
+      setReplies(prev => ({
+        ...prev,
+        [parentId]: [...(prev[parentId] || []), res],
+      }));
+
+      setCommentCount(prev => prev + 1);
     } catch (error) {
       console.error("❌ 대댓글 등록 실패:", error.response?.data || error.message);
     }
@@ -46,7 +51,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
       setComments((prev) =>
         prev.map((c) =>
           c.id === commentId
-            ? { ...c, content: "삭제된 댓글입니다.", deleted: true }
+            ? { ...c, content: "사용자가 삭제한 댓글입니다.", deleted: true }
             : c
         )
       );
@@ -55,29 +60,35 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
     }
   };
 
-  useEffect(() => {
-    const fetchMissingNicknames = async () => {
-      const targets = comments.filter(c => !c.nickname?.trim());
-      const uniqueIds = [...new Set(targets.map(c => c.userId))];
+  const fetchReplies = async (commentId) => {
+    try {
+      const res = await getRepliesByCommentId(postId, commentId);
+      setReplies(prev => ({ ...prev, [commentId]: res }));
+    } catch (err) {
+      console.error("대댓글 조회 실패", err);
+    }
+  };
 
-      for (const id of uniqueIds) {
+  useEffect(() => {
+    const fetchAllReplies = async () => {
+      const parents = comments.filter(c => c.parentId === null);
+      for (const comment of parents) {
         try {
-          const user = await getOtherUserInfo(id);
-          setComments(prev =>
-            prev.map(c =>
-              c.userId === id && !c.nickname?.trim()
-                ? { ...c, nickname: user.nickname }
-                : c
-            )
-          );
+          const res = await getRepliesByCommentId(postId, comment.id);
+          setReplies(prev => ({
+            ...prev,
+            [comment.id]: res,
+          }));
         } catch (err) {
-          console.error(`닉네임 조회 실패: userId=${id}`, err);
+          console.error(`대댓글 조회 실패: commentId=${comment.id}`, err);
         }
       }
     };
 
-    fetchMissingNicknames();
-  }, [comments, setComments]);
+    if (comments.length > 0) {
+      fetchAllReplies();
+    }
+  }, [comments, postId]);
 
   return (
     <div className='flex flex-col gap-[30px]'>
@@ -133,9 +144,12 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                     {postType === '자유' && (
                       <button
                         className='flex items-center hover:underline'
-                        onClick={() =>
-                          setReplyOpenId(replyOpenId === comment.id ? null : comment.id) 
-                        }
+                        onClick={() => {
+                          if (replyOpenId !== comment.id) {
+                            fetchReplies(comment.id);
+                          }
+                          setReplyOpenId(replyOpenId === comment.id ? null : comment.id);
+                        }}
                       >
                         대댓글
                       </button>
@@ -175,14 +189,8 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                 )}
 
                 {/* 대댓글 목록 렌더링 */}
-                {comments
-                  .filter(reply => reply.parentId === comment.id)
-                  .map(reply => (
-                    <ReplyItem
-                      key={reply.id}
-                      reply={reply}
-                      nickname={nickname}
-                    />
+                {(replies[comment.id] || []).map(reply => (
+                  <ReplyItem key={reply.id} reply={reply} nickname={nickname} />
                 ))}
               </div>
             );
