@@ -48,13 +48,27 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
   const handleDelete = async (commentId) => {
     try {
       await deleteComment(postId, commentId);
+
       setComments((prev) =>
         prev.map((c) =>
           c.id === commentId
-            ? { ...c, content: "사용자가 삭제한 댓글입니다.", deleted: true }
+            ? { ...c, content: "삭제된 댓글입니다.", deleted: true }
             : c
         )
       );
+
+      setReplies((prev) => {
+        const updated = {};
+        for (const parentId in prev) {
+          updated[parentId] = prev[parentId].map((reply) =>
+            reply.id === commentId
+              ? { ...reply, content: "삭제된 댓글입니다.", deleted: true }
+              : reply
+          );
+        }
+        return updated;
+      });
+
     } catch (err) {
       console.error("❌ 댓글 삭제 실패:", err);
     }
@@ -190,7 +204,13 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
 
                 {/* 대댓글 목록 렌더링 */}
                 {(replies[comment.id] || []).map(reply => (
-                  <ReplyItem key={reply.id} reply={reply} nickname={nickname} />
+                  <ReplyItem 
+                    key={reply.id} 
+                    reply={reply} 
+                    nickname={nickname} 
+                    postId={postId} 
+                    onDelete={handleDelete} 
+                  />
                 ))}
               </div>
             );

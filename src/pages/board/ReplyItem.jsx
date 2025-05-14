@@ -1,7 +1,7 @@
 import { CornerDownRight } from "lucide-react";
 
 // 자유게시판을 택했을 경우, 대댓글 관련 코드
-export default function ReplyItem({ reply, nickname }) {
+export default function ReplyItem({ reply, nickname, onDelete }) {
   const formattedDate = new Date(reply.createdAt)
     .toISOString()
     .split("T")[0]
@@ -21,7 +21,12 @@ export default function ReplyItem({ reply, nickname }) {
         <div className="flex justify-between">
           <div className="text-black-500 flex gap-2.5 text-sm font-normal">
             {isAuthor ? (
-              <button className="flex items-center hover:underline">삭제</button>
+              <button 
+                className="flex items-center hover:underline"
+                onClick={() => onDelete(reply.id)}
+                >
+                  삭제
+                </button>
             ) : (
               <button className="flex items-center hover:underline">신고</button>
             )}
