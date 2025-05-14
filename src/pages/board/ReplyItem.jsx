@@ -7,7 +7,7 @@ import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
 // 자유게시판을 택했을 경우, 대댓글 관련 코드
-export default function ReplyItem({ reply, nickname, onDelete }) {
+export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportTargetId, setReportTargetId] = useState(null);
@@ -52,7 +52,11 @@ export default function ReplyItem({ reply, nickname, onDelete }) {
       <CornerDownRight className="text-gray-300" />
       <div className="w-full bg-gray-100 rounded-xl py-3.5 px-5 gap-1.5">
         <div className="flex justify-between text-sm font-normal">
-          <span className="text-tag-green">{reply.nickname || "알 수 없음"}</span>
+          <span className="text-tag-green">
+            {reply.nickname === postAuthor
+              ? `${reply.nickname} (글쓴이)`
+              : reply.nickname || "알 수 없음"}
+          </span>
           <span className="text-gray-400">{formattedDate}</span>
         </div>
         <div className="font-normal text-black-950">{reply.content}</div>

@@ -10,7 +10,7 @@ import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
 // 자유&인사게시판을 택했을 경우, 댓글 관련 코드
-export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount }) {
+export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount, postAuthor }) {
   const [comment, setComment] = useState("");
   const [replyOpenId, setReplyOpenId] = useState(null); 
   const [replyText, setReplyText] = useState("");
@@ -190,7 +190,11 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                 className='flex flex-col gap-1.5 py-3.5 px-5 border border-gray-200'
               >
                 <div className='flex justify-between text-sm font-normal'>
-                  <span className="text-tag-green">{comment.nickname || "알 수 없음"}</span>
+                  <span className="text-tag-green">
+                    {comment.nickname === postAuthor
+                      ? `${comment.nickname} (글쓴이)`
+                      : comment.nickname || "알 수 없음"}
+                  </span>
                   <span className='text-gray-400'>{formattedDate}</span>
                 </div>
                 <div className='font-normal text-black-950'>{comment.content}</div>
@@ -260,6 +264,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                     nickname={nickname} 
                     postId={postId} 
                     onDelete={handleDelete} 
+                    postAuthor={postAuthor}
                   />
                 ))}
               </div>

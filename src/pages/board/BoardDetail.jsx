@@ -83,6 +83,7 @@ export default function BoardDetail() {
             nickname={userNickname}
             setCommentCount={setCommentCount}
             setComments={setComments}
+            postAuthor={item.nickName}
           />
         ) : (
           <CommentItem 
@@ -93,6 +94,7 @@ export default function BoardDetail() {
             nickname={userNickname}
             setCommentCount={setCommentCount}
             setComments={setComments}
+            postAuthor={item.nickName}
           />
         )}
       </div>

@@ -10,7 +10,7 @@ import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
 // 질문게시판을 택했을 경우, 답변 관련 코드
-export default function AnswerItem({ postId, answers, userId, nickname, setComments, setCommentCount }) {
+export default function AnswerItem({ postId, answers, userId, nickname, setComments, setCommentCount, postAuthor }) {
   const [answer, setAnswer] = useState("");
   const [userMap, setUserMap] = useState({});
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -155,7 +155,11 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               }`}
             >
               <div className='flex justify-between text-sm font-normal'>
-              <span className='text-tag-green'>{userMap[comment.userId] || "로딩 중..."}</span>
+                <span className='text-tag-green'>
+                  {userMap[comment.userId] === postAuthor
+                    ? `${userMap[comment.userId]} (글쓴이)`
+                    : userMap[comment.userId] || "로딩 중..."}
+                </span>
                 <span className='text-gray-400'>{formattedDate}</span>
               </div>
               <div className='font-normal text-black-950'>{comment.content}</div>
