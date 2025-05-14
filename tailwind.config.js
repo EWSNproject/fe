@@ -61,7 +61,12 @@ export default {
         'tag-bg-checkorange': '#FFD8A8',
         'tag-bg-checkgreen': '#97F0C3',
         'tag-bg-checkblue': '#8DD4FF',
-      }
+      },
+      screens: {
+        md: { min: '375px', max: '743px' },
+        lg: { min: '744px', max: '1280px' },
+        desktop: '1281px',
+      },
     }
   },
   plugins: [],
