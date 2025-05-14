@@ -7,7 +7,7 @@ import { getFilteredBenefits, searchBenefits } from "../../api/BenefitsService";
 import InfoIcon from "../../assets/images/Info.svg";
 
 const SortOptions = ({ selected, onSelect }) => {
-  const options = ["가나다순", "인기순", "조회수 높은순"];
+  const options = ["가나다순", "인기순", "방문순"];
 
   return (
     <div className="flex items-center justify-between gap-4 mb-4 text-lg">

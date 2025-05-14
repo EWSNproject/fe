@@ -6,7 +6,14 @@ const BASE_URL = 'http://localhost:8080/api';
 
 export const getBenefitDetail = async (serviceId) => {
   try {
-    const response = await axios.get(`${BASE_URL}/services/detail/${serviceId}`);
+    const token = Cookies.get('accessToken');
+    const response = await axios.get(`${BASE_URL}/services/detail/${serviceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching benefit detail:', error);
@@ -137,6 +144,24 @@ export const autocompleteSearch = async (word) => {
     return response.data; 
   } catch (error) {
     console.error('Error fetching autocomplete suggestions:', error);
+    throw error;
+  }
+};
+
+
+export const getRecentService = async () => {
+  try {
+    const token = Cookies.get('accessToken');
+    const response = await axios.get(`${BASE_URL}/services/recent`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return response.data.content;
+  } catch (error) {
+    console.error('Error fetching benefit detail:', error);
     throw error;
   }
 };

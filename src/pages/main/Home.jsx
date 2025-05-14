@@ -7,7 +7,7 @@ import {
   getInterestUser,
 } from "../../api/main";
 import { getUserInfo } from "../../api/auth";
-import { searchBenefits } from "../../api/BenefitsService";
+import { searchBenefits, getRecentService } from "../../api/BenefitsService";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -21,6 +21,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popularBenefits, setPopularBenefits] = useState([]);
+  const [recentServices, setRecentServices] = useState([]);
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryCards, setCategoryCards] = useState([]);
@@ -28,10 +29,13 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [interestKeywords, setInterestKeywords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [recentIndex, setRecentIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const categories = ["청년", "신혼부부", "장애인", "경력단절", "저소득층"];
 
+  const accessToken = Cookies.get("accessToken");
+
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken");
     const currentUserId = Cookies.get("userId");
     const hasSeenInterestModal = Cookies.get("hasSeenInterestModal");
 
@@ -39,30 +43,25 @@ const Home = () => {
       setIsModalOpen(true);
       Cookies.set("hasSeenInterestModal", "true", { expires: 1 });
     }
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
-    const fetchPopularBenefits = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getPopularBenefits();
-        setPopularBenefits(data);
+        const [popular, recent, recentServices] = await Promise.all([
+          getPopularBenefits(),
+          accessToken ? getSearchHistory() : Promise.resolve([]),
+          accessToken ? getRecentService() : Promise.resolve([]),
+        ]);
+        setPopularBenefits(popular);
+        setRecentSearches(recent.slice(0, 5));
+        setRecentServices(recentServices);
       } catch (error) {
-        console.error("Error fetching popular benefits:", error);
+        console.error("초기 데이터 로딩 오류:", error);
       }
     };
-
-    const fetchRecentSearches = async () => {
-      try {
-        const data = await getSearchHistory();
-        setRecentSearches(data.slice(0, 5));
-      } catch (error) {
-        console.error("Error fetching search history:", error);
-      }
-    };
-
-    fetchPopularBenefits();
-    fetchRecentSearches();
-  }, []);
+    fetchData();
+  }, [accessToken]);
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -76,61 +75,55 @@ const Home = () => {
     fetchCardData();
   }, []);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    window.location.reload();
-  };
-
-  const handleCategoryClick = async (category) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-      setCategoryCards([]);
-      return;
-    }
-
-    // 새로운 카테고리 선택
-    setSelectedCategory(category);
-    try {
-      const data = await searchBenefits(category, 6);
-      setCategoryCards(data);
-    } catch (err) {
-      console.error("카테고리 검색 실패:", err);
-    }
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const token = Cookies.get("accessToken");
         const user = await getUserInfo(token);
         const interests = await getInterestUser();
-
         setUserInfo(user);
-
-        // 선택된 관심 키워드만 추출
         const selected = [];
         Object.entries(interests).forEach(([category, items]) => {
           items.forEach((item) => {
             if (item.selected) selected.push(item.name);
           });
         });
-
         setInterestKeywords(selected);
       } catch (error) {
         console.error("맞춤 정보 불러오기 실패:", error);
       }
     };
+    if (accessToken) fetchUserData();
+  }, [accessToken]);
 
-    fetchUserData();
-  }, []);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % popularBenefits.length);
-    }, 5000); // 5초마다 변경
+      setRecentIndex((prev) => (prev + 1) % recentServices.length);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [popularBenefits.length]);
+  }, [popularBenefits.length, recentServices.length]);
 
-  if (!popularBenefits.length) return null;
+  const handleCategoryClick = async (category) => {
+    if (selectedCategory === category) {
+      // If the category is already selected, clear the selection
+      setSelectedCategory(null);
+      setCategoryCards([]); // Clear the cards
+      return; // Exit the function
+    }
+
+    setSelectedCategory(category);
+    setIsLoading(true);
+
+    try {
+      const data = await searchBenefits(category, 6);
+      setCategoryCards(data);
+    } catch (err) {
+      console.error("카테고리 검색 실패:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const settings = {
     dots: true,
@@ -141,66 +134,43 @@ const Home = () => {
     swipe: true,
     swipeToSlide: true,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: false,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          initialSlide: 1,
-        },
-      },
+      { breakpoint: 1024, settings: { slidesToShow: 2 } },
+      { breakpoint: 600, settings: { slidesToShow: 1 } },
     ],
   };
 
+
   return (
     <div className="flex flex-col justify-center items-center w-full">
-      <InterestModal isOpen={isModalOpen} onRequestClose={closeModal} />
+      <InterestModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} />
 
-      {/* 카테고리 필터 섹션 */}
+      {/* 🔍 빠른 복지 서비스 검색 */}
       <div className="w-full max-w-[1236px] mt-12 items-center flex flex-col">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          🔍 빠른 복지 서비스 검색
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 빠른 복지 서비스 검색</h2>
         <ul className="flex gap-3 flex-wrap mb-6 justify-center">
           {categories.map((category) => (
             <li
               key={category}
               onClick={() => handleCategoryClick(category)}
-              className={`px-5 py-2 rounded-full border text-sm transition duration-200 cursor-pointer shadow-sm
-                ${
-                  selectedCategory === category
-                    ? "bg-yellow-400 border-yellow-500 font-semibold shadow-md"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-100 hover:shadow-sm"
-                }`}
+              className={`px-5 py-2 rounded-full border text-sm transition duration-200 cursor-pointer shadow-sm ${
+                selectedCategory === category
+                  ? "bg-yellow-400 border-yellow-500 font-semibold shadow-md"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-yellow-100 hover:shadow-sm"
+              }`}
             >
               #{category}
             </li>
           ))}
         </ul>
-        {categoryCards.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <div className="grid grid-cols-3 gap-6">
-              {categoryCards.map((card) => (
-                <div
-                  key={card.publicServiceId}
-                  className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1"
-                >
-                  <Card
-                    data={{
+        {isLoading ? (
+          <p className="text-lg text-gray-500">로딩 중...</p>
+        ) : (
+          categoryCards.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              <div className="grid grid-cols-3 gap-6">
+                {categoryCards.map((card) => (
+                  <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
+                    <Card data={{
                       id: card.publicServiceId,
                       title: card.serviceName,
                       description: card.summaryPurpose,
@@ -208,40 +178,48 @@ const Home = () => {
                       specialGroup: card.specialGroup,
                       familyType: card.familyType,
                       isBookmarked: card.bookmarked,
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                    }} />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )
         )}
       </div>
-      {/* 맞춤 복지 추천 섹션 */}
 
-      {/* 인기 서비스 섹션 */}
-      <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto">
-        <div className="bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 flex items-center gap-4 h-[64px] overflow-hidden relative">
-          <span className="text-yellow-900 font-bold text-base whitespace-nowrap">
-            🔥 인기 복지 혜택
-          </span>
-          <div className="relative flex-1 overflow-hidden h-[28px]">
-            <div
-              className="absolute transition-all duration-500"
-              style={{ top: `-${currentIndex * 28}px` }}
-            >
-              {popularBenefits.slice(0, 10).map((item) => (
-                <div
-                  key={item.publicServiceId}
-                  className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline"
-                  onClick={() => navigate(`/benefits/${item.publicServiceId}`)}
-                >
-                  #{item.serviceName}
-                </div>
-              ))}
+      {/* 🔥 인기 복지 & 최근 본 서비스 */}
+      {popularBenefits.length > 0 && (
+        <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto flex flex-col md:flex-row gap-4">
+          <div className="flex-1 bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 h-[64px] flex items-center gap-4 overflow-hidden relative">
+            <span className="text-yellow-900 font-bold text-base whitespace-nowrap">🔥 인기 복지 혜택</span>
+            <div className="relative flex-1 overflow-hidden h-[28px]">
+              <div className="absolute transition-all duration-500" style={{ top: `-${currentIndex * 28}px` }}>
+                {popularBenefits.slice(0, 10).map((item) => (
+                  <div key={item.publicServiceId} className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" onClick={() => navigate(`/benefits/${item.publicServiceId}`)}>
+                    #{item.serviceName}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
+          {recentServices.length > 0 && (
+            <div className="flex-1 bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 h-[64px] flex items-center gap-4 overflow-hidden relative">
+              <span className="text-yellow-900 font-bold text-base whitespace-nowrap">🕘 최근 본 서비스</span>
+              <div className="relative flex-1 overflow-hidden h-[28px]">
+                <div className="absolute transition-all duration-500" style={{ top: `-${recentIndex * 28}px` }}>
+                  {recentServices.slice(0, 10).map((item) => (
+                    <div key={item.publicServiceId} className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" onClick={() => navigate(`/benefits/${item.publicServiceId}`)}>
+                      #{item.serviceName}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
+      {/* ✨ 맞춤 복지 추천 */}
       {cardData.length > 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 60 }}
