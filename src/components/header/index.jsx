@@ -50,17 +50,18 @@ const Header = ({ isLoggedIn, userData }) => {
               복지혜택 전체보기
             </button>
             <button
-              onClick={() => navigate("/board")}
-              className="hover:text-black-950"
-            >
-              게시판
-            </button>
-            <button
               onClick={() => navigate("/search")}
               className="hover:text-black-950"
             >
               통합검색
             </button>
+            <button
+              onClick={() => navigate("/board")}
+              className="hover:text-black-950"
+            >
+              게시판
+            </button>
+            
           </nav>
 
           {/* 모바일 메뉴 버튼 */}
@@ -128,11 +129,18 @@ const Header = ({ isLoggedIn, userData }) => {
             복지혜택 전체보기
           </button>
           <button
+              onClick={() => navigate("/search")}
+              className="hover:text-black-950"
+            >
+              통합검색
+            </button>
+          <button
             onClick={() => navigate("/board")}
             className="w-full text-center hover:text-black-950"
           >
             게시판
           </button>
+          
           <button
             onClick={() => navigate("/login")}
             className="w-full text-center hover:text-black-950"

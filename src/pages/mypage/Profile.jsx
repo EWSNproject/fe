@@ -135,7 +135,7 @@ const Mypage = ({ handleLogout }) => {
                     <div key={index} className="flex flex-col items-center">
                       <div
                         className={`w-8 h-8 rounded-full ${
-                          index <= 1 ? "bg-yellow-700" : "bg-black-300"
+                           "bg-yellow-700" 
                         } mb-2`}
                       ></div>
                       <span className="text-sm font-medium">{item.level}</span>
