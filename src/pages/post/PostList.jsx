@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../api/postApi";
+import { categoryMap, reverseCategoryMap } from "../../constants/postCategory";
 
 export default function Post() {
   const navigate = useNavigate();
@@ -54,20 +55,19 @@ export default function Post() {
 
   const handleSubmit = async () => {
     const postData = {
-      postType: selected,
+      postType: categoryMap[selected],
       title: limitedTitle,
       content,
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
       tags: tags.join(','),
-      images: files,       //현재 이미지 추가는 안됨.
+      images: files,     
     };
   
     try {
       const result = await createPost(postData); 
       console.log("✅ 등록 성공:", result);
       alert("게시글이 등록되었습니다.");
-      // 글 목록 페이지 이동 추가예정
       navigate("/board"); 
       
     } catch (error) {

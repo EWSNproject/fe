@@ -9,6 +9,7 @@ import {
   Textarea,
   Button,
 } from "@mantine/core";
+import { reverseCategoryMap, categoryMap } from "../../constants/postCategory";
 
 export default function EditPost() {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ export default function EditPost() {
         const post = await getPostById(id);
         setTitle(post.title);
         setContent(post.content);
-        setSelected(post.postType);
+        setSelected(reverseCategoryMap[post.postType]);
         setTags(post.tags?.split(',').filter(Boolean) || []);
         setLinkTitle(post.urlTitle);
         setLinkUrl(post.urlPath);
@@ -75,7 +76,7 @@ export default function EditPost() {
     const postData = {
       title: limitedTitle,
       content,
-      postType: selected,
+      postType: categoryMap[selected],
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
       tags: tags.join(','),
