@@ -50,7 +50,7 @@ const Card = ({ data }) => {
     <div className="relative p-6 border shadow-md rounded-2xl w-full max-w-[404px] min-h-[285px] gap-[24px] flex flex-col bg-black-50">
       {/* 카테고리 태그들 */}
       <div className="flex justify-between">
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap items-center gap-2">
           {/* 서비스 카테고리 - 항상 표시 (빨간색) */}
           <Tooltip content="">
             <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-red inline-flex items-center">
@@ -100,7 +100,7 @@ const Card = ({ data }) => {
 
       {/* 제목과 설명 */}
       <div className="space-y-4">
-        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
+        <h3 className="text-2xl font-bold text-gray-900 md:text-lg lg:text-xl">
           {title}
         </h3>
         <p className="text-gray-600">{description}</p>
@@ -110,7 +110,7 @@ const Card = ({ data }) => {
       <div className="flex justify-end h-[40px] mt-auto">
         <Link
           to={`/benefitsList/${id}`}
-          className="w-full h-full text-xs sm:text-sm font-medium text-gray-700  border bg-gray-200 rounded-lg hover:bg-black-50 flex items-center justify-center"
+          className="flex items-center justify-center w-full h-full text-sm font-medium text-gray-700 bg-gray-200 border rounded-lg md:text-xs hover:bg-black-50"
         >
           자세히 보기
         </Link>

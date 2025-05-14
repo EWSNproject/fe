@@ -56,7 +56,7 @@ const SearchFilter = ({ onSearch, onReset }) => {
             <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 cursor-pointer hover:bg-yellow-100 transition-colors duration-200 rounded"
+                className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100"
             >
                 {suggestion}
             </li>
@@ -70,13 +70,13 @@ const SearchFilter = ({ onSearch, onReset }) => {
       <div className="flex justify-end mt-9 ">
         <div className="flex gap-2.5 w-full max-w-[300px] min-h-[40px]">
           <button
-            className="flex-1 text-black-50 bg-gray-500 rounded-[10px] px-3 py-2 text-sm sm:text-base h-10"
+            className="flex-1 text-black-50 bg-gray-500 rounded-[10px] px-3 py-2 text-sm md:text-base h-10"
             onClick={onReset}
           >
             초기화
           </button>
           <button
-            className="flex-1 text-black-50 bg-yellow-700 rounded-[10px] px-3 py-2 text-sm sm:text-base h-10"
+            className="flex-1 text-black-50 bg-yellow-700 rounded-[10px] px-3 py-2 text-sm md:text-base h-10"
             onClick={handleSearch}
           >
             검색

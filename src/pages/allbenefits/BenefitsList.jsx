@@ -10,7 +10,7 @@ const SortOptions = ({ selected, onSelect }) => {
   const options = ["가나다순", "인기순", "조회수 높은순"];
 
   return (
-    <div className="flex justify-between items-center gap-4 mb-4 text-lg">
+    <div className="flex items-center justify-between gap-4 mb-4 text-lg">
       <div className="relative group">
         <img src={InfoIcon} alt="Info" className="w-5 h-5 cursor-pointer" />
         <div className="absolute left-0 hidden min-w-[380px] min-h-[61px] p-4 mt-3 text-sm text-black-50 bg-black-900 rounded group-hover:block z-10">
@@ -131,7 +131,7 @@ const CardListPage = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen p-4 sm:p-6 max-w-[1680px] mx-auto">
+    <div className="flex md:flex-col flex-row min-h-screen md:p-4 p-6 max-w-[1680px] mx-auto">
       <SideFilter onFilterChange={handleFilterChange} />
 
       <div className="flex flex-col flex-1">
@@ -145,7 +145,7 @@ const CardListPage = () => {
           <SortOptions selected={sortOption} onSelect={handleSortChange} />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 w-full max-w-[1200px]">
+        <div className="grid md:grid-cols-1 lg:grid-cols-2 grid-cols-3 xl:grid-cols-3 md:gap-4 lg:gap-6 gap-10 w-full max-w-[1200px]">
           {getCurrentPageData().map((card) => (
             <Card
               key={card.publicServiceId}
