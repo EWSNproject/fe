@@ -18,9 +18,9 @@ export default function TwoSelectModal({
       <div className="bg-black-50 flex flex-col w-[452px] h-[300px] px-[38px] py-[40px] rounded-[8px] z-50">
         {/* 아이콘 영역 */}
         {icon && (
-          <div className="flex justify-center mb-2">
+          <div className="flex justify-center">
             {typeof icon === "string" ? (
-              <img src={icon} alt="modal icon" className="w-6 h-6" />
+              <img src={icon} alt="modal icon" className="w-14 h-14" />
             ) : (
               icon
             )}

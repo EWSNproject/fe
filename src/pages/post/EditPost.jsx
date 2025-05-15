@@ -10,6 +10,9 @@ import {
   Button,
 } from "@mantine/core";
 import { reverseCategoryMap, categoryMap } from "../../constants/postCategory";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import Bang from "../../assets/images/ic_Bang.svg";
+import { toast } from 'react-toastify';
 
 export default function EditPost() {
   const navigate = useNavigate();
@@ -24,6 +27,8 @@ export default function EditPost() {
   const [tags, setTags] = useState([]);
   const [linkTitle, setLinkTitle] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const handleRemove = (index) => {
     const updated = [...files];
@@ -60,7 +65,7 @@ export default function EditPost() {
         const post = await getPostById(id);
         setTitle(post.title);
         setContent(post.content);
-        setSelected(reverseCategoryMap[post.postType]);
+        setSelected(post.postType);
         setTags(post.tags?.split(',').filter(Boolean) || []);
         setLinkTitle(post.urlTitle);
         setLinkUrl(post.urlPath);
@@ -85,11 +90,12 @@ export default function EditPost() {
   
     try {
       await updatePost(id, postData); 
-      alert("게시글이 수정되었습니다.");
+      setEditModalOpen(false); 
+      toast.success("게시글이 수정되었습니다.");
       navigate(`/board/${id}`);
     } catch (error) {
       console.error("수정 실패:", error);
-      alert("게시글 수정에 실패했습니다.");
+      toast.error("게시글 수정에 실패했습니다.");
     }
   };
 
@@ -265,12 +271,24 @@ export default function EditPost() {
               isFormValid ? "bg-yellow-700" : "bg-black-300"
             }`}
             disabled={!isFormValid}
-            onClick={handleSubmit}
+            onClick={() => setEditModalOpen(true)}
           >
             작성완료
           </Button>
         </div>
       </div>
+
+      <TwoSelectModal
+        icon={Bang}
+        isOpen={editModalOpen}
+        message="게시글을 수정하시겠습니까?"
+        subMessage="수정된 내용은 바로 적용됩니다."
+        button2Text="돌아가기"
+        button2Action={() => setEditModalOpen(false)}
+        button1Text="수정하기"
+        button1Action={handleSubmit}
+      />
+
     </div>
   );
 } 

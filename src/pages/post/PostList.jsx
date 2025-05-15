@@ -9,7 +9,10 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../api/postApi";
-import { categoryMap, reverseCategoryMap } from "../../constants/postCategory";
+import { categoryMap } from "../../constants/postCategory";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import Bang from "../../assets/images/ic_Bang.svg";
+import { toast } from 'react-toastify';
 
 export default function Post() {
   const navigate = useNavigate();
@@ -23,7 +26,9 @@ export default function Post() {
   const [tags, setTags] = useState([]);
   const [linkTitle, setLinkTitle] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-
+  
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false); 
+  
   const handleRemove = (index) => {
     const updated = [...files];
     updated.splice(index, 1);
@@ -67,12 +72,13 @@ export default function Post() {
     try {
       const result = await createPost(postData); 
       console.log("✅ 등록 성공:", result);
-      alert("게시글이 등록되었습니다.");
+      setDeleteModalOpen(false); 
+      toast.success("게시글이 등록되었습니다.");
       navigate("/board"); 
       
     } catch (error) {
       console.error("❌ 등록 실패:", error);
-      alert("게시글 등록에 실패했습니다.");
+      toast.error("게시글 등록에 실패했습니다.");
     }
   };
 
@@ -248,12 +254,25 @@ export default function Post() {
               isFormValid ? "bg-yellow-700" : "bg-black-300"
             }`}
             disabled={!isFormValid}
-            onClick={handleSubmit}
+            onClick={() => setDeleteModalOpen(true)}
           >
             작성완료
           </Button>
         </div>
       </div>
+
+      {/* ✅ 삭제 확인 모달 */}
+      <TwoSelectModal
+        icon={Bang}
+        isOpen={deleteModalOpen}
+        message="글을 등록하시겠습니까?"
+        subMessage="게시글은 등록후 삭제가 불가능합니다."
+        button2Text="돌아가기"
+        button2Action={() => setDeleteModalOpen(false)} 
+        button1Text="등록하기"
+        button1Action={handleSubmit}        
+      />
+
     </div>
   );
 }
