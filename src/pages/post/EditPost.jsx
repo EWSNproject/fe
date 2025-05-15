@@ -9,7 +9,7 @@ import {
   Textarea,
   Button,
 } from "@mantine/core";
-import { reverseCategoryMap, categoryMap } from "../../constants/postCategory";
+import { categoryMap } from "../../constants/postCategory";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
 import Bang from "../../assets/images/ic_Bang.svg";
 import { toast } from 'react-toastify';
