@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
-  const [reportTargetId, setReportTargetId] = useState(null);
 
   const formattedDate = new Date(reply.createdAt)
     .toISOString()
@@ -43,7 +42,6 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
       })
       .finally(() => {
         setReportModalOpen(false);
-        setReportTargetId(null);
       });
   };
 
@@ -72,10 +70,7 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
             ) : (
               <button
                 className="flex items-center hover:underline"
-                onClick={() => {
-                  setReportTargetId(reply.id);
-                  setReportModalOpen(true);
-                }}
+                onClick={() => setReportModalOpen(true)}
               >
                 신고
               </button>
