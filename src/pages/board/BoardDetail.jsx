@@ -72,7 +72,7 @@ export default function BoardDetail() {
 
   return (
     <div className='w-full mb-10'>
-      <BoardDetailitem item={item} userNickname={userNickname} />
+      <BoardDetailitem item={item} userNickname={userNickname} postAuthorId={item.userId}/>
       <div className='w-[1000px] mx-auto flex flex-col gap-[30px]'>
       <span className='text-xl font-semibold'>댓글 ({commentCount})</span>
         {isQuestionBoard ? (
