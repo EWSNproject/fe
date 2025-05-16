@@ -7,6 +7,7 @@ import BoardItem from "./BoardItem";
 import Pagination from '../../components/Pagination';
 import SortDropdown from '../../components/SortDropdown';
 import { getPostsByType, searchPosts } from "../../api/postApi";
+import { categoryMap, reverseCategoryMap } from "../../constants/postCategory";
 
 export default function Boardlist() {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ export default function Boardlist() {
   const [allPosts, setAllPosts] = useState([]);
 
   const fetchAllData = useCallback(async () => {
-    const postType = activeButton === '전체' ? '전체' : activeButton.replace('게시판', '');
+    const rawType = activeButton.replace('게시판', ''); 
+    const postType = categoryMap[rawType] || 'ALL';    
     const fetchFn = searchTerm.trim() ? searchPosts : getPostsByType;
     let page = 0, all = [], hasNext = true;
 
@@ -139,7 +141,7 @@ export default function Boardlist() {
                 writer={item.nickName}
                 date={item.createdAt.split('T')[0]}
                 views={item.viewCnt}
-                type={item.postType}
+                type={reverseCategoryMap[item.postType] || item.postType}
               />
             ))}
           </div>

@@ -34,15 +34,15 @@ const Header = ({ isLoggedIn, userData }) => {
   }, []);
   return (
     <header className="w-full border-b">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-16 sm:h-20 max-w-[1680px] mx-auto">
+      <div className="flex items-center justify-between md:px-4 px-6 py-3 md:h-16 h-20 max-w-[1680px] mx-auto">
         {/* 왼쪽 로고 & 메뉴 버튼 */}
-        <div className="flex items-center gap-4 sm:gap-8">
+        <div className="flex items-center gap-8 md:gap-4">
           <button onClick={() => navigate("/")}>
-            <img src={Logo} alt="로고" className="w-24 sm:w-32" />
+            <img src={Logo} alt="로고" className="w-32 md:w-24" />
           </button>
 
           {/* 데스크탑 네비게이션 메뉴 */}
-          <nav className="items-center hidden gap-6 text-gray-800 md:flex sm:gap-10">
+          <nav className="flex items-center gap-10 text-gray-800 md:hidden md:gap-6 lg:hidden lg:gap-6">
             <button
               onClick={() => navigate("/benefitsList")}
               className="hover:text-black-950"
@@ -65,22 +65,22 @@ const Header = ({ isLoggedIn, userData }) => {
           </nav>
 
           {/* 모바일 메뉴 버튼 */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="hidden lg:block md:block">
             <Menu size={24} />
           </button>
         </div>
 
         {/* 검색창 & 로그인 */}
-        <div className="flex items-center gap-6 sm:gap-12">
+        <div className="flex items-center gap-12 md:gap-6">
           {/* 검색창 */}
-          <div className="relative hidden text-black-400 sm:block">
+          <div className="relative block md:hidden text-black-400">
             <span className="absolute left-3 top-3">
               <img src={Search} alt="검색" className="w-4 h-4" />
             </span>
             <input
               type="text"
               placeholder="검색어를 입력하세요"
-              className="w-[160px] sm:w-[220px] lg:w-[260px] pl-8 py-2 px-4 text-sm border placeholder-black-400 rounded-2xl bg-black-100 h-10 shadow-inner"
+              className="md:w-[160px] lg:w-[220px] w-[260px] pl-8 py-2 px-4 text-sm border placeholder-black-400 rounded-2xl bg-black-100 h-10 shadow-inner"
               value={searchTerm} 
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyDown={handleSearch} 
@@ -88,7 +88,7 @@ const Header = ({ isLoggedIn, userData }) => {
           </div>
 
           {/* 로그인 & 회원가입 또는 사용자 정보 */}
-          <div className="items-center hidden gap-3 sm:flex text-black-500">
+          <div className="flex items-center gap-3 md:hidden text-black-500">
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
@@ -121,7 +121,7 @@ const Header = ({ isLoggedIn, userData }) => {
 
       {/* 모바일 네비게이션 메뉴 (햄버거 메뉴) */}
       {menuOpen && (
-        <div className="flex flex-col items-center p-4 space-y-4 border-t md:hidden">
+        <div className="flex-col items-center hidden p-4 space-y-4 border-t md:flex lg:flex">
           <button
             onClick={() => navigate("/benefitsList")}
             className="w-full text-center hover:text-black-950"

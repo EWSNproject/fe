@@ -2,12 +2,17 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { List, FilePen, Clock2, Eye, ThumbsUp, ExternalLink, Bell } from "lucide-react";
 import { recommendPost, cancelRecommendPost } from "../../api/postApi"; 
+import ReportModal from "../../components/modal/ReportModal";
+import { REPORT_OPTIONS } from "../../constants/reportOptions";
+import { reportUser } from "../../api/reportApi";
+import { toast } from "react-toastify";
 
-export default function BoardDetailitem({ item, userNickname }) {
+export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
   const navigate = useNavigate();
   const isAuthor = item.nickName === userNickname;
   const [recommended, setRecommended] = useState(item.recommended);
   const [recommendCnt, setRecommendCnt] = useState(item.recommendCnt);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   const handleRecommendClick = async () => {
     try {
@@ -25,6 +30,28 @@ export default function BoardDetailitem({ item, userNickname }) {
     }
   };
 
+  const handleReportSubmit = ({ reason, detail }) => {
+    if (!postAuthorId) {
+      toast.error("신고 대상 사용자의 ID가 없습니다.");
+      return;
+    }
+
+    reportUser({
+      reportedUserId: postAuthorId,
+      reason,
+      content: detail || "",
+    })
+      .then(() => {
+        toast.success("신고가 성공적으로 접수되었습니다.");
+      })
+      .catch((err) => {
+        toast.error("신고 처리 중 오류가 발생했습니다.");
+      })
+      .finally(() => {
+        setReportModalOpen(false);
+      });
+  };
+
   return (
     <div className='w-[1000px] mx-auto flex flex-col py-8 mt-8'>
       <div className='flex justify-between w-full mb-8 text-xl font-medium text-gray-400'>
@@ -38,7 +65,7 @@ export default function BoardDetailitem({ item, userNickname }) {
               <FilePen /> 수정하기
             </button>
           ) : (
-            <button className="gap-1.5 flex">
+            <button className="gap-1.5 flex" onClick={() => setReportModalOpen(true)}>
               <Bell /> 신고하기
             </button>
           )}
@@ -87,22 +114,33 @@ export default function BoardDetailitem({ item, userNickname }) {
       </div>
 
       <div className='flex justify-center gap-4 text-xl'>
-      <button
-        onClick={handleRecommendClick}
-        className={`flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 transition duration-150 
-          active:scale-95 ${recommended ? "bg-yellow-700 font-bold" : "bg-black-400"}`}
-      >
-        <ThumbsUp /> {recommendCnt}
-      </button>
-      
-        {item.uriTitle && (
-        <a href={item.urlPath} target='_blank' rel='noopener noreferrer'>
-            <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-gray-400 bg-black-100'>
-            {item.uriTitle} <ExternalLink />
-            </button>
-        </a>
-        )}
+        <button
+          onClick={handleRecommendClick}
+          className={`flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 transition duration-150 
+            active:scale-95 ${recommended ? "bg-yellow-700 font-bold" : "bg-black-400"}`}
+        >
+          <ThumbsUp /> {recommendCnt}
+        </button>
+        
+          {item.urlTitle && (
+            <a href={item.urlPath} target='_blank' rel='noopener noreferrer'>
+              <button className='flex gap-1.5 px-5 py-2.5 rounded-full text-gray-400 bg-black-100'>
+                {item.urlTitle} <ExternalLink />
+              </button>
+            </a>
+          )}
       </div>
+
+      {/* ✅ 게시글 신고 모달 */}
+      <ReportModal
+        opened={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        onConfirm={handleReportSubmit}
+        title="게시글 신고하기"
+        confirmText="신고"
+        options={REPORT_OPTIONS}
+      />
+
     </div>
   );
 }
