@@ -50,6 +50,9 @@ export const getMatchServices = async () => {
 };
 
 export const getSearchHistory = async () => {
+  const token = Cookies.get('accessToken');
+  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  
   try {
     const response = await httpClient.get('/search/history');
     return response.data;
