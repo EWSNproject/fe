@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import httpClient from './httpClient';
 
 export const getInterestCategories = async () => {
@@ -37,6 +38,9 @@ export const getPopularBenefits = async () => {
 };
 
 export const getMatchServices = async () => {
+  const token = Cookies.get('accessToken');
+  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  
   try {
     const response = await httpClient.get('/mongo/services/matched');
     return response.data;
