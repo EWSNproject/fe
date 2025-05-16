@@ -1,12 +1,7 @@
-import axios from 'axios';
-import Cookies from "js-cookie";
-
-const BASE_URL = "http://localhost:8080/api";
+import httpClient from './httpClient';
 
 // 게시글 작성
 export const createPost = async (postData) => {
-  const token = Cookies.get("accessToken");
-
   const formData = new FormData();
   formData.append("nickName", postData.nickName);
   formData.append("title", postData.title);
@@ -20,10 +15,9 @@ export const createPost = async (postData) => {
     formData.append("images", file);
   });
 
-  const response = await axios.post(`${BASE_URL}/posts`, formData, {
+  const response = await httpClient.post(`/posts`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -32,7 +26,7 @@ export const createPost = async (postData) => {
 
 // 게시글 목록 조회
 export const getPostsByType = async ({ postType, page = 0, size = 10 }) => {
-  const response = await axios.get(`${BASE_URL}/posts/type`, {
+  const response = await httpClient.get(`/posts/type`, {
     params: { postType, page, size }
   });
   return response.data;
@@ -40,49 +34,24 @@ export const getPostsByType = async ({ postType, page = 0, size = 10 }) => {
 
 // 게시글 상세 조회
 export const getPostById = async (postId) => {
-  const token = Cookies.get('accessToken');
-  const response = await axios.get(`${BASE_URL}/posts/${postId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await httpClient.get(`/posts/${postId}`);
   return response.data;
 };
 
 // 게시물 추천
 export const recommendPost = async (postId) => {
-  const token = Cookies.get("accessToken");
-  try {
-    const response = await axios.post(`${BASE_URL}/posts/${postId}/recommend`, {}, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw error; 
-  }
+  const response = await httpClient.post(`/posts/${postId}/recommend`);
+  return response.data;
 };
 
 // 게시글 추천 해제
 export const cancelRecommendPost = async (postId) => {
-  const token = Cookies.get("accessToken");
-  try {
-    const response = await axios.delete(`${BASE_URL}/posts/${postId}/recommend`, { 
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await httpClient.delete(`/posts/${postId}/recommend`);
+  return response.data;
 };
 
 // 게시글 수정
 export const updatePost = async (postId, postData) => {
-  const token = Cookies.get("accessToken");
-
   const formData = new FormData();
   formData.append("title", postData.title);
   formData.append("content", postData.content);
@@ -95,33 +64,30 @@ export const updatePost = async (postId, postData) => {
     formData.append("images", file);
   });
 
-  const response = await axios.put(`${BASE_URL}/posts/${postId}`, formData, {
+  const response = await httpClient.put(`/posts/${postId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
     },
   });
 
   return response.data;
 };
 
-// 통합 게시글 검색 
+// 통합 게시글 검색
 export const searchAllPosts = async (word) => {
-
   try {
-    const response = await axios.get(`${BASE_URL}/mongo/search/posts?searchTerm=${encodeURIComponent(word)}`);
-    return response.data.content; 
+    const response = await httpClient.get(`/mongo/search/posts?searchTerm=${encodeURIComponent(word)}`);
+    return response.data.content;
   } catch (error) {
     console.error('Error fetching autocomplete suggestions:', error);
     throw error;
   }
-
 };
 
 // 게시글 검색
 export const searchPosts = async (searchTerm, page = 0, size = 10) => {
   try {
-    const response = await axios.get(`${BASE_URL}/mongo/search/posts`, {
+    const response = await httpClient.get(`/mongo/search/posts`, {
       params: {
         searchTerm,
         page,
