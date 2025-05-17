@@ -24,13 +24,17 @@ httpClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ✅ 401 또는 403 시 모달 표시
+// ✅ 401 또는 403 시 모달 표시 (단, 로그인/회원가입은 예외)
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const status = error.response?.status;
-    if (status === 401 || status === 403) {
+    const requestUrl = error.config?.url;
 
+    const excludedUrls = ['/login', '/signup'];
+    const isExcluded = excludedUrls.some((url) => requestUrl?.includes(url));
+
+    if ((status === 401 || status === 403) && !isExcluded) {
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
 
