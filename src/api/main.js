@@ -1,16 +1,9 @@
-import axios from 'axios';
-import Cookies from "js-cookie";
-
-const BASE_URL = "http://localhost:8080/api";
+import Cookies from 'js-cookie';
+import httpClient from './httpClient';
 
 export const getInterestCategories = async () => {
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.get(`${BASE_URL}/interests`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await httpClient.get('/interests');
     return response.data.categorizedInterests;
   } catch (error) {
     throw new Error(error.response?.data?.message || '관심사 목록을 가져오는데 실패했습니다.');
@@ -19,19 +12,13 @@ export const getInterestCategories = async () => {
 
 export const saveUserInterests = async (interests) => {
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.post(`${BASE_URL}/interests/me`, 
+    const response = await httpClient.post('/interests/me', 
       {
         categorizedInterests: {
           "가구상황": interests.familyType,
           "가구형태": interests.familyStatus,
           "관심주제": interests.interestTopics
-        }
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        }     
       }
     );
     return response.data;
@@ -42,74 +29,56 @@ export const saveUserInterests = async (interests) => {
 
 export const getPopularBenefits = async () => {
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.get(`${BASE_URL}/services/popular`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    return response.data; // 필요한 데이터 형식에 맞게 반환
+    const response = await httpClient.get('/services/popular');
+    return response.data;
   } catch (error) {
     console.error('Error fetching popular benefits:', error);
     throw error;
   }
 };
+
 export const getMatchServices = async () => {
+  const token = Cookies.get('accessToken');
+  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.get(`${BASE_URL}/mongo/services/matched`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await httpClient.get('/mongo/services/matched');
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || '맞춤 서비스 목록을 가져오는데 실패했습니다.');
   }
 };
+
 export const getSearchHistory = async () => {
+  const token = Cookies.get('accessToken');
+  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.get(`${BASE_URL}/search/history`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await httpClient.get('/search/history');
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || '검색 이력을 가져오는데 실패했습니다.');
   }
 };
+
 export const getInterestUser = async () => {
   try {
-    const token = Cookies.get("accessToken");
-    const response = await axios.get(`${BASE_URL}/interests/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await httpClient.get('/interests/me');
     return response.data.categorizedInterests;
   } catch (error) {
     throw new Error(error.response?.data?.message || '관심사 목록을 가져오는데 실패했습니다.');
   }
 };
+
 export const deleteSearchHistory = async (historyId) => {
   try {
-    const token = Cookies.get("accessToken");
     const url = historyId
-      ? `${BASE_URL}/search/history/${historyId}`
-      : `${BASE_URL}/search/history`; // ← id 없으면 전체 삭제
+      ? `/search/history/${historyId}`
+      : `/search/history`; // ← id 없으면 전체 삭제
 
-    const response = await axios.delete(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await httpClient.delete(url);
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "검색 이력을 삭제하는 데 실패했습니다."
-    );
+    throw new Error(error.response?.data?.message || '검색 이력을 삭제하는 데 실패했습니다.');
   }
 };

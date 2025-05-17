@@ -1,15 +1,8 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-
-const BASE_URL = "http://localhost:8080/api";
+import httpClient from './httpClient';
 
 export const getChatbotAnswer = async (question) => {
-  const token = Cookies.get('accessToken');
-  const response = await axios.get(`${BASE_URL}/chatbot`, {
+  const response = await httpClient.get(`/chatbot`, {
     params: { question },
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
   });
   return response.data;
 };
