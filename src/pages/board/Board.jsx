@@ -122,12 +122,13 @@ export default function Boardlist() {
             <div className="h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center justify-between">
               <div className="flex">
                 <p className="w-[70px] flex-col flex justify-center">번호</p>
-                <p className="w-[890px] text-left flex-col flex justify-center pl-3.5">제목</p>
+                <p className="text-left flex-col flex justify-center pl-3.5">제목</p>
               </div>
               <div className="flex">
                 <p className="w-[130px] flex-col flex justify-center">작성자</p>
                 <p className="w-[130px] flex-col flex justify-center">작성일</p>
                 <p className="w-[80px] flex-col flex justify-center">조회수</p>
+                <p className="w-[80px] flex-col flex justify-center">추천수</p> 
                 <p className="w-[80px] flex-col flex justify-center">종류</p>
               </div>
             </div>
@@ -140,6 +141,7 @@ export default function Boardlist() {
                 title={item.title}
                 writer={item.nickName}
                 date={item.createdAt.split('T')[0]}
+                recommend={item.recommendCnt}
                 views={item.viewCnt}
                 type={reverseCategoryMap[item.postType] || item.postType}
               />

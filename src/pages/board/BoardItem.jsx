@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { Eye, ThumbsUp } from 'lucide-react';
 
-export default function BoardItem({ id, number, title, writer, date, views, type }) {
+export default function BoardItem({ id, number, title, writer, date, views, recommend, type }) {
     const navigate = useNavigate(); 
 
     const handleCardClick = (id) => {
@@ -17,7 +18,12 @@ export default function BoardItem({ id, number, title, writer, date, views, type
         <div className='flex'>
           <p className="w-[130px] flex-col flex justify-center">{writer}</p>
           <p className="w-[130px] flex-col flex justify-center">{date}</p>
-          <p className="w-[80px] flex-col flex justify-center">{views}</p>
+          <p className="w-[80px] flex justify-center items-center gap-1">
+            <Eye className="w-4 h-4 text-gray-500" /> {views}
+          </p>
+          <p className="w-[80px] flex justify-center items-center gap-1">
+            <ThumbsUp className="w-4 h-4 text-red-500" /> {recommend}
+          </p>
           <p className="w-[80px] flex-col flex justify-center">{type}</p>
         </div>
       </div>
