@@ -120,45 +120,54 @@ const Search = () => {
 
       {/* 검색 입력 */}
       <div className="relative w-full max-w-[1236px] mb-8">
-        <div className="flex items-center rounded-[10px] min-h-[72px] border bg-[#FAFAFA]">
-          <input
-            type="text"
-            placeholder="검색어를 입력하세요"
-            className="flex-1 px-4 py-2 max-w-[1070px] max-h-[24px] bg-[#FAFAFA] focus:outline-none"
-            value={searchTerm}
-            onChange={handleInputChange}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
-          />
-          <img
-            src={CancelIcon}
-            alt="Cancel"
-            className="w-6 h-6 mx-4 cursor-pointer"
-            onClick={() => setSearchTerm("")}
-          />
-          <button
-            className="flex items-center justify-center py-2 min-w-[94px] max-h-[40px] bg-yellow-700 text-black-50 rounded-[10px]"
-            onClick={() => handleSearch(searchTerm)}
-          >
-            <img src={SearchIcon} alt="Search" className="w-4 h-4 mr-2" />
-            검색
-          </button>
-        </div>
+  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-[10px] min-h-[64px] border bg-[#FAFAFA] px-4 py-3 w-full">
+    
+    {/* 입력창 */}
+    <input
+      type="text"
+      placeholder="검색어를 입력하세요"
+      className="flex-1 px-3 py-2 bg-[#FAFAFA] text-sm focus:outline-none w-full sm:w-auto"
+      value={searchTerm}
+      onChange={handleInputChange}
+      onKeyDown={(e) => e.key === "Enter" && handleSearch(searchTerm)}
+    />
 
-        {/* Autocomplete Suggestions */}
-        {autocompleteResults.length > 0 && (
-          <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg z-10 mt-1 max-h-[240px] overflow-y-auto">
-            {autocompleteResults.map((suggestion, index) => (
-              <li
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 transition-colors duration-200 cursor-pointer hover:bg-yellow-100"
-              >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    {/* 취소 아이콘 */}
+    {searchTerm && (
+      <img
+        src={CancelIcon}
+        alt="Cancel"
+        className="w-5 h-5 cursor-pointer sm:ml-2"
+        onClick={() => setSearchTerm("")}
+      />
+    )}
+
+    {/* 검색 버튼 */}
+    <button
+      className="flex items-center justify-center px-4 py-2 bg-yellow-700 text-white text-sm rounded-[8px] whitespace-nowrap w-full sm:w-auto"
+      onClick={() => handleSearch(searchTerm)}
+    >
+      <img src={SearchIcon} alt="Search" className="w-4 h-4 mr-1" />
+      검색
+    </button>
+  </div>
+
+  {/* 자동완성 결과 */}
+  {autocompleteResults.length > 0 && (
+    <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg z-10 mt-1 max-h-[240px] overflow-y-auto">
+      {autocompleteResults.map((suggestion, index) => (
+        <li
+          key={index}
+          onClick={() => handleSuggestionClick(suggestion)}
+          className="p-3 transition-colors duration-200 cursor-pointer hover:bg-yellow-100"
+        >
+          {suggestion}
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
       {/* Recent Searches */}
       <div className="mb-6 w-full max-w-[1236px]">
@@ -216,7 +225,7 @@ const Search = () => {
         {isLoading ? (
           <p>로딩 중...</p>
         ) : (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
             {currentItems.map((card) => (
               <Card
                 key={card.publicServiceId}

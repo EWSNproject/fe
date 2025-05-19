@@ -64,7 +64,7 @@ export default {
       },
       screens: {
         md: { min: '360px', max: '743px' },
-        lg: { min: '744px', max: '1280px' },
+        lg: { min: '360px', max: '1280px' },
         desktop: '1281px',
       },
     }

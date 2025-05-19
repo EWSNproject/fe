@@ -131,7 +131,7 @@ const CardListPage = () => {
   }
 
   return (
-    <div className="flex md:flex-col flex-row min-h-screen md:p-4 p-6 max-w-[1680px] mx-auto">
+    <div className="flex md:flex-col flex-row min-h-screen md:p-4 p-6 max-w-[1600px] mx-auto">
       <SideFilter onFilterChange={handleFilterChange} />
 
       <div className="flex flex-col flex-1">
@@ -145,7 +145,7 @@ const CardListPage = () => {
           <SortOptions selected={sortOption} onSelect={handleSortChange} />
         </div>
 
-        <div className="grid md:grid-cols-1 lg:grid-cols-2 grid-cols-3 xl:grid-cols-3 md:gap-4 lg:gap-6 gap-10 w-full max-w-[1200px]">
+        <div className="grid md:grid-cols-1  grid-cols-3 md:gap-4 lg:gap-6 gap-5 w-full max-w-[1200px]">
           {getCurrentPageData().map((card) => (
             <Card
               key={card.publicServiceId}
