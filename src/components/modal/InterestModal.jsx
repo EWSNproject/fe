@@ -18,7 +18,6 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
     "관심주제": []
   });
 
-  // 컴포넌트 마운트 시 관심사 카테고리 데이터 가져오기
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -67,88 +66,67 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Interest Selection"
-      className="bg-black-50 pt-12 pb-12 pr-[90px] pl-[90px] max-w-[1016px] min-h-[800px] rounded-lg outline-none"
-      overlayClassName="fixed inset-0 bg-black-900 bg-opacity-80 flex items-center justify-center"
+      className={`
+        bg-black-50 
+        pt-12 pb-12 px-[90px]   
+        max-w-[1016px] min-h-[800px] 
+        rounded-lg outline-none
+        md:px-6 md:max-w-[420px] md:min-h-[560px]  
+      `}
+      overlayClassName="fixed inset-0 bg-black-900 bg-opacity-80 flex items-center justify-center px-2"
     >
-      <div className="flex flex-col">
-        <h2 className="text-[40px] font-bold mb-2">당신의 요즘 관심사는 무엇입니까?</h2>
-        <p className="text-[18px]">
+      <div className="flex flex-col mb-6">
+        <h2 className="text-[40px] md:text-xl font-bold mb-2 text-center md:text-left">
+          당신의 요즘 관심사는 무엇입니까?
+        </h2>
+        <p className="text-[18px] md:text-sm text-center md:text-left">
           선택한 키워드가 포함된 복지 혜택을 알려드리는 데 도움이 됩니다.
         </p>
-        <p className="text-[18px] mb-10">
+        <p className="text-[18px] md:text-sm mb-10 md:mb-6 text-center md:text-left">
           관심 있는 복지 키워드를 선택하세요. 최대 5개까지 선택 가능합니다.
         </p>
       </div>
 
-      <div className="flex flex-col gap-[30px]">
-        <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
-          <h3 className="text-[20px] mb-4">가구형태</h3>
-          <div className="flex flex-wrap gap-8">
-            {categories["가구형태"].map((item) => (
-              <button
-                key={item}
-                onClick={() => toggleSelection("familyStatus", item)}
-                className={`${
-                  isSelected("familyStatus", item)
-                    ? "bg-tag-bg-checkorange"
-                    : "bg-tag-bg-orange"
-                } text-tag-orange border border-tag-orange px-3 py-1 rounded-full`}
-              >
-                {item}
-              </button>
-            ))}
+      <div className="flex flex-col gap-6 md:gap-4">
+        {[
+          { title: "가구형태", key: "familyStatus", color: "orange" },
+          { title: "가구상황", key: "familyType", color: "green" },
+          { title: "관심주제", key: "interestTopics", color: "blue" },
+        ].map(({ title, key, color }) => (
+          <div
+            key={key}
+            className="p-5 md:p-4 w-full max-w-[816px] md:max-w-full mx-auto rounded-[8px] outline outline-1 outline-black-200"
+          >
+            <h3 className="text-[20px] md:text-sm mb-4">{title}</h3>
+            <div className="flex flex-wrap gap-4 justify-center md:gap-2 md:justify-start">
+              {categories[title].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => toggleSelection(key, item)}
+                  className={`px-3 py-1 text-sm md:text-xs rounded-full border text-tag-${color} border-tag-${color} ${
+                    isSelected(key, item)
+                      ? `bg-tag-bg-check${color}`
+                      : `bg-tag-bg-${color}`
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-
-        <div className="pt-5 pb-5 pr-10 pl-10 rounded-[8px] max-w-[816px] outline outline-1 outline-black-200">
-          <h3 className="text-[20px] mb-4">가구상황</h3>
-          <div className="flex flex-wrap gap-5">
-            {categories["가구상황"].map((item) => (
-              <button
-                key={item}
-                onClick={() => toggleSelection("familyType", item)}
-                className={`${
-                  isSelected("familyType", item)
-                    ? "bg-tag-bg-checkgreen"
-                    : "bg-tag-bg-green"
-                } text-tag-green border border-tag-green px-3 py-1 rounded-full`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="pt-5 pb-5 pr-10 pl-10 max-w-[816px] rounded-[8px] outline outline-1 outline-black-200">
-          <h3 className="text-[20px] mb-4">관심주제</h3>
-          <div className="flex flex-wrap gap-5">
-            {categories["관심주제"].map((item) => (
-              <button
-                key={item}
-                onClick={() => toggleSelection("interestTopics", item)}
-                className={`${
-                  isSelected("interestTopics", item)
-                    ? "bg-tag-bg-checkblue"
-                    : "bg-tag-bg-blue"
-                } text-tag-blue border border-tag-blue px-3 py-1 rounded-full`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="flex justify-end gap-2 mt-9">
-        <button 
+      <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10 md:mt-6">
+        <button
           onClick={handleSkip}
-          className="bg-gray-300 text-black-50 max-w-[159px] px-12 py-2 rounded-[10px]"
+          className="bg-gray-300 text-black-50 py-2 rounded-[10px] w-full sm:w-[120px] text-sm"
         >
           건너뛰기
         </button>
-        <button 
+        <button
           onClick={handleSubmit}
-          className="bg-yellow-700 text-black-50 px-12 py-2 max-w-[159px] rounded-[10px]"
+          className="bg-yellow-700 text-white py-2 rounded-[10px] w-full sm:w-[120px] text-sm"
         >
           선택완료
         </button>

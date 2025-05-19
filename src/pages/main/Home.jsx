@@ -167,7 +167,7 @@ const Home = () => {
         ) : (
           categoryCards.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-3 md:grid grid-cols-1 gap-6">
                 {categoryCards.map((card) => (
                   <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
                     <Card data={{
@@ -189,19 +189,21 @@ const Home = () => {
 
       {/* 🔥 인기 복지 & 최근 본 서비스 */}
       {popularBenefits.length > 0 && (
-        <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto flex lg:flex-col flex-row gap-4">
+        <div className="w-full max-w-[1236px] mt-8 mb-5 mx-auto flex md:flex-col flex-row gap-4">
           <div className="flex-1 bg-yellow-100 border border-yellow-300 rounded-xl shadow-inner px-6 py-5 h-[64px] flex items-center gap-4 overflow-hidden relative">
             <span className="text-base font-bold text-yellow-900 whitespace-nowrap">🔥 인기 복지 혜택</span>
             <div className="relative flex-1 overflow-hidden h-[28px]">
               <div className="absolute transition-all duration-500" style={{ top: `-${currentIndex * 28}px` }}>
                 {popularBenefits.slice(0, 10).map((item) => (
                   <div 
-                    key={item.publicServiceId} 
-                    className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" 
-                    onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
-                  >
-                    #{item.serviceName}
-                  </div>
+                  key={item.publicServiceId} 
+                  className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline 
+                             overflow-hidden whitespace-nowrap text-ellipsis"
+                  onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
+                  title={item.serviceName}
+                >
+                  #{item.serviceName}
+                </div>
                 ))}
               </div>
             </div>
@@ -213,13 +215,15 @@ const Home = () => {
               <div className="relative flex-1 overflow-hidden h-[28px]">
                 <div className="absolute transition-all duration-500" style={{ top: `-${recentIndex * 28}px` }}>
                   {recentServices.slice(0, 10).map((item) => (
-                    <div 
-                      key={item.publicServiceId} 
-                      className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline" 
-                      onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
-                    >
-                      #{item.serviceName}
-                    </div>
+                   <div 
+                   key={item.publicServiceId} 
+                   className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline 
+                              overflow-hidden whitespace-nowrap text-ellipsis"
+                   onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
+                   title={item.serviceName}
+                 >
+                   #{item.serviceName}
+                 </div>
                   ))}
                 </div>
               </div>
@@ -248,7 +252,7 @@ const Home = () => {
             {/* Recent Searches */}
             {(recentSearches.length > 0 ||
               (userInfo && interestKeywords.length > 0)) && (
-              <div className="flex flex-col gap-4 mb-8 md:flex-row">
+              <div className="flex flex-row gap-4 mb-8 md:flex-col">
                 {/* 최근 검색어 */}
                 {recentSearches.length > 0 && (
                   <div className="flex-1 p-5 border border-yellow-300 shadow-inner bg-yellow-100/60 backdrop-blur-sm rounded-xl">
