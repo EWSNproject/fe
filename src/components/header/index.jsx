@@ -88,7 +88,7 @@ const Header = ({ isLoggedIn, userData }) => {
           </div>
 
           {/* 로그인 & 회원가입 또는 사용자 정보 */}
-          <div className="flex items-center gap-3 md:hidden text-black-500">
+          <div className="flex items-center gap-3  text-black-500">
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
