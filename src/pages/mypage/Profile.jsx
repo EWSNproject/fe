@@ -14,8 +14,6 @@ const Mypage = ({ handleLogout }) => {
   const [activeTab, setActiveTab] = useState("liked");
   const [showDetails, setShowDetails] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
-  const pageGroupSize = 5;
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
@@ -26,6 +24,20 @@ const Mypage = ({ handleLogout }) => {
   const [myPosts, setMyPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
 
+  const [itemsPerPage, setItemsPerPage] = useState(6); // 기본값: 데스크탑 6개
+  const pageGroupSize = 5;
+
+  // 반응형 itemsPerPage 설정
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setItemsPerPage(width < 768 ? 2 : 6); // md 기준: 768px
+    };
+
+    handleResize(); // 초기 실행
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const totalPages = Math.ceil(bookmarkedBenefits.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -119,10 +131,11 @@ const Mypage = ({ handleLogout }) => {
 
       {showDetails && (
         <div className="w-full max-w-[1224px]">
-          <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md">
-            <div className="flex items-center gap-10">
-              <div className="relative w-[738px]">
-                <div className="absolute w-full h-[2px] bg-black-300 top-[18px]"></div>
+          <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md md:px-4 md:py-10">
+            <div className="flex items-center gap-10 md:flex-col md:gap-6">
+              {/* 레벨 트래커 */}
+              <div className="relative w-[738px] md:w-full">
+                <div className="absolute w-full h-[2px] bg-black-300 top-[18px] md:hidden"></div>
                 <div className="relative flex justify-between w-full">
                   {[
                     { level: "Lv. 0", name: "?", points: "0" },
@@ -132,11 +145,12 @@ const Mypage = ({ handleLogout }) => {
                     { level: "Lv.4", name: "독수리", points: "700" },
                     { level: "Lv.5", name: "구름", points: "1000" },
                   ].map((item, index) => (
-                    <div key={index} className="flex flex-col items-center">
+                    <div
+                      key={index}
+                      className="flex flex-col items-center text-center"
+                    >
                       <div
-                        className={`w-8 h-8 rounded-full ${
-                           "bg-yellow-700" 
-                        } mb-2`}
+                        className={`w-8 h-8 rounded-full bg-yellow-700 mb-2`}
                       ></div>
                       <span className="text-sm font-medium">{item.level}</span>
                       <span className="text-sm text-gray-600">{item.name}</span>
@@ -148,15 +162,16 @@ const Mypage = ({ handleLogout }) => {
                 </div>
               </div>
 
-              <div className="flex-1">
-                <h3 className="ml-4 text-lg font-bold">
+              {/* 포인트 설명 */}
+              <div className="flex-1 md:w-full">
+                <h3 className="ml-4 text-lg font-bold md:ml-0 md:text-base">
                   등급 및 포인트 시스템 안내
                 </h3>
-                <p className=" mb-[30px] ml-4">
+                <p className="mb-[30px] ml-4 md:ml-0 md:text-sm md:mb-4">
                   게시판에서 활동하며 포인트를 적립하면 등급이 상승합니다.
                 </p>
                 <div className="rounded-lg">
-                  <ul className="pl-5 space-y-2 list-disc">
+                  <ul className="pl-5 space-y-2 list-disc text-sm md:text-xs">
                     <li className="text-tag-red">
                       가입 후 인사 게시판에 글을 작성하면 100점을 획득하여 바로
                       '알' 단계로 승급됩니다.
@@ -177,7 +192,7 @@ const Mypage = ({ handleLogout }) => {
                       얻는 경우, 관리자 확인 후 등급이 하락할 수 있습니다.
                     </li>
                     <li className="text-tag-red">
-                      채택시 포인트 50점 추가로 받을 수 있습니다.{" "}
+                      채택시 포인트 50점 추가로 받을 수 있습니다.
                     </li>
                   </ul>
                 </div>
@@ -215,7 +230,7 @@ const Mypage = ({ handleLogout }) => {
 
         {activeTab === "liked" && (
           <>
-            <div className="grid grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-3 md:grid-cols-1 gap-6 mt-6">
               {currentItems.map((benefit) => (
                 <Card
                   key={benefit.publicServiceId}
@@ -261,7 +276,7 @@ const Mypage = ({ handleLogout }) => {
         opened={isWithdrawOpen}
         onClose={() => setIsWithdrawOpen(false)}
         onConfirm={(reasonText) => {
-          handleDeleteAccount(reasonText); 
+          handleDeleteAccount(reasonText);
           setIsWithdrawOpen(false);
         }}
         title="회원탈퇴"
