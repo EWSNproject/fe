@@ -88,7 +88,7 @@ const Header = ({ isLoggedIn, userData }) => {
           </div>
 
           {/* 로그인 & 회원가입 또는 사용자 정보 */}
-          <div className="flex items-center gap-3  text-black-500">
+          <div className="flex items-center gap-3 text-black-500">
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
@@ -121,40 +121,51 @@ const Header = ({ isLoggedIn, userData }) => {
 
       {/* 모바일 네비게이션 메뉴 (햄버거 메뉴) */}
       {menuOpen && (
-        <div className="flex-col items-center hidden p-4 space-y-4 border-t md:flex lg:flex">
+      <div className="flex-col items-center hidden p-4 border-t text-black-950 md:flex lg:flex">
+        <button
+          onClick={() => { navigate("/benefitsList"); setMenuOpen(false); }}
+          className="w-full py-2 rounded-md hover:bg-black-100"
+        >
+          복지혜택 전체보기
+        </button>
+        <button
+          onClick={() => { navigate("/search"); setMenuOpen(false); }}
+          className="w-full py-2 rounded-md hover:bg-black-100"
+        >
+          통합검색
+        </button>
+        <button
+          onClick={() => { navigate("/board"); setMenuOpen(false); }}
+          className="w-full py-2 rounded-md hover:bg-black-100"
+        >
+          게시판
+        </button>
+
+        {isLoggedIn ? (
           <button
-            onClick={() => navigate("/benefitsList")}
-            className="w-full text-center hover:text-black-950"
+            onClick={() => { navigate("/mypage"); setMenuOpen(false); }}
+            className="w-full py-2 rounded-md hover:bg-black-100"
           >
-            복지혜택 전체보기
+            마이페이지
           </button>
-          <button
-              onClick={() => navigate("/search")}
-              className="hover:text-black-950"
+        ) : (
+          <>
+            <button
+              onClick={() => { navigate("/login"); setMenuOpen(false); }}
+              className="w-full py-2 rounded-md hover:bg-black-100"
             >
-              통합검색
+              로그인
             </button>
-          <button
-            onClick={() => navigate("/board")}
-            className="w-full text-center hover:text-black-950"
-          >
-            게시판
-          </button>
-          
-          <button
-            onClick={() => navigate("/login")}
-            className="w-full text-center hover:text-black-950"
-          >
-            로그인
-          </button>
-          <button
-            onClick={() => navigate("/signup")}
-            className="w-full text-center hover:text-black-950"
-          >
-            회원가입
-          </button>
-        </div>
-      )}
+            <button
+              onClick={() => { navigate("/signup"); setMenuOpen(false); }}
+              className="w-full py-2 rounded-md hover:bg-black-100"
+            >
+              회원가입
+            </button>
+          </>
+        )}
+      </div>
+    )}
     </header>
   );
 };
