@@ -56,7 +56,7 @@ export default function EditPost() {
   };
 
   const isFormValid = title.trim().length > 0 && content.trim().length > 0;
-  const limitedTitle = title.slice(0, 20);
+  const limitedTitle = title.slice(0, 40);
   const limitedLinkTitle = linkTitle.slice(0, 12);
 
   useEffect(() => {
@@ -135,9 +135,9 @@ export default function EditPost() {
               제목
             </div>
             <TextInput
-              placeholder="20자 이내로 작성해주세요"
+              placeholder="40자 이내로 작성해주세요"
               value={title}
-              onChange={(e) => setTitle(e.currentTarget.value.slice(0, 20))}
+              onChange={(e) => setTitle(e.currentTarget.value.slice(0, 40))}
               withAsterisk
               classNames={{
                 input: "border-none focus:outline-none focus:ring-0 h-5 w-[932px] text-base",
