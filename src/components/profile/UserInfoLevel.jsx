@@ -61,9 +61,9 @@ const UserInfoLevel = ({ user }) => {
   const closeInterestModal = () => setIsInterestModalOpen(false);
 
   return (
-    <div className="flex gap-[80px] w-full max-w-[1224px]">
+    <div className="flex flex-row md:flex-col gap-[80px] w-full max-w-[1224px]">
       {/* 회원정보 */}
-      <div className="flex flex-col w-full max-w-[341px]">
+      <div className="flex flex-col w-full max-w-[341px] md:max-w-full">
         <span className="mb-5 text-2xl font-bold">회원정보</span>
         <div className="flex flex-col items-start gap-4 p-6 rounded-lg shadow-md min-h-[230px] bg-black-50">
           <div className="flex gap-[30px]">
@@ -108,7 +108,7 @@ const UserInfoLevel = ({ user }) => {
       </div>
 
       {/* 회원등급 */}
-      <div className="flex flex-col w-full max-w-[803px]">
+      <div className="flex flex-col w-full max-w-[803px] md:max-w-full">
         <span className="mb-5 text-2xl font-bold">회원등급</span>
         <div className="bg-black-50 p-6 rounded-lg shadow-md flex flex-row items-center gap-6 min-h-[260px]">
           <img

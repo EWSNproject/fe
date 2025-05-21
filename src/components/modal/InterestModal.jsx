@@ -66,13 +66,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Interest Selection"
-      className={`
-        bg-black-50 
-        pt-12 pb-12 px-[90px]   
-        max-w-[1016px] min-h-[800px] 
-        rounded-lg outline-none
-        md:px-6 md:max-w-[420px] md:min-h-[560px]  
-      `}
+      className="bg-black-50 pt-12 pb-12 px-[90px] max-w-[1016px] min-h-[800px] rounded-lg outline-none md:px-6 md:max-w-[420px] md:min-h-[520px]"
       overlayClassName="fixed inset-0 bg-black-900 bg-opacity-80 flex items-center justify-center px-2"
     >
       <div className="flex flex-col mb-6">
@@ -88,33 +82,65 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       </div>
 
       <div className="flex flex-col gap-6 md:gap-4">
-        {[
-          { title: "가구형태", key: "familyStatus", color: "orange" },
-          { title: "가구상황", key: "familyType", color: "green" },
-          { title: "관심주제", key: "interestTopics", color: "blue" },
-        ].map(({ title, key, color }) => (
-          <div
-            key={key}
-            className="p-5 md:p-4 w-full max-w-[816px] md:max-w-full mx-auto rounded-[8px] outline outline-1 outline-black-200"
-          >
-            <h3 className="text-[20px] md:text-sm mb-4">{title}</h3>
-            <div className="flex flex-wrap gap-4 justify-center md:gap-2 md:justify-start">
-              {categories[title].map((item) => (
-                <button
-                  key={item}
-                  onClick={() => toggleSelection(key, item)}
-                  className={`px-3 py-1 text-sm md:text-xs rounded-full border text-tag-${color} border-tag-${color} ${
-                    isSelected(key, item)
-                      ? `bg-tag-bg-check${color}`
-                      : `bg-tag-bg-${color}`
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
+        {/* 가구형태 */}
+        <div className="p-5 md:p-4 w-full max-w-[816px] md:max-w-full mx-auto rounded-[8px] outline outline-1 outline-black-200">
+          <h3 className="text-[20px] md:text-sm mb-4">가구형태</h3>
+          <div className="flex flex-wrap gap-4 justify-center md:gap-2 md:justify-start">
+            {categories["가구형태"].map((item) => (
+              <button
+                key={item}
+                onClick={() => toggleSelection("familyStatus", item)}
+                className={`px-3 py-1 text-sm md:text-xs rounded-full border text-tag-orange border-tag-orange ${
+                  isSelected("familyStatus", item)
+                    ? "bg-tag-bg-checkorange"
+                    : "bg-tag-bg-orange"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
           </div>
-        ))}
+        </div>
+
+        {/* 가구상황 */}
+        <div className="p-5 md:p-4 w-full max-w-[816px] md:max-w-full mx-auto rounded-[8px] outline outline-1 outline-black-200">
+          <h3 className="text-[20px] md:text-sm mb-4">가구상황</h3>
+          <div className="flex flex-wrap gap-4 justify-center md:gap-2 md:justify-start">
+            {categories["가구상황"].map((item) => (
+              <button
+                key={item}
+                onClick={() => toggleSelection("familyType", item)}
+                className={`px-3 py-1 text-sm md:text-xs rounded-full border text-tag-green border-tag-green ${
+                  isSelected("familyType", item)
+                    ? "bg-tag-bg-checkgreen"
+                    : "bg-tag-bg-green"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 관심주제 */}
+        <div className="p-5 md:p-4 w-full max-w-[816px] md:max-w-full mx-auto rounded-[8px] outline outline-1 outline-black-200">
+          <h3 className="text-[20px] md:text-sm mb-4">관심주제</h3>
+          <div className="flex flex-wrap gap-4 justify-center md:gap-2 md:justify-start">
+            {categories["관심주제"].map((item) => (
+              <button
+                key={item}
+                onClick={() => toggleSelection("interestTopics", item)}
+                className={`px-3 py-1 text-sm md:text-xs rounded-full border text-tag-blue border-tag-blue ${
+                  isSelected("interestTopics", item)
+                    ? "bg-tag-bg-checkblue"
+                    : "bg-tag-bg-blue"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-end gap-3 mt-10 md:mt-6">
