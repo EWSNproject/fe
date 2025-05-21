@@ -148,7 +148,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
   return (
     <div className='flex flex-col gap-[30px]'>
       {/* 댓글 입력 UI */}
-      <div className='flex items-end gap-5'>
+      <div className='flex items-end gap-5 md:gap-2'>
         <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
           {nickname?.charAt(0) || "?"}
         </span>
@@ -169,7 +169,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         <button
           onClick={handleSaveComment}
           disabled={!comment.trim()}
-          className={`font-semibold rounded px-4 h-[30px] text-sm text-black-50 transition 
+          className={`font-semibold md:font-medium rounded px-4 h-[30px] md:px-2 text-sm text-black-50 transition 
             ${comment.trim() ? 'bg-yellow-700 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'}`}
         >
           저장
@@ -177,7 +177,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
       </div>
       
       {/* 댓글 목록 */}
-      <div className='w-[1000px] mx-auto flex flex-col gap-1.5'>
+      <div className='w-full max-w-[1000px] mx-auto px-4 flex flex-col gap-1.5 md:px-0'>
         {comments
           .filter(comment => comment.parentId === null) 
           .map((comment) => {
@@ -187,7 +187,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
             return (
               <div
                 key={comment.id}
-                className='flex flex-col gap-1.5 py-3.5 px-5 border border-gray-200'
+                className='flex flex-col gap-1.5 py-3.5 px-5 md:px-3 border border-gray-200 h-auto'
               >
                 <div className='flex justify-between text-sm font-normal'>
                   <span className="text-tag-green">
@@ -197,7 +197,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                   </span>
                   <span className='text-gray-400'>{formattedDate}</span>
                 </div>
-                <div className='font-normal text-black-950'>{comment.content}</div>
+                <div className='w-full font-normal break-words text-black-950'>{comment.content}</div>
                 <div className='flex justify-between'>
                   <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
                     {postType === '자유' && (

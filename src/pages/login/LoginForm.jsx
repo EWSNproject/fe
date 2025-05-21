@@ -73,10 +73,10 @@ export default function LoginForm({ handleLogin }) {
 
   return (
     <>
-      <div className="relative flex justify-center pb-10 top-40">
+      <div className="relative flex justify-center pb-10 top-40 md:top-20">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-[520px] space-y-4"
+          className="w-full max-w-[520px] px-4 space-y-4"
           noValidate
         >
           <h2 className="text-3xl font-medium text-center text-black-950 mb-11">로그인</h2>

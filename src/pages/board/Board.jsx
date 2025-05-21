@@ -59,8 +59,8 @@ export default function Boardlist() {
   const currentItems = filteredPosts.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <div className="flex justify-center bg-black-50">
-      <div className="mt-20 flex flex-col gap-[30px]">
+    <div className="flex justify-center w-full bg-black-50">
+      <div className="mt-20 flex flex-col gap-[30px] w-[1280px] lg:w-full">
         <h1 className="text-4xl font-semibold text-center text-black-950">게시판</h1>
 
         {/* 게시판 종류 */}
@@ -79,9 +79,9 @@ export default function Boardlist() {
         </div>
 
         {/* 상단 정보 및 검색 */}
-        <div className="mt-[30px] w-[1380px]">
-          <div className="flex justify-between">
-            <div className="flex items-end gap-4 text-base font-medium text-black-500">
+        <div className="mt-[30px] w-full px-10 md:px-4 lg:mt-[15px] md:mt-0">
+          <div className="flex flex-wrap justify-between gap-4">
+            <div className="flex items-end gap-4 text-base font-medium text-black-500 md:w-full md:order-2">
               <div className="flex gap-1">
                 <FilePen className="text-black-300"/>
                 <p>총 게시물 <span className="text-tag-red">{filteredPosts.length}</span>건</p>
@@ -89,11 +89,11 @@ export default function Boardlist() {
               <p className="flex-col justify-end">현재 페이지 <span className="text-tag-red">{currentPage}/{totalPages}</span></p>
             </div>
 
-            <div className="flex items-center gap-5">
-              <div className="flex items-center border rounded h-[40px] border-black-300 bg-black-50 border-r-0">
+            <div className="flex items-center gap-5 ml-auto md:w-full md:flex-wrap md:order-1">
+              <div className="flex items-center w-[341px] md:w-full lg:flex-1 border rounded h-[40px] border-black-300 bg-black-50 border-r-0">
                 <img src={Search} alt="검색" className="w-4 h-4 ml-2" />
                 <TextInput
-                  placeholder="검색"
+                  placeholder="제목검색"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && fetchAllData()}
@@ -109,41 +109,47 @@ export default function Boardlist() {
                 </button>
               </div>
               {/* 정렬 드롭다운 */}
-              <SortDropdown
-                options={sortOptions}
-                selected={selectedSort}
-                setSelected={setSelectedSort}
-              />
+              <div className="md:left">
+                <SortDropdown
+                  options={sortOptions}
+                  selected={selectedSort}
+                  setSelected={setSelectedSort}
+                />
+              </div>
             </div>
           </div>
 
           {/* 게시판글 시작부분 */}
           <div className="mt-5">
-            <div className="h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center justify-between">
+            <div className=" lg:hidden h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center justify-between">
               <div className="flex">
                 <p className="w-[70px] flex-col flex justify-center">번호</p>
-                <p className="w-[890px] text-left flex-col flex justify-center pl-3.5">제목</p>
+                <p className="text-left flex-col flex justify-center pl-3.5">제목</p>
               </div>
               <div className="flex">
                 <p className="w-[130px] flex-col flex justify-center">작성자</p>
                 <p className="w-[130px] flex-col flex justify-center">작성일</p>
                 <p className="w-[80px] flex-col flex justify-center">조회수</p>
+                <p className="w-[80px] flex-col flex justify-center">추천수</p> 
                 <p className="w-[80px] flex-col flex justify-center">종류</p>
               </div>
             </div>
 
-            {currentItems.map((item, idx) => (
-              <BoardItem
-                key={item.postId}
-                id={item.postId}
-                number={filteredPosts.length - (startIndex + idx)}
-                title={item.title}
-                writer={item.nickName}
-                date={item.createdAt.split('T')[0]}
-                views={item.viewCnt}
-                type={reverseCategoryMap[item.postType] || item.postType}
-              />
-            ))}
+            <div className="lg:w-full lg:border-black-300 lg:border-x-0 lg:border">
+              {currentItems.map((item, idx) => (
+                <BoardItem
+                  key={item.postId}
+                  id={item.postId}
+                  number={filteredPosts.length - (startIndex + idx)}
+                  title={item.title}
+                  writer={item.nickName}
+                  date={item.createdAt.split('T')[0]}
+                  recommend={item.recommendCnt}
+                  views={item.viewCnt}
+                  type={reverseCategoryMap[item.postType] || item.postType}
+                />
+              ))}
+            </div>
           </div>
 
           <div className="flex justify-end mt-[15px]">

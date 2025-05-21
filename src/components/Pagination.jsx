@@ -7,7 +7,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange, page
   const groupEndPage = Math.min(currentGroup * pageGroupSize, totalPages);
 
   return (
-    <div className="flex items-center justify-center mt-[15px] mb-[45px]">
+    <div className="flex items-center justify-center mt-[15px] mb-[45px] lg:flex-wrap ">
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}

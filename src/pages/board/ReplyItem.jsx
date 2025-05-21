@@ -57,7 +57,7 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
           </span>
           <span className="text-gray-400">{formattedDate}</span>
         </div>
-        <div className="font-normal text-black-950">{reply.content}</div>
+        <div className="w-full font-normal break-words text-black-950">{reply.content}</div>
         <div className="flex justify-between">
           <div className="text-black-500 flex gap-2.5 text-sm font-normal">
             {isAuthor ? (

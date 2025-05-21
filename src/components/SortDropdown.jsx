@@ -19,7 +19,7 @@ export default function SortDropdown({ options, selected, setSelected }) {
     <div className="relative w-full" ref={dropdownRef}>
       {/* 드롭다운 버튼 */}
       <button
-        className="w-full h-[40px] border rounded-md flex items-center justify-between px-4 text-black-700 border-gray-300 bg-black-50"
+        className="w-[108px] h-[40px] border rounded-md flex items-center justify-between px-4 text-black-700 border-gray-300 bg-black-50"
         onClick={() => setIsOpen(!isOpen)}
       >
         {selected}

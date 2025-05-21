@@ -180,8 +180,11 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="relative flex justify-center pb-28 top-20">
-      <form onSubmit={handleSubmit(onSubmit)} className="w-[520px] space-y-4">
+    <div className="relative flex justify-center pb-28 top-20 md:top-10">
+      <form 
+        onSubmit={handleSubmit(onSubmit)} 
+        className="w-full max-w-[520px] px-4 space-y-4"
+      >
         <h2 className="text-3xl font-medium text-center text-black-950 mb-11">
           회원가입
         </h2>
@@ -383,7 +386,7 @@ export default function SignupForm() {
 
           {/* 생년월일 */}
           <div className="flex flex-col gap-1">
-            <div className="text-base font-normal text-black-950 mb-1">
+            <div className="mb-1 text-base font-normal text-black-950">
               생년월일
             </div>
             <DatePicker
