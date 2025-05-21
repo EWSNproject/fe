@@ -53,8 +53,8 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
   };
 
   return (
-    <div className='w-[1000px] mx-auto flex flex-col py-8 mt-8'>
-      <div className='flex justify-between w-full mb-8 text-xl font-medium text-gray-400'>
+    <div className='w-full max-w-[1000px] mx-auto flex flex-col py-6 px-4 mt-8 lg:mt-6'>
+      <div className='flex justify-between w-full gap-3 mb-8 text-xl font-medium text-gray-400 md:mb-6 md:text-lg md:flex-row md:justify-between'>
         <div className='flex gap-1.5 cursor-pointer' onClick={() => navigate('/board')}>
             <span className='border-gray-400 border-[3px]'><List /></span>
             목록
@@ -74,7 +74,7 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
 
       <div className='flex flex-col gap-4 mb-5'>
         <h1 className='text-3xl'>{item.title}</h1>
-        <div className='flex gap-5 text-xl text-black-300'>
+        <div className='flex flex-wrap gap-5 text-xl text-black-300 md:gap-3 md:text-base'>
             <span className='text-tag-green'>{item.nickName}</span>
             <div className='flex gap-[5px]'><Clock2 /><span>{item.createdAt.split('T')[0]}</span></div>
             <div className='flex gap-[5px]'><Eye /><span>{item.viewCnt}</span></div>
@@ -86,7 +86,7 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
       </div>
 
       {item.imageUrls && item.imageUrls.length > 0 && (
-        <div className="flex gap-2.5 mt-4">
+        <div className="flex flex-wrap gap-2.5 lg:gap-2 mt-4">
           {item.imageUrls.slice(0, 5).map((url, index) => (
             <img
               key={index}
@@ -113,7 +113,7 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
           ))}
       </div>
 
-      <div className='flex justify-center gap-4 text-xl'>
+      <div className='flex items-center justify-center gap-4 text-xl lg:gap-3 lg:text-base md:flex-row md:mt-2'>
         <button
           onClick={handleRecommendClick}
           className={`flex gap-1.5 px-5 py-2.5 rounded-full text-black-50 transition duration-150 
