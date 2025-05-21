@@ -73,30 +73,30 @@ export default function BoardDetail() {
   return (
     <div className='w-full mb-10'>
       <BoardDetailitem item={item} userNickname={userNickname} postAuthorId={item.userId}/>
-      <div className='w-[1000px] mx-auto flex flex-col gap-[30px]'>
-      <span className='text-xl font-semibold'>댓글 ({commentCount})</span>
-        {isQuestionBoard ? (
-          <AnswerItem 
-            postId={id} 
-            answers={comments} 
-            userId={userId}
-            nickname={userNickname}
-            setCommentCount={setCommentCount}
-            setComments={setComments}
-            postAuthor={item.nickName}
-          />
-        ) : (
-          <CommentItem 
-            postId={id} 
-            comments={comments} 
-            postType={item.postType}
-            userId={userId}
-            nickname={userNickname}
-            setCommentCount={setCommentCount}
-            setComments={setComments}
-            postAuthor={item.nickName}
-          />
-        )}
+      <div className='w-full max-w-[1000px] mx-auto flex flex-col py-6 px-4 gap-[30px]'>
+        <span className='text-xl font-semibold'>댓글 ({commentCount})</span>
+          {isQuestionBoard ? (
+            <AnswerItem 
+              postId={id} 
+              answers={comments} 
+              userId={userId}
+              nickname={userNickname}
+              setCommentCount={setCommentCount}
+              setComments={setComments}
+              postAuthor={item.nickName}
+            />
+          ) : (
+            <CommentItem 
+              postId={id} 
+              comments={comments} 
+              postType={item.postType}
+              userId={userId}
+              nickname={userNickname}
+              setCommentCount={setCommentCount}
+              setComments={setComments}
+              postAuthor={item.nickName}
+            />
+          )}
       </div>
     </div>
   );

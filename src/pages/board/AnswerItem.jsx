@@ -112,7 +112,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   return (
     <div className='flex flex-col gap-[30px]'>
       {/* 답변 입력 UI */}
-      <div className='flex items-end gap-5'>
+      <div className='flex items-end gap-5 md:gap-2'>
         <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
           {nickname?.charAt(0) || "?"}
         </span>
@@ -133,7 +133,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         <button
           onClick={handleSaveAnswer}
           disabled={!answer.trim()}
-          className={`font-semibold rounded px-4 h-[30px] text-sm text-black-50 transition 
+          className={`font-semibold md:font-medium rounded px-4 md:px-2 h-[30px] text-sm text-black-50 transition 
             ${answer.trim() ? 'bg-yellow-700 cursor-pointer' : 'bg-gray-300 cursor-not-allowed'}`}
         >
           저장
@@ -141,7 +141,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
       </div>
 
       {/* 답변 목록 */}
-      <div className='w-[1000px] mx-auto flex flex-col gap-1.5'>
+      <div className='w-full max-w-[1000px] mx-auto px-4 flex flex-col gap-1.5 md:px-0'>
         {answers.map((comment) => {
           const date = new Date(comment.createdAt);
           const formattedDate = date.toISOString().split("T")[0].replace(/-/g, ".");
@@ -150,7 +150,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
           return (
             <div
               key={comment.id}
-              className={`flex flex-col gap-2 py-3.5 px-5 border border-gray-200 ${
+              className={`flex flex-col gap-2 py-3.5 px-5 md:px-3 border border-gray-200 h-auto ${
                 comment.selected ? 'bg-[#E2F1F9]' : ''
               }`}
             >
@@ -162,7 +162,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                 </span>
                 <span className='text-gray-400'>{formattedDate}</span>
               </div>
-              <div className='font-normal text-black-950'>{comment.content}</div>
+              <div className='w-full font-normal break-words text-black-950'>{comment.content}</div>
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
                   {userMap[comment.userId] === nickname ? (
