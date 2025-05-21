@@ -79,7 +79,7 @@ export default function Boardlist() {
         </div>
 
         {/* 상단 정보 및 검색 */}
-        <div className="mt-[30px] w-full px-10 md:px-4">
+        <div className="mt-[30px] w-full px-10 md:px-4 lg:mt-[15px] md:mt-0">
           <div className="flex flex-wrap justify-between gap-4">
             <div className="flex items-end gap-4 text-base font-medium text-black-500 md:w-full md:order-2">
               <div className="flex gap-1">

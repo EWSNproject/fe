@@ -83,7 +83,7 @@ export default function Post() {
   };
 
   return (
-    <div className="w-[1000px] mx-auto mt-[30px] mb-[60px]">
+    <div className="w-full max-w-[1000px] mx-auto mt-[30px] mb-[60px] px-4 sm:px-6">
       {/* 제목 */}
       <div className="flex items-center gap-2 mb-3 text-2xl">
         <SlNote />
@@ -111,10 +111,10 @@ export default function Post() {
         {/* 제목 입력 */}
         <div className="flex flex-col gap-3">
           <span className="text-xs font-normal text-right text-error">
-            제목과 내용은 필수입니다.
+            *제목과 내용은 필수입니다.
           </span>
-          <div className="flex items-center gap-2 mb-4 border-2 rounded bg-black-50 border-black-300">
-            <div className="h-[32px] px-[10px] bg-black-200 text-lg font-semibold w-[52px] items-center flex">
+          <div className="flex items-center w-full gap-2 mb-4 border-2 rounded bg-black-50 border-black-300">
+            <div className="h-[32px] px-[10px] bg-black-200 text-lg font-semibold w-[60px] items-center flex">
               제목
             </div>
             <TextInput
@@ -123,14 +123,15 @@ export default function Post() {
               onChange={(e) => setTitle(e.currentTarget.value.slice(0, 40))}
               withAsterisk
               classNames={{
-                input: "border-none focus:outline-none focus:ring-0 h-5 w-[932px] text-base",
+                input: "border-none focus:outline-none focus:ring-0 h-5 w-full text-base",
+                root: "w-full pr-2",
               }}
             />
           </div>
         </div>
 
         {/* 내용 입력 */}
-        <div className="mb-2">
+        <div className="mb-2 w-full max-w-[1000px]">
           <Textarea
             placeholder="500자 이내로 작성해주세요."
             minRows={8}
@@ -141,7 +142,7 @@ export default function Post() {
               setCharCount(e.currentTarget.value.length);
             }}
             classNames={{
-              input: "h-[230px] w-[1000px] border-2 border-black-300 p-4 focus:outline-none focus:ring-0 rounded-2xl",
+              input: "h-[230px] w-full border-2 border-black-300 p-4 focus:outline-none focus:ring-0 rounded-2xl",
             }}
           />
           <div className="text-base font-medium text-right text-black-400">
@@ -222,15 +223,15 @@ export default function Post() {
         {/* 관련 링크 입력 */}
         <div>
           <label className="mb-4 text-sm font-medium">관련링크걸기</label>
-          <div className="flex gap-6 mb-6">
+          <div className="flex flex-wrap w-full gap-6 mb-6 lg:flex-col">
             <TextInput
               label="제목"
               placeholder="12자 이내로 작성해주세요."
               value={linkTitle}
               onChange={(e) => setLinkTitle(e.currentTarget.value.slice(0, 12))}
               classNames={{
-                label: "text-xs font-medium",
-                input: "bg-[#FAFAFA] border-0 border-b border-black-300 text-sm font-light rounded-none focus:ring-0 focus:outline-none w-[300px]",
+                label: "text-xs font-medium ",
+                input: "bg-[#FAFAFA] border-0 lg:w-full border-b border-black-300 text-sm font-light rounded-none focus:ring-0 focus:outline-none w-[300px]",
               }}
             />
             <TextInput

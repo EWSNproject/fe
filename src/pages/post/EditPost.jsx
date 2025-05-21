@@ -27,7 +27,8 @@ export default function EditPost() {
   const [tags, setTags] = useState([]);
   const [linkTitle, setLinkTitle] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  
+  const [existingImageUrls, setExistingImageUrls] = useState([]); // 추가 : 이미지관리
+
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const handleRemove = (index) => {
@@ -70,6 +71,7 @@ export default function EditPost() {
         setLinkTitle(post.urlTitle);
         setLinkUrl(post.urlPath);
         setCharCount(post.content.length);
+        setExistingImageUrls(post.imageUrls || []); // 추가 : 이미지관리
       } catch (error) {
         console.error("수정용 데이터 로딩 실패:", error);
       }
@@ -100,7 +102,7 @@ export default function EditPost() {
   };
 
   return (
-    <div className="w-[1000px] mx-auto mt-[30px] mb-[60px]">
+    <div className="w-full max-w-[1000px] mx-auto mt-[30px] mb-[60px] px-4 sm:px-6">
       {/* 제목 */}
       <div className="flex items-center gap-2 mb-3 text-2xl">
         <SlNote />
@@ -131,7 +133,7 @@ export default function EditPost() {
             제목과 내용은 필수입니다.
           </span>
           <div className="flex items-center gap-2 mb-4 border-2 rounded bg-black-50 border-black-300">
-            <div className="h-[32px] px-[10px] bg-black-200 text-lg font-semibold w-[52px] items-center flex">
+            <div className="h-[32px] px-[10px] bg-black-200 text-lg font-semibold w-[60px] items-center flex">
               제목
             </div>
             <TextInput
@@ -140,14 +142,15 @@ export default function EditPost() {
               onChange={(e) => setTitle(e.currentTarget.value.slice(0, 40))}
               withAsterisk
               classNames={{
-                input: "border-none focus:outline-none focus:ring-0 h-5 w-[932px] text-base",
+                input: "border-none focus:outline-none focus:ring-0 h-5 w-full text-base",
+                root: "w-full pr-2",
               }}
             />
           </div>
         </div>
 
         {/* 내용 입력 */}
-        <div className="mb-2">
+        <div className="mb-2 w-full max-w-[1000px]">
           <Textarea
             placeholder="500자 이내로 작성해주세요."
             minRows={8}
@@ -158,7 +161,7 @@ export default function EditPost() {
               setCharCount(e.currentTarget.value.length);
             }}
             classNames={{
-              input: "h-[230px] w-[1000px] border-2 border-black-300 p-4 focus:outline-none focus:ring-0 rounded-2xl",
+              input: "h-[230px] w-full border-2 border-black-300 p-4 focus:outline-none focus:ring-0 rounded-2xl",
             }}
           />
           <div className="text-base font-medium text-right text-black-400">
@@ -188,27 +191,50 @@ export default function EditPost() {
               (PNG, JPG, JPEG 최대 5장)
             </div>
           </Dropzone>
-          {files.length > 0 ? (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {files.map((file, index) => (
-                <div key={index} className="relative w-24 h-24 overflow-hidden border rounded">
-                  <button
-                    onClick={() => handleRemove(index)}
-                    className="absolute top-0 right-0 bg-black-50 rounded-full p-[2px] shadow text-gray-700 hover:text-red-600"
-                  >
-                    <X size={14} />
-                  </button>
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`preview-${index}`}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-1 text-sm text-gray-500">선택된 이미지가 없습니다. (최대 5개 첨부 가능)</p>
-          )}
+          {(files.length > 0 || existingImageUrls.length > 0) ? (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {/* ✅ 기존 이미지 렌더링 */}
+            {existingImageUrls.map((url, index) => (
+              <div key={`existing-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
+                <button
+                  onClick={() => {
+                    const updated = [...existingImageUrls];
+                    updated.splice(index, 1);
+                    setExistingImageUrls(updated);
+                  }}
+                  className="absolute top-0 right-0 bg-black-50 rounded-full p-[2px] shadow text-gray-700 hover:text-red-600"
+                >
+                  <X size={14} />
+                </button>
+                <img
+                  src={url}
+                  alt={`uploaded-${index}`}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))}
+
+            {/* ✅ 새로 선택한 이미지 렌더링 */}
+            {files.map((file, index) => (
+              <div key={`new-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
+                <button
+                  onClick={() => handleRemove(index)}
+                  className="absolute top-0 right-0 bg-black-50 rounded-full p-[2px] shadow text-gray-700 hover:text-red-600"
+                >
+                  <X size={14} />
+                </button>
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`preview-${index}`}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-1 text-sm text-gray-500">선택된 이미지가 없습니다. (최대 5개 첨부 가능)</p>
+        )}
+
         </div>
 
         {/* 태그 입력 */}
@@ -239,7 +265,7 @@ export default function EditPost() {
         {/* 관련 링크 입력 */}
         <div>
           <label className="mb-4 text-sm font-medium">관련링크걸기</label>
-          <div className="flex gap-6 mb-6">
+          <div className="flex flex-wrap w-full gap-6 mb-6 lg:flex-col">
             <TextInput
               label="제목"
               placeholder="12자 이내로 작성해주세요."
