@@ -5,10 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { TextInput, PasswordInput, Button } from "@mantine/core";
 import { Eye, EyeOff } from "lucide-react";
-import { login,getUserInfo } from '../../api/auth'; 
+import { login, getUserInfo } from '../../api/auth'; 
 import DuplicateModal from '../../components/modal/DuplicateModal'; 
 import Cookies from 'js-cookie'; 
-
 
 const schema = z.object({
   username: z.string().min(1, "아이디를 입력해주세요."),
@@ -29,7 +28,7 @@ export default function LoginForm({ handleLogin }) {
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(schema),
-    mode: "onBlur",
+    mode: "onTouched",
   });
 
   const onSubmit = async (data) => {

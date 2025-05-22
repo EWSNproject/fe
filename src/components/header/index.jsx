@@ -15,8 +15,9 @@ const Header = ({ isLoggedIn, userData }) => {
   const handleSearch = async (event) => {
     if (event.key === "Enter") {
       try {
-        await searchBenefits(searchTerm,9); 
-        navigate("/search"); 
+        await searchBenefits(searchTerm, 9);
+        navigate(`/search?query=${encodeURIComponent(searchTerm)}`); 
+        setSearchTerm(""); 
       } catch (error) {
         console.error("Search failed:", error);
       }

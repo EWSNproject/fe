@@ -213,7 +213,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         대댓글
                       </button>
                     )}
-                    {comment.nickname === nickname ? (
+                    {comment.userId === userId && comment.content !== "삭제된 댓글입니다." ? (
                       <button
                         className='flex items-center hover:underline'
                         onClick={() => {
@@ -224,15 +224,17 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         삭제
                       </button>
                     ) : (
-                      <button
-                        className="flex items-center hover:underline"
-                        onClick={() => {
-                          setReportTargetId(comment.id);
-                          setReportModalOpen(true);
-                        }}
-                      >
-                        신고
-                      </button>
+                      comment.userId !== userId && comment.content !== "삭제된 댓글입니다." && (
+                        <button
+                          className="flex items-center hover:underline"
+                          onClick={() => {
+                            setReportTargetId(comment.id);
+                            setReportModalOpen(true);
+                          }}
+                        >
+                          신고
+                        </button>
+                      )
                     )}
                   </div>
                 </div>

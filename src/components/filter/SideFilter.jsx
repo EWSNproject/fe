@@ -113,17 +113,19 @@ const SideFilter = ({ onFilterChange }) => {
 
   return (
     <div className="relative">
-      {/* ✅ md 구간에서만 햄버거 버튼 표시 */}
-      <div className="flex md:flex hidden justify-start px-4 mb-2">
+      {/* ✅ lg 구간부터(1280px 이하) 햄버거 버튼 표시 */}
+      <div className="lg:flex hidden justify-start px-4 mb-2">
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2">
           <Menu size={20} />
-          <span className="text-sm font-semibold">필터 열기</span>
+          <span className="text-sm font-semibold">
+            {menuOpen ? "필터 닫기" : "필터 열기"}
+          </span>
         </button>
       </div>
 
-      {/* ✅ md에서 menuOpen일 때만 필터 노출 */}
+      {/* ✅ lg(1280px 이하)에서 menuOpen일 때만 필터 노출 */}
       {menuOpen && (
-        <div className="md:flex flex-col p-4 border rounded-lg bg-gray-50 w-full">
+        <div className="lg:flex hidden flex-col p-4 border rounded-lg bg-gray-50 w-full">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold">필터</h2>
             <button className="text-xs text-tag-red" onClick={toggleAllSelections}>
@@ -152,7 +154,7 @@ const SideFilter = ({ onFilterChange }) => {
       )}
 
       {/* ✅ desktop(1281px 이상)에서는 항상 필터 표시 */}
-      <div className="hidden desktop:block w-[280px] bg-gray-50 border rounded-xl p-4 mr-4">
+      <div className="lg:hidden block w-[280px] bg-gray-50 border rounded-xl p-4 mr-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold">필터</h2>
           <button className="text-xs text-tag-red" onClick={toggleAllSelections}>

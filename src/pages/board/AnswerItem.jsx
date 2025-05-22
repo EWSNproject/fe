@@ -17,6 +17,8 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportTargetId, setReportTargetId] = useState(null);
+  const [selectModalOpen, setSelectModalOpen] = useState(false);
+  const [selectTargetId, setSelectTargetId] = useState(null);
 
   // 답변 작성
   const handleSaveAnswer = async () => {
@@ -32,13 +34,26 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   };
 
   // 채택
-  const handleSelect = async (answerId) => {
+  const handleConfirmSelect = async () => {
+    if (!selectTargetId) return;
     try {
-      const res = await selectAnswer(postId, answerId); 
+      const res = await selectAnswer(postId, selectTargetId);
       console.log("✅ 채택 성공:", res);
-    } catch (error) {
-      console.error("❌ 채택 실패:", error.response?.data || error.message);
-      console.log("채택 API 호출", { postId, answerId });
+      // UI 갱신
+      setComments((prev) =>
+        prev.map((a) =>
+          a.id === selectTargetId
+            ? { ...a, selected: true }
+            : { ...a, selected: false }
+        )
+      );
+      toast.success("답변이 채택되었습니다.");
+    } catch (err) {
+      toast.error("채택 중 오류가 발생했습니다.");
+      console.error("❌ 채택 실패:", err);
+    } finally {
+      setSelectModalOpen(false);
+      setSelectTargetId(null);
     }
   };
 
@@ -165,17 +180,20 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               <div className='w-full font-normal break-words text-black-950'>{comment.content}</div>
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
-                  {userMap[comment.userId] === nickname ? (
-                    <button
-                      onClick={() => {
-                        setDeleteTargetId(comment.id);
-                        setDeleteModalOpen(true);
-                      }}
-                      className='flex items-center hover:underline'
-                    >
-                      삭제
-                    </button>
-                  ) : (
+                  {comment.userId === userId && comment.content !== "삭제된 답변입니다." ? (
+                  // 본인이 쓴 답변 & 삭제되지 않았을 때만 삭제 버튼
+                  <button
+                    onClick={() => {
+                      setDeleteTargetId(comment.id);
+                      setDeleteModalOpen(true);
+                    }}
+                    className='flex items-center hover:underline'
+                  >
+                    삭제
+                  </button>
+                ) : (
+                  // 다른 사람이 쓴 답변 & 삭제되지 않았을 때만 신고 버튼
+                  comment.userId !== userId && comment.content !== "삭제된 답변입니다." && (
                     <button
                       className="flex items-center hover:underline"
                       onClick={() => {
@@ -185,12 +203,16 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                     >
                       신고
                     </button>
-                  )}
+                  )
+                )}
                 </div>
-                {/* 하나라도 채택된 댓글이 있으면 모두 숨김 */}
-                {!isAnySelected && (
+                {/* 글쓴이 본인이고, 채택된 댓글이 아직 없고, 해당 답변이 다른 사람이 쓴 것일 때만 채택 버튼 표시 */}
+                {userId === postAuthor && !isAnySelected && comment.userId !== userId && (
                   <button 
-                    onClick={() => handleSelect(comment.id)}
+                    onClick={() => {
+                      setSelectTargetId(comment.id);  
+                      setSelectModalOpen(true);       
+                    }}
                     className='flex px-2 border-4 rounded-full hover:bg-tag-blue hover:text-black-50 border-tag-blue text-tag-blue'
                   >
                     채택 <Check size={16} className="mt-[3px]" />
@@ -207,6 +229,20 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
           );
         })}
       </div>
+
+      {/* ✅ 채택 확인 모달 */}
+      <TwoSelectModal
+        isOpen={selectModalOpen}
+        message="채택하시겠습니까?"
+        subMessage="채택 후 재선택은 불가능합니다."
+        button1Text="채택하기"
+        button1Action={handleConfirmSelect}
+        button2Text="돌아가기"
+        button2Action={() => {
+          setSelectModalOpen(false);
+          setSelectTargetId(null);
+        }}
+      />
 
       {/* ✅ 삭제 확인 모달 */}
       <TwoSelectModal

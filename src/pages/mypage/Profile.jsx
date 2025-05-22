@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../components/Card.jsx";
 import UserInfoLevel from "../../components/profile/UserInfoLevel.jsx";
@@ -7,8 +7,10 @@ import { getUserInfo, deleteUser, logout } from "../../api/auth";
 import { getbookmarked, getUserPosts, getliked } from "../../api/mypage";
 import Pagination from "../../components/Pagination.jsx";
 import Cookies from "js-cookie";
-import DuplicateModal from "../../components/modal/DuplicateModal.jsx";
 import ReasonSelectModal from "../../components/modal/ReasonSelectModal.jsx";
+import DuplicateModal from "../../components/modal/DuplicateModal.jsx";
+import TwoSelectModal from "../../components/modal/TwoSelectModal";
+import { toast } from 'react-toastify';
 
 const Mypage = ({ handleLogout }) => {
   const [activeTab, setActiveTab] = useState("liked");
@@ -26,6 +28,8 @@ const Mypage = ({ handleLogout }) => {
 
   const [itemsPerPage, setItemsPerPage] = useState(6); // 기본값: 데스크탑 6개
   const pageGroupSize = 5;
+
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
   // 반응형 itemsPerPage 설정
   useEffect(() => {
@@ -85,22 +89,23 @@ const Mypage = ({ handleLogout }) => {
     fetchData();
   }, []);
 
-  const handleLogoutClick = async () => {
-    try {
-      await logout();
-      handleLogout();
-      setModalMessage("로그아웃 되었습니다.");
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error(error.message);
-      setModalMessage("로그아웃에 실패했습니다.");
-      setIsModalOpen(true);
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     navigate("/");
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await logout();
+      handleLogout();
+      toast.success("로그아웃 되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error("❌ 로그아웃 실패:", error);
+      toast.error("로그아웃에 실패했습니다.");
+    } finally {
+      setIsLogoutConfirmOpen(false);
+    }
   };
 
   const handleDeleteAccount = async (reason) => {
@@ -131,11 +136,11 @@ const Mypage = ({ handleLogout }) => {
 
       {showDetails && (
         <div className="w-full max-w-[1224px]">
-          <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md md:px-4 md:py-10">
-            <div className="flex items-center gap-10 md:flex-col md:gap-6">
+          <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md lg:px-4 lg:py-10">
+            <div className="flex items-center gap-10 lg:flex-col lg:gap-6">
               {/* 레벨 트래커 */}
-              <div className="relative w-[738px] md:w-full">
-                <div className="absolute w-full h-[2px] bg-black-300 top-[18px] md:hidden"></div>
+              <div className="relative w-[738px] lg:w-full">
+                <div className="absolute w-full h-[2px] bg-black-300 top-[18px] lg:hidden"></div>
                 <div className="relative flex justify-between w-full">
                   {[
                     { level: "Lv. 0", name: "?", points: "0" },
@@ -163,15 +168,15 @@ const Mypage = ({ handleLogout }) => {
               </div>
 
               {/* 포인트 설명 */}
-              <div className="flex-1 md:w-full">
-                <h3 className="ml-4 text-lg font-bold md:ml-0 md:text-base">
+              <div className="flex-1 lg:w-full">
+                <h3 className="ml-4 text-lg font-bold lg:ml-0 lg:text-base">
                   등급 및 포인트 시스템 안내
                 </h3>
-                <p className="mb-[30px] ml-4 md:ml-0 md:text-sm md:mb-4">
+                <p className="mb-[30px] ml-4 lg:ml-0 lg:text-sm lg:mb-4">
                   게시판에서 활동하며 포인트를 적립하면 등급이 상승합니다.
                 </p>
                 <div className="rounded-lg">
-                  <ul className="pl-5 space-y-2 list-disc text-sm md:text-xs">
+                  <ul className="pl-5 space-y-2 list-disc text-sm lg:text-xs">
                     <li className="text-tag-red">
                       가입 후 인사 게시판에 글을 작성하면 100점을 획득하여 바로
                       '알' 단계로 승급됩니다.
@@ -263,11 +268,16 @@ const Mypage = ({ handleLogout }) => {
       <div className="w-full max-w-[1236px] bg-yellow-400 flex items-center mt-6">
         <div className="items-center px-6 py-4 mx-auto">
           <div className="flex items-center gap-4 text-sm ">
-            <button onClick={handleLogoutClick}>로그아웃</button>
+            <button onClick={() => setIsLogoutConfirmOpen(true)}>로그아웃</button>
             <div className="w-[1px] h-3 bg-gray-300" />
             <button onClick={() => setIsWithdrawOpen(true)}>회원탈퇴</button>
-            <div className="w-[1px] h-3 bg-gray-300" />
-            <button>관리자페이지</button>
+            {/* 관리자 전용 버튼: ROLE_ADMIN인 경우에만 표시 */}
+            {user?.role === "ROLE_ADMIN" && (
+              <>
+                <div className="w-[1px] h-3 bg-gray-300" />
+                <button onClick={() => navigate("/admin")}>관리자페이지</button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -294,6 +304,18 @@ const Mypage = ({ handleLogout }) => {
         isOpen={isModalOpen}
         message={modalMessage}
         onClose={handleCloseModal}
+      />
+
+      <TwoSelectModal
+        isOpen={isLogoutConfirmOpen}
+        message="로그아웃하시겠습니까?"
+        button1Text="로그아웃"
+        button1Action={confirmLogout}
+        button2Text="돌아가기"
+        button2Action={() => {
+          toast.info("로그아웃을 취소했습니다.");
+          setIsLogoutConfirmOpen(false);
+        }}
       />
     </div>
   );

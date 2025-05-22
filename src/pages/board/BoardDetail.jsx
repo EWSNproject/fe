@@ -23,28 +23,7 @@ export default function BoardDetail() {
   useEffect(() => {
     const fetchPostAndUser = async () => {
       try {
-        const post = await getPostById(id);
-        setItem(post);
-
-        const token = Cookies.get("accessToken");
-        if (token) {
-          const user = await getUserInfo(token);
-          setUserNickname(user.nickname); 
-          setUserId(user.id); 
-        }
-      } catch (error) {
-        console.error("데이터 로딩 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPostAndUser();
-  }, [id])
-  
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const post = await getPostById(id);
+        const post = await getPostById(id); 
         setItem(post);
 
         const token = Cookies.get("accessToken");
@@ -64,9 +43,10 @@ export default function BoardDetail() {
         setLoading(false);
       }
     };
-    fetchAll();
+
+    fetchPostAndUser();
   }, [id]);
-  
+
   if (loading) return <div className='mt-20 text-center'>로딩 중...</div>;
   if (!item) return <div className='mt-20 text-center'>해당 게시글을 찾을 수 없습니다.</div>;
 
@@ -83,7 +63,7 @@ export default function BoardDetail() {
               nickname={userNickname}
               setCommentCount={setCommentCount}
               setComments={setComments}
-              postAuthor={item.nickName}
+              postAuthor={item.userId}
             />
           ) : (
             <CommentItem 
