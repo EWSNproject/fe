@@ -180,19 +180,20 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               <div className='w-full font-normal break-words text-black-950'>{comment.content}</div>
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
-                  {userMap[comment.userId] === nickname ? (
-                    !comment.selected && (
-                      <button
-                        onClick={() => {
-                          setDeleteTargetId(comment.id);
-                          setDeleteModalOpen(true);
-                        }}
-                        className='flex items-center hover:underline'
-                      >
-                        삭제
-                      </button>
-                    )
-                  ) : (
+                  {comment.userId === userId && comment.content !== "삭제된 답변입니다." ? (
+                  // 본인이 쓴 답변 & 삭제되지 않았을 때만 삭제 버튼
+                  <button
+                    onClick={() => {
+                      setDeleteTargetId(comment.id);
+                      setDeleteModalOpen(true);
+                    }}
+                    className='flex items-center hover:underline'
+                  >
+                    삭제
+                  </button>
+                ) : (
+                  // 다른 사람이 쓴 답변 & 삭제되지 않았을 때만 신고 버튼
+                  comment.userId !== userId && comment.content !== "삭제된 답변입니다." && (
                     <button
                       className="flex items-center hover:underline"
                       onClick={() => {
@@ -202,7 +203,8 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                     >
                       신고
                     </button>
-                  )}
+                  )
+                )}
                 </div>
                 {/* 글쓴이 본인이고, 채택된 댓글이 아직 없고, 해당 답변이 다른 사람이 쓴 것일 때만 채택 버튼 표시 */}
                 {userId === postAuthor && !isAnySelected && comment.userId !== userId && (

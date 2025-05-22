@@ -16,8 +16,6 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
     .split("T")[0]
     .replace(/-/g, ".");
 
-  const isAuthor = reply.nickname === nickname;
-
   const handleConfirmDelete = async () => {
     await onDelete(reply.id); 
     setDeleteModalOpen(false);
@@ -60,7 +58,7 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
         <div className="w-full font-normal break-words text-black-950">{reply.content}</div>
         <div className="flex justify-between">
           <div className="text-black-500 flex gap-2.5 text-sm font-normal">
-            {isAuthor ? (
+            {reply.userId === nickname && reply.content !== "삭제된 댓글입니다." ? (
               <button 
                 className="flex items-center hover:underline"
                 onClick={() => setDeleteModalOpen(true)}
@@ -68,12 +66,14 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
                 삭제
               </button>
             ) : (
-              <button
-                className="flex items-center hover:underline"
-                onClick={() => setReportModalOpen(true)}
-              >
-                신고
-              </button>
+              reply.userId !== nickname && reply.content !== "삭제된 댓글입니다." && (
+                <button
+                  className="flex items-center hover:underline"
+                  onClick={() => setReportModalOpen(true)}
+                >
+                  신고
+                </button>
+              )
             )}
           </div>
         </div>
