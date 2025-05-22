@@ -8,7 +8,10 @@ export default function ChatbotContainer() {
   return (
     <div>
       {opened && (
-        <div className="fixed bottom-[120px] right-12 w-[375px] h-[600px] bg-black-50 rounded-[28px] shadow-xl border border-gray-200 z-100">
+        <div className="
+          fixed bottom-[120px] right-12 w-[375px] h-[600px] bg-black-50 rounded-[28px] shadow-xl border border-gray-200 z-100
+          md:w-full md:h-full md:bottom-0 md:right-0 md:rounded-none md:border-0 md:shadow-none
+        ">
           <Chatbot onClose={() => setOpened(false)} />
         </div>
       )}
