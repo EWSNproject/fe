@@ -15,7 +15,7 @@ export default function TwoSelectModal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-900 bg-opacity-80">
-      <div className="bg-black-50 flex flex-col w-[452px] h-[300px] px-[38px] py-[40px] rounded-[8px] z-50">
+      <div className="bg-black-50 flex flex-col w-[452px] md:h-[250px] h-[300px] px-[38px] py-[40px] rounded-[8px] z-50">
         {/* 아이콘 영역 */}
         {icon && (
           <div className="flex justify-center">
@@ -38,18 +38,18 @@ export default function TwoSelectModal({
           )}
         </div>
 
-        <div className="flex justify-between gap-3 text-xl font-semibold">
+        <div className="flex justify-between gap-3 text-xl md:font-medium font-semibold">
           {button2Text && (
             <button
               onClick={button2Action}
-              className="px-[46px] py-[12px] w-full bg-black-200 text-gray-900 rounded-lg hover:bg-black-300"
+              className="px-[46px] py-[12px] md:px-[4px] w-full bg-black-200 text-gray-900 rounded-lg hover:bg-black-300"
             >
               {button2Text}
             </button>
           )}
           <button
             onClick={button1Action}
-            className="px-[46px] py-[12px] w-full bg-yellow-950 text-black-50 rounded-lg hover:bg-yellow-700"
+            className="px-[46px] py-[12px] md:px-[4px] w-full bg-yellow-950 text-black-50 rounded-lg hover:bg-yellow-700"
           >
             {button1Text}
           </button>
