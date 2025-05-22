@@ -24,11 +24,11 @@ export default function MyPostsList({ posts }) {
       {currentPosts.map((post) => (
         <div 
           key={post.postId} 
-          className="border-b grid grid-cols-12 gap-4 cursor-pointer hover:bg-gray-50"
+          className="border-b grid grid-cols-12 gap-4 md:gap-0 cursor-pointer hover:bg-gray-50"
           onClick={() => navigate(`/board/${post.postId}`)}
         >
-          <div className="col-span-9">
-            <h3 className="text-lg font-semibold mt-3">{post.title}</h3>
+          <div className="md:col-span-12 col-span-9">
+            <h3 className="text-lg font-semibold mt-3 break-words">{post.title}</h3>
             <p className="text-sm text-black-500 mt-1">{post.content}</p>
             <div className="flex gap-4 mt-2 text-sm text-gray-600 mb-3">
               <span>❤️ {post.recommendCnt}</span>
@@ -36,7 +36,7 @@ export default function MyPostsList({ posts }) {
               <span className="text-tag-green">{post.nickName}</span>
             </div>
           </div>
-          <div className="col-span-3 text-right text-sm text-black-300 mt-3">
+          <div className="col-span-3 text-right text-sm text-black-300 mt-3 md:hidden">
             {new Date(post.createdAt).toLocaleDateString()}
           </div>
         </div>
