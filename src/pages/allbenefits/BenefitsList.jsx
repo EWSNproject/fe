@@ -131,46 +131,49 @@ const CardListPage = () => {
   }
 
   return (
-    <div className="flex md:flex-col flex-row min-h-screen md:p-4 p-6 max-w-[1600px] mx-auto">
-      <SideFilter onFilterChange={handleFilterChange} />
-
-      <div className="flex flex-col flex-1">
-        <span className="text-[24px] mb-5 font-semibold">
+    <div className="flex flex-col min-h-screen lg:p-4 p-6 max-w-[1600px] mx-auto">
+      <span className="text-[24px] mb-5 font-semibold">
           복지혜택 전체보기
-        </span>
-
-        <SearchFilter onSearch={handleSearch} onReset={handleReset} />
-
-        <div className="w-full max-w-[1200px]">
-          <SortOptions selected={sortOption} onSelect={handleSortChange} />
+      </span>
+      <div className="flex lg:flex-col lg:gap-2">
+        <div>
+          {/* 가구형태, 가구상황, 관심주제 필터 */}
+          <SideFilter onFilterChange={handleFilterChange} />
         </div>
+        <div className="flex flex-col flex-1">
+          {/* 검색 필터*/}
+          <SearchFilter onSearch={handleSearch} onReset={handleReset} />
 
-        <div className="grid md:grid-cols-1  grid-cols-3 md:gap-4 lg:gap-6 gap-5 w-full max-w-[1200px]">
-          {getCurrentPageData().map((card) => (
-            <Card
-              key={card.publicServiceId}
-              data={{
-                id: card.publicServiceId,
-                title: card.serviceName,
-                description: card.summaryPurpose,
-                category: card.serviceCategory,
-                specialGroup: card.specialGroup,
-                familyType: card.familyType,
-                isBookmarked: card.bookmarked,
-              }}
+          <div className="w-full max-w-[1200px]">
+            <SortOptions selected={sortOption} onSelect={handleSortChange} />
+          </div>
+
+          <div className="grid md:grid-cols-1  grid-cols-3 md:gap-4 lg:gap-6 gap-5 w-full max-w-[1200px]">
+            {getCurrentPageData().map((card) => (
+              <Card
+                key={card.publicServiceId}
+                data={{
+                  id: card.publicServiceId,
+                  title: card.serviceName,
+                  description: card.summaryPurpose,
+                  category: card.serviceCategory,
+                  specialGroup: card.specialGroup,
+                  familyType: card.familyType,
+                  isBookmarked: card.bookmarked,
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex justify-center mt-8 max-w-[1200px]">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(benefits.length / itemsPerPage)}
+              onPageChange={setCurrentPage}
+              pageGroupSize={pageGroupSize}
             />
-          ))}
+          </div>
         </div>
-
-        <div className="flex justify-center mt-8 max-w-[1200px]">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(benefits.length / itemsPerPage)}
-            onPageChange={setCurrentPage}
-            pageGroupSize={pageGroupSize}
-          />
-        </div>
-      </div>
+      </div>  
     </div>
   );
 };
