@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,7 +25,6 @@ export default function LoginForm({ handleLogin }) {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(schema),
