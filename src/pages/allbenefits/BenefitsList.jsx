@@ -119,7 +119,7 @@ const CardListPage = () => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [fetchFilteredData]);
 
   const getCurrentPageData = () => {
     if (isMobile) {
