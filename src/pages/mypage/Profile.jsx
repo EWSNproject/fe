@@ -35,7 +35,7 @@ const Mypage = ({ handleLogout }) => {
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      setItemsPerPage(width < 768 ? 2 : 6); // md 기준: 768px
+      setItemsPerPage(width < 768 ? 2 : 6);
     };
 
     handleResize(); // 초기 실행

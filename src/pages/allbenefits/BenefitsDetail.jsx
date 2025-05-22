@@ -54,43 +54,59 @@ const BenefitsDetail = () => {
     const lines = sanitizeText(text);
     if (showMore || lines.length <= limit) {
       return lines.map((line, idx) => (
-        <span key={idx}>
+        <span key={idx} className="block md:inline">
           {line}
-          <br />
+          {idx < lines.length - 1 && <br className="hidden md:inline" />}
         </span>
       ));
     }
 
     const preview = lines.slice(0, limit);
     return preview.map((line, idx) => (
-      <span key={idx}>
+      <span key={idx} className="block md:inline">
         {line}
-        <br />
+        {idx < preview.length - 1 && <br className="hidden md:inline" />}
       </span>
     ));
   };
 
+  // Check if any content needs the show more button
+  const hasMoreContent = () => {
+    const fields = [
+      benefit.supportTarget,
+      benefit.selectionCriteria,
+      benefit.supportDetail,
+      benefit.applicationMethod,
+      benefit.servicePurpose
+    ];
+    
+    return fields.some(field => {
+      const lines = sanitizeText(field);
+      return lines.length > 2;
+    });
+  };
+
   return (
-    <div className="max-w-[1000px] mt-10 mx-auto p-6 ">
+    <div className="max-w-[1000px] mt-10 md:mt-5 mx-auto p-6 ">
       <div className="flex flex-col gap-6">
         <div className="flex min-w-[322px] min-h-[40px]">
-          <div className="flex items-center px-4 py-2 text-lg bg-yellow-700 text-black-50">
+          <div className="flex items-center px-4 py-2 text-lg md:text-sm bg-yellow-700 text-black-50">
             담당부서
           </div>
-          <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700">
+          <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
             {department}
           </div>
-          <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700">
+          <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
             {phone}
           </div>
         </div>
 
         <div className="flex flex-col mb-6">
-          <span className="text-[36px] font-bold">
+          <span className="text-[36px] font-bold md:text-[26px]">
             {benefit.serviceName || "제목 없음"}
           </span>
-          <span className="text-[24px]">
-            {benefit.servicePurpose || "설명 없음"}
+          <span className="text-[24px] md:text-[16px]">
+            {renderMultiline(benefit.servicePurpose) || "설명 없음"}
           </span>
         </div>
       </div>
@@ -145,14 +161,16 @@ const BenefitsDetail = () => {
       </div>
 
       {/* 상세보기 버튼 */}
-      <div className="flex justify-end mt-8">
-        <button
-          onClick={() => setShowMore(!showMore)}
-          className="ml-2 px-12 max-w-[237px] bg-black-300 text-black-50 py-3 rounded-lg transition"
-        >
-          {showMore ? "접기" : "상세 보기"}
-        </button>
-      </div>
+      {hasMoreContent() && (
+        <div className="flex justify-end mt-8">
+          <button
+            onClick={() => setShowMore(!showMore)}
+            className="ml-2 px-12 max-w-[237px] bg-black-300 text-black-50 py-3 rounded-lg transition"
+          >
+            {showMore ? "접기" : "상세 보기"}
+          </button>
+        </div>
+      )}
 
       {/* 신청하기 버튼 */}
       <div className="flex justify-end mt-8">

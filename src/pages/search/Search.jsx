@@ -8,6 +8,7 @@ import { getPopularBenefits, deleteSearchHistory } from "../../api/main";
 import { searchAllPosts } from "../../api/postApi";
 import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 import { getSearchHistory } from "../../api/main";
+import Pagination from "../../components/Pagination";
 
 const Search = () => {
   const [visibleItems, setVisibleItems] = useState(6);
@@ -18,6 +19,8 @@ const Search = () => {
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [mobilePage, setMobilePage] = useState(1);
 
   const loadMore = () => {
     setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
@@ -61,6 +64,12 @@ const Search = () => {
       setSearchTerm("");
     }
   }, [query]);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleSearch = async (term) => {
     if (!term.trim()) return;
@@ -109,10 +118,13 @@ const Search = () => {
     handleSearch(suggestion);
   };
 
-  const currentItems =
-    searchResults.length > 0
-      ? searchResults.slice(0, visibleItems)
-      : popularBenefits.slice(0, visibleItems);
+  const itemsPerPage = isMobile ? 3 : visibleItems;
+  const totalItems = searchResults.length > 0 ? searchResults : popularBenefits;
+  const totalPages = isMobile ? Math.ceil(totalItems.length / 3) : 1;
+
+  const pagedItems = isMobile
+    ? totalItems.slice((mobilePage - 1) * 3, mobilePage * 3)
+    : totalItems.slice(0, visibleItems);
 
   return (
     <div className="flex flex-col items-center p-6 max-w-[1680px] mx-auto">
@@ -232,7 +244,7 @@ const Search = () => {
           <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
         ) : (
           <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
-            {currentItems.map((card) => (
+            {pagedItems.map((card) => (
               <Card
                 key={card.publicServiceId}
                 data={{
@@ -249,7 +261,18 @@ const Search = () => {
           </div>
         )}
 
-        {visibleItems < searchResults.length && (
+        {/* 모바일에서만 페이지네이션 */}
+        {isMobile && totalPages > 1 && (
+          <Pagination
+            currentPage={mobilePage}
+            totalPages={totalPages}
+            onPageChange={setMobilePage}
+            pageGroupSize={3}
+          />
+        )}
+
+        {/* PC에서는 기존 더보기 버튼 유지 */}
+        {!isMobile && visibleItems < searchResults.length && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}
