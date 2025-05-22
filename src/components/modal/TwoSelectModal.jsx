@@ -15,7 +15,7 @@ export default function TwoSelectModal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-900 bg-opacity-80">
-      <div className="bg-black-50 flex flex-col w-[452px] md:h-[250px] h-[300px] px-[38px] py-[40px] rounded-[8px] z-50">
+      <div className="bg-black-50 flex flex-col w-[452px] md:h-[250px] md:py-[22px] h-[300px] px-[38px] py-[40px] rounded-[8px] z-50">
         {/* 아이콘 영역 */}
         {icon && (
           <div className="flex justify-center">
