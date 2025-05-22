@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
@@ -47,6 +47,8 @@ const CardListPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 9;
   const pageGroupSize = 5;
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [mobilePage, setMobilePage] = useState(1);
 
   const [selectedFilters, setSelectedFilters] = useState({
     가구형태: [],
@@ -54,18 +56,25 @@ const CardListPage = () => {
     관심주제: [],
   });
 
-  const fetchFilteredData = async (filters = selectedFilters, sort = "") => {
-    try {
-      setIsLoading(true);
-      const filteredData = await getFilteredBenefits(filters, sort);
-      setBenefits(filteredData);
-      setCurrentPage(1);
-    } catch (error) {
-      console.error("Failed to fetch filtered benefits:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const fetchFilteredData = useCallback(async () => {
+  try {
+    setIsLoading(true);
+    const sortParam =
+      sortOption === "인기순"
+        ? "bookmark"
+        : sortOption === "방문순"
+        ? "view"
+        : "";
+    const filteredData = await getFilteredBenefits(selectedFilters, sortParam);
+    setBenefits(filteredData);
+    setCurrentPage(1);
+  } catch (error) {
+    console.error("Failed to fetch filtered benefits:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}, [selectedFilters, sortOption]);
+
 
   const handleSearch = async (keyword) => {
     const trimmed = keyword.trim();
@@ -114,12 +123,19 @@ const CardListPage = () => {
 
   useEffect(() => {
     fetchFilteredData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [fetchFilteredData]);
 
   const getCurrentPageData = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return benefits.slice(startIndex, startIndex + itemsPerPage);
+    if (isMobile) {
+      const startIndex = (mobilePage - 1) * 3;
+      return benefits.slice(startIndex, startIndex + 3);
+    } else {
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      return benefits.slice(startIndex, startIndex + itemsPerPage);
+    }
   };
 
   if (isLoading) {
@@ -132,7 +148,7 @@ const CardListPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen lg:p-4 p-6 max-w-[1600px] mx-auto">
-      <span className="text-[24px] mb-5 font-semibold">
+      <span className="text-[32px] mb-8 font-semibold text-center">
           복지혜택 전체보기
       </span>
       <div className="flex lg:flex-col lg:gap-2">
@@ -165,12 +181,23 @@ const CardListPage = () => {
             ))}
           </div>
           <div className="flex justify-center mt-8 max-w-[1200px]">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(benefits.length / itemsPerPage)}
-              onPageChange={setCurrentPage}
-              pageGroupSize={pageGroupSize}
-            />
+            {isMobile ? (
+              benefits.length > 3 && (
+                <Pagination
+                  currentPage={mobilePage}
+                  totalPages={Math.ceil(benefits.length / 3)}
+                  onPageChange={setMobilePage}
+                  pageGroupSize={3}
+                />
+              )
+            ) : (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(benefits.length / itemsPerPage)}
+                onPageChange={setCurrentPage}
+                pageGroupSize={pageGroupSize}
+              />
+            )}
           </div>
         </div>
       </div>  

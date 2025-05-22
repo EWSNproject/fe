@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { saveUserInterests, getInterestCategories } from "../../api/main";
+import { saveUserInterests, getInterestCategories, getInterestUser } from "../../api/main";
 import { toast } from "react-toastify";
 
 Modal.setAppElement("#root");
@@ -19,17 +19,31 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
   });
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getInterestCategories();
-        setCategories(data);
+        const [categoriesData, userInterests] = await Promise.all([
+          getInterestCategories(),
+          getInterestUser()
+        ]);
+        
+        setCategories(categoriesData);
+        
+        // Update selected state with user's interests
+        if (userInterests) {
+          const newSelected = {
+            familyStatus: userInterests["가구형태"]?.filter(item => item.selected).map(item => item.name) || [],
+            familyType: userInterests["가구상황"]?.filter(item => item.selected).map(item => item.name) || [],
+            interestTopics: userInterests["관심주제"]?.filter(item => item.selected).map(item => item.name) || []
+          };
+          setSelected(newSelected);
+        }
       } catch (error) {
         toast.error("관심사 목록을 불러오는데 실패했습니다.");
       }
     };
 
     if (isOpen) {
-      fetchCategories();
+      fetchData();
     }
   }, [isOpen]);
 

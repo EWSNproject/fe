@@ -129,10 +129,11 @@ const UserInfoLevel = ({ user }) => {
             </div>
             {nextLevel && (
               <div className="flex justify-end mt-2 text-sm">
-                <span className="flex gap-1">
-                  {user.remainPoint}포인트 모으면{" "}
-                  <span className="text-yellow-800">{nextLevel}</span> 등급으로 승급!
-                </span>
+                <div className="flex flex-row flex-wrap items-center gap-1 break-keep w-full max-w-full">
+                  <span>{user.remainPoint}포인트 모으면</span>
+                  <span className="text-yellow-800">{nextLevel}</span>
+                  <span>등급으로 승급!</span>
+                </div>
               </div>
             )}
           </div>
