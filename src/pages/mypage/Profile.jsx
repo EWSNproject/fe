@@ -8,6 +8,7 @@ import { getbookmarked, getUserPosts, getliked } from "../../api/mypage";
 import Pagination from "../../components/Pagination.jsx";
 import Cookies from "js-cookie";
 import ReasonSelectModal from "../../components/modal/ReasonSelectModal.jsx";
+import DuplicateModal from "../../components/modal/DuplicateModal.jsx";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
 import { toast } from 'react-toastify';
 
@@ -87,6 +88,11 @@ const Mypage = ({ handleLogout }) => {
 
     fetchData();
   }, []);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    navigate("/");
+  };
 
   const confirmLogout = async () => {
     try {
@@ -292,6 +298,12 @@ const Mypage = ({ handleLogout }) => {
           "직접 입력",
         ]}
         confirmText="탈퇴하기"
+      />
+
+      <DuplicateModal
+        isOpen={isModalOpen}
+        message={modalMessage}
+        onClose={handleCloseModal}
       />
 
       <TwoSelectModal
