@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import Card from "../../components/Card";
 import SideFilter from "../../components/filter/SideFilter";
 import SearchFilter from "../../components/filter/SearchFilter";
@@ -56,18 +56,25 @@ const CardListPage = () => {
     관심주제: [],
   });
 
-  const fetchFilteredData = async (filters = selectedFilters, sort = "") => {
-    try {
-      setIsLoading(true);
-      const filteredData = await getFilteredBenefits(filters, sort);
-      setBenefits(filteredData);
-      setCurrentPage(1);
-    } catch (error) {
-      console.error("Failed to fetch filtered benefits:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const fetchFilteredData = useCallback(async () => {
+  try {
+    setIsLoading(true);
+    const sortParam =
+      sortOption === "인기순"
+        ? "bookmark"
+        : sortOption === "방문순"
+        ? "view"
+        : "";
+    const filteredData = await getFilteredBenefits(selectedFilters, sortParam);
+    setBenefits(filteredData);
+    setCurrentPage(1);
+  } catch (error) {
+    console.error("Failed to fetch filtered benefits:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}, [selectedFilters, sortOption]);
+
 
   const handleSearch = async (keyword) => {
     const trimmed = keyword.trim();

@@ -118,7 +118,6 @@ const Search = () => {
     handleSearch(suggestion);
   };
 
-  const itemsPerPage = isMobile ? 3 : visibleItems;
   const totalItems = searchResults.length > 0 ? searchResults : popularBenefits;
   const totalPages = isMobile ? Math.ceil(totalItems.length / 3) : 1;
 
