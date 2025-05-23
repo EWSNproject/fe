@@ -147,7 +147,7 @@ const Home = () => {
 
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center w-full lg:px-4 md:px-1">
       <InterestModal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} />
 
       {/* 🔍 빠른 복지 서비스 검색 */}
@@ -173,7 +173,7 @@ const Home = () => {
         ) : (
           categoryCards.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
+              <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
                 {(isMobile ? categoryCards.slice(0, 3) : categoryCards).map((card) => (
                   <div key={card.publicServiceId} className="transition-transform hover:scale-[1.03] hover:shadow-lg border border-gray-200 rounded-xl p-1">
                     <Card data={{
@@ -204,7 +204,7 @@ const Home = () => {
                   <div 
                   key={item.publicServiceId} 
                   className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline 
-                             overflow-hidden whitespace-nowrap text-ellipsis"
+                              overflow-hidden whitespace-nowrap text-ellipsis"
                   onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
                   title={item.serviceName}
                 >
@@ -221,15 +221,15 @@ const Home = () => {
               <div className="relative flex-1 overflow-hidden h-[28px]">
                 <div className="absolute transition-all duration-500" style={{ top: `-${recentIndex * 28}px` }}>
                   {recentServices.slice(0, 10).map((item) => (
-                   <div 
-                   key={item.publicServiceId} 
-                   className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline 
-                              overflow-hidden whitespace-nowrap text-ellipsis"
-                   onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
-                   title={item.serviceName}
-                 >
-                   #{item.serviceName}
-                 </div>
+                    <div 
+                      key={item.publicServiceId} 
+                      className="h-[28px] leading-[28px] text-yellow-900 font-medium cursor-pointer hover:underline 
+                                  overflow-hidden whitespace-nowrap text-ellipsis"
+                      onClick={() => navigate(`/benefitsList/${item.publicServiceId}`)}
+                      title={item.serviceName}
+                    >
+                      #{item.serviceName}
+                    </div>
                   ))}
                 </div>
               </div>
