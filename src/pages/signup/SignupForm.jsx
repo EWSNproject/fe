@@ -180,7 +180,7 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="relative flex justify-center pb-28 top-20 md:top-10">
+    <div className="relative flex justify-center pb-28 top-20 md:top-8">
       <form 
         onSubmit={handleSubmit(onSubmit)} 
         className="w-full max-w-[520px] px-4 space-y-4"
@@ -189,33 +189,35 @@ export default function SignupForm() {
           회원가입
         </h2>
 
-        <span className="flex flex-col gap-4 mb-6">
+        <span className="flex flex-col w-full gap-4 mb-6">
           {/* 아이디 입력 */}
           <div className="flex justify-between w-full gap-2">
-            <TextInput
-              label="아이디"
-              placeholder="아이디를 입력해주세요"
-              {...register("username")}
-              error={errors.username?.message}
-              styles={{
-                label: { fontSize: "16px", fontWeight: "400" },
-                input: {
-                  marginTop: "4px",
-                  color: "#000",
-                  height: "50px",
-                  padding: "16px 13px",
-                  width: "404px",
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: "0.5rem",
-                  border: "1px solid #E5E7EB",
-                },
-                error: {
-                  color: "#D6173A",
-                  marginTop: "5px",
-                  marginLeft: "5px",
-                },
-              }}
-            />
+            <div className="flex-grow">
+              <TextInput
+                label="아이디"
+                placeholder="아이디를 입력해주세요"
+                {...register("username")}
+                error={errors.username?.message}
+                styles={{
+                  label: { fontSize: "16px", fontWeight: "400" },
+                  input: {
+                    marginTop: "4px",
+                    color: "#000",
+                    height: "50px",
+                    padding: "16px 13px",
+                    width: "100%",
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: "0.5rem",
+                    border: "1px solid #E5E7EB",
+                  },
+                  error: {
+                    color: "#D6173A",
+                    marginTop: "5px",
+                    marginLeft: "5px",
+                  },
+                }}
+              />
+            </div>
             <Button
               type="button"
               className="bg-yellow-400 w-[108px] h-[50px] mt-[28px] rounded-lg text-black-700 border border-gray-200"
@@ -329,30 +331,32 @@ export default function SignupForm() {
             }}
           />
           <div className="flex justify-between w-full gap-2">
-            <TextInput
-              label="닉네임"
-              placeholder="닉네임을 입력해주세요"
-              {...register("nickname")}
-              error={errors.nickname?.message}
-              styles={{
-                label: { fontSize: "16px", fontWeight: "400" },
-                input: {
-                  marginTop: "4px",
-                  color: "#000",
-                  height: "50px",
-                  padding: "16px 13px",
-                  width: "404px",
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: "0.5rem",
-                  border: "1px solid #E5E7EB",
-                },
-                error: {
-                  color: "#D6173A",
-                  marginTop: "5px",
-                  marginLeft: "5px",
-                },
-              }}
-            />
+            <div className="flex-grow">
+              <TextInput
+                label="닉네임"
+                placeholder="닉네임을 입력해주세요"
+                {...register("nickname")}
+                error={errors.nickname?.message}
+                styles={{
+                  label: { fontSize: "16px", fontWeight: "400" },
+                  input: {
+                    marginTop: "4px",
+                    color: "#000",
+                    height: "50px",
+                    padding: "16px 13px",
+                    width: "100%",
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: "0.5rem",
+                    border: "1px solid #E5E7EB",
+                  },
+                  error: {
+                    color: "#D6173A",
+                    marginTop: "5px",
+                    marginLeft: "5px",
+                  },
+                }}
+              />
+            </div>
             <Button
               type="button"
               className="bg-yellow-400 w-[108px] h-[50px] mt-[28px] rounded-lg text-black-700 border border-gray-200"

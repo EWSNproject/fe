@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/logo.svg";
 import Search from "../../assets/images/ic_search.svg";
 import { Menu } from "lucide-react";
@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 const Header = ({ isLoggedIn, userData }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = async (event) => {
@@ -23,6 +24,12 @@ const Header = ({ isLoggedIn, userData }) => {
       }
     }
   };
+
+  useEffect(() => {
+    // 경로 변경될 때마다 메뉴 닫기
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   useEffect(() => {
     const token = Cookies.get("accessToken");
     if (token) {
@@ -89,7 +96,7 @@ const Header = ({ isLoggedIn, userData }) => {
           </div>
 
           {/* 로그인 & 회원가입 또는 사용자 정보 */}
-          <div className="flex items-center gap-3 text-black-500">
+          <div className="flex items-center gap-3 text-black-500 md:hidden">
             {isLoggedIn ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => navigate("/mypage")}>
@@ -122,51 +129,53 @@ const Header = ({ isLoggedIn, userData }) => {
 
       {/* 모바일 네비게이션 메뉴 (햄버거 메뉴) */}
       {menuOpen && (
-      <div className="flex-col items-center hidden p-4 border-t text-black-950 md:flex lg:flex">
-        <button
-          onClick={() => { navigate("/benefitsList"); setMenuOpen(false); }}
-          className="w-full py-2 rounded-md hover:bg-black-100"
+        <div
+          className="flex-col items-center hidden p-4 border-t text-black-950 md:flex lg:flex"
         >
-          복지혜택 전체보기
-        </button>
-        <button
-          onClick={() => { navigate("/search"); setMenuOpen(false); }}
-          className="w-full py-2 rounded-md hover:bg-black-100"
-        >
-          통합검색
-        </button>
-        <button
-          onClick={() => { navigate("/board"); setMenuOpen(false); }}
-          className="w-full py-2 rounded-md hover:bg-black-100"
-        >
-          게시판
-        </button>
-
-        {isLoggedIn ? (
           <button
-            onClick={() => { navigate("/mypage"); setMenuOpen(false); }}
+            onClick={() => { navigate("/benefitsList"); setMenuOpen(false); }}
             className="w-full py-2 rounded-md hover:bg-black-100"
           >
-            마이페이지
+            복지혜택 전체보기
           </button>
-        ) : (
-          <>
+          <button
+            onClick={() => { navigate("/search"); setMenuOpen(false); }}
+            className="w-full py-2 rounded-md hover:bg-black-100"
+          >
+            통합검색
+          </button>
+          <button
+            onClick={() => { navigate("/board"); setMenuOpen(false); }}
+            className="w-full py-2 rounded-md hover:bg-black-100"
+          >
+            게시판
+          </button>
+
+          {isLoggedIn ? (
             <button
-              onClick={() => { navigate("/login"); setMenuOpen(false); }}
+              onClick={() => { navigate("/mypage"); setMenuOpen(false); }}
               className="w-full py-2 rounded-md hover:bg-black-100"
             >
-              로그인
+              마이페이지
             </button>
-            <button
-              onClick={() => { navigate("/signup"); setMenuOpen(false); }}
-              className="w-full py-2 rounded-md hover:bg-black-100"
-            >
-              회원가입
-            </button>
-          </>
-        )}
-      </div>
-    )}
+          ) : (
+            <>
+              <button
+                onClick={() => { navigate("/login"); setMenuOpen(false); }}
+                className="w-full py-2 rounded-md hover:bg-black-100"
+              >
+                로그인
+              </button>
+              <button
+                onClick={() => { navigate("/signup"); setMenuOpen(false); }}
+                className="w-full py-2 rounded-md hover:bg-black-100"
+              >
+                회원가입
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </header>
   );
 };
