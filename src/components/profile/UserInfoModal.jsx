@@ -167,7 +167,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
         isOpen={isOpen}
         onRequestClose={handleCloseModal}
         contentLabel="User Info"
-        className="bg-black-50 pt-5 pr-5 pl-5 max-w-[600px] min-h-[782px] w-full mx-auto rounded-lg outline-none"
+        className="bg-black-50 pt-5 pr-5 pl-5 max-w-[600px] min-h-[782px] w-full mx-auto rounded-lg outline-none md:max-h-[90vh] md:overflow-y-auto"
         overlayClassName="fixed inset-0 bg-black-950 bg-opacity-80 flex items-center justify-center"
       >
         <div className="flex justify-between items-center mb-4">
