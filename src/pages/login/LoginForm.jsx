@@ -72,7 +72,7 @@ export default function LoginForm({ handleLogin }) {
 
   return (
     <>
-      <div className="relative flex justify-center pb-10 top-40 md:top-20">
+      <div className="relative flex justify-center pb-10 top-40 md:top-8">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full max-w-[520px] px-4 space-y-4"

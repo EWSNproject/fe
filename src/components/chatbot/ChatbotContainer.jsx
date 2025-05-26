@@ -1,10 +1,19 @@
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import Chatbot from "./Chatbot";
+import { useLocation } from "react-router-dom";
 
 export default function ChatbotContainer() {
   const [opened, setOpened] = useState(false);
+  const location = useLocation();
 
+  const hiddenPaths = ["/post", "/postEdit"];
+  const shouldHide = hiddenPaths.some(path =>
+    location.pathname === path || location.pathname.startsWith(path + "/")
+  );
+
+  if (shouldHide) return null;
+  
   return (
     <div>
       {opened && (
@@ -18,7 +27,7 @@ export default function ChatbotContainer() {
 
       <button
         onClick={() => setOpened(!opened)}
-        className="fixed z-50 flex items-center justify-center bg-yellow-600 rounded-full shadow-lg text-black-50 bottom-12 right-12 hover:bg-yellow-700 w-14 h-14"
+        className="fixed z-50 flex items-center justify-center bg-yellow-600 rounded-full shadow-lg text-black-50 bottom-12 right-12 hover:bg-yellow-700 w-14 h-14 md:bottom-6 md:right-6"
       >
         <MessageCircle className="w-6 h-6" />
       </button>
