@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import { getFilterData } from "../../api/BenefitsService";
@@ -11,17 +11,22 @@ const SideFilter = ({ onFilterChange }) => {
     "관심주제": []
   });
 
-  const [selectedFilters, setSelectedFilters] = useState({
+  const [setSelectedFilters] = useState({
+    familyTypes: [],
+    specialGroups: [],
+    categories: []
+  });
+
+  const [tempFilters, setTempFilters] = useState({
     familyTypes: [],
     specialGroups: [],
     categories: []
   });
 
   const isAllSelected =
-  selectedFilters.familyTypes.length === filterCategories["가구형태"]?.length &&
-  selectedFilters.specialGroups.length === filterCategories["가구상황"]?.length &&
-  selectedFilters.categories.length === filterCategories["관심주제"]?.length;
-
+    tempFilters.familyTypes.length === filterCategories["가구형태"]?.length &&
+    tempFilters.specialGroups.length === filterCategories["가구상황"]?.length &&
+    tempFilters.categories.length === filterCategories["관심주제"]?.length;
 
   useEffect(() => {
     const fetchFilterData = async () => {
@@ -41,16 +46,15 @@ const SideFilter = ({ onFilterChange }) => {
 
   const handleSelectionChange = (category, selectedOptions) => {
     const selectedLabels = selectedOptions.map(option => option.label);
-    const newSelectedFilters = {
-      ...selectedFilters,
+    const newTempFilters = {
+      ...tempFilters,
       [category === "가구형태"
         ? "familyTypes"
         : category === "가구상황"
         ? "specialGroups"
         : "categories"]: selectedLabels
     };
-    setSelectedFilters(newSelectedFilters);
-    onFilterChange(newSelectedFilters);
+    setTempFilters(newTempFilters);
   };
 
   const toggleAllSelections = () => {
@@ -60,21 +64,25 @@ const SideFilter = ({ onFilterChange }) => {
         specialGroups: [],
         categories: []
       };
-      setSelectedFilters(emptyFilters);
-      onFilterChange(emptyFilters);
+      setTempFilters(emptyFilters);
     } else {
       const allSelected = {
         familyTypes: filterCategories["가구형태"].map(option => option.label),
         specialGroups: filterCategories["가구상황"].map(option => option.label),
         categories: filterCategories["관심주제"].map(option => option.label)
       };
-      setSelectedFilters(allSelected);
-      onFilterChange(allSelected);
+      setTempFilters(allSelected);
     }
   };
 
+  // 검색 버튼 클릭 핸들러
+  const handleSearch = () => {
+    setSelectedFilters(tempFilters);
+    onFilterChange(tempFilters);
+  };
+
   const FilterSection = ({ title, options, selectedOptions, onSelectionChange }) => {
-    const [sectionOpen, setSectionOpen] = useState(true);
+    const [sectionOpen, setSectionOpen] = useState(false);
 
     const toggleSection = () => setSectionOpen(!sectionOpen);
 
@@ -113,7 +121,6 @@ const SideFilter = ({ onFilterChange }) => {
 
   return (
     <div className="relative">
-      {/* ✅ lg 구간부터(1280px 이하) 햄버거 버튼 표시 */}
       <div className="lg:flex hidden justify-start px-4 mb-2">
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2">
           <Menu size={20} />
@@ -123,7 +130,7 @@ const SideFilter = ({ onFilterChange }) => {
         </button>
       </div>
 
-      {/* ✅ lg(1280px 이하)에서 menuOpen일 때만 필터 노출 */}
+
       {menuOpen && (
         <div className="lg:flex hidden flex-col p-4 border rounded-lg bg-gray-50 w-full">
           <div className="flex items-center justify-between mb-4">
@@ -139,7 +146,7 @@ const SideFilter = ({ onFilterChange }) => {
               title={title}
               options={options}
               selectedOptions={options.filter(option =>
-                selectedFilters[
+                tempFilters[
                   title === "가구형태"
                     ? "familyTypes"
                     : title === "가구상황"
@@ -150,10 +157,18 @@ const SideFilter = ({ onFilterChange }) => {
               onSelectionChange={handleSelectionChange}
             />
           ))}
+
+          {/* 검색 버튼 */}
+          <button
+            onClick={handleSearch}
+            className="w-full py-2 mt-4 bg-yellow-700 text-white rounded-lg text-sm font-semibold"
+          >
+            검색하기
+          </button>
         </div>
       )}
 
-      {/* ✅ desktop(1281px 이상)에서는 항상 필터 표시 */}
+
       <div className="lg:hidden block w-[280px] bg-gray-50 border rounded-xl p-4 mr-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold">필터</h2>
@@ -168,7 +183,7 @@ const SideFilter = ({ onFilterChange }) => {
             title={title}
             options={options}
             selectedOptions={options.filter(option =>
-              selectedFilters[
+              tempFilters[
                 title === "가구형태"
                   ? "familyTypes"
                   : title === "가구상황"
@@ -179,6 +194,14 @@ const SideFilter = ({ onFilterChange }) => {
             onSelectionChange={handleSelectionChange}
           />
         ))}
+
+        {/* 검색 버튼 */}
+        <button
+          onClick={handleSearch}
+          className="w-full py-2 mt-4 bg-yellow-700 text-white rounded-lg "
+        >
+          검색
+        </button>
       </div>
     </div>
   );

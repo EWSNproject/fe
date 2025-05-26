@@ -66,6 +66,9 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       await saveUserInterests(selected);
       toast.success("관심사가 성공적으로 저장되었습니다.");
       onRequestClose();
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } catch (error) {
       toast.error(error.message || "관심사 저장에 실패했습니다.");
     }
@@ -80,7 +83,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Interest Selection"
-      className="bg-black-50 pt-12 pb-12 px-[90px] max-w-[1016px] min-h-[800px] rounded-lg outline-none md:px-6 md:max-w-[420px] md:min-h-[520px]"
+      className="bg-black-50 pt-12 pb-12 px-[90px] max-w-[1016px] min-h-[800px] rounded-lg outline-none md:px-6 md:max-w-[420px] md:min-h-[520px] md:max-h-[90vh] md:overflow-y-auto"
       overlayClassName="fixed inset-0 bg-black-900 bg-opacity-80 flex items-center justify-center px-2"
     >
       <div className="flex flex-col mb-6">

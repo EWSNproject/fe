@@ -51,12 +51,12 @@ const SearchFilter = ({ onSearch, onReset }) => {
 
           {/* 자동완성 목록 */}
           {suggestions.length > 0 && (
-    <ul className="absolute left-[60px] w-full top-full mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[500px]">
+    <ul className="absolute left-[60px] w-[calc(100%-60px)] top-full mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[500px] md:max-w-[calc(100vw-32px)]">
         {suggestions.map((suggestion, index) => (
             <li
                 key={index}
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100"
+                className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100 truncate"
             >
                 {suggestion}
             </li>
