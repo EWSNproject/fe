@@ -17,8 +17,7 @@ const SortOptions = ({ selected, onSelect }) => {
           * 나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.
           <br />
           * 수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.
-          <br />* 사이드 필터 선택 후 검색 버튼 클릭 시 해당하는 복지혜택만
-          나타납니다.
+         
         </div>
       </div>
       <div className="flex gap-4">
