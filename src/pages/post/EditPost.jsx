@@ -27,7 +27,7 @@ export default function EditPost() {
   const [tags, setTags] = useState([]);
   const [linkTitle, setLinkTitle] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  const [existingImageUrls, setExistingImageUrls] = useState([]); // 추가 : 이미지관리
+  const [existingImages, setExistingImages] = useState([]);
 
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -74,7 +74,7 @@ export default function EditPost() {
         setLinkTitle(post.urlTitle);
         setLinkUrl(post.urlPath);
         setCharCount(post.content.length);
-        setExistingImageUrls(post.imageUrls || []); // 추가 : 이미지관리
+        setExistingImages(post.images || []);
       } catch (error) {
         console.error("수정용 데이터 로딩 실패:", error);
       }
@@ -90,8 +90,10 @@ export default function EditPost() {
       urlTitle: limitedLinkTitle,
       urlPath: linkUrl,
       tags: tags.join(','),
-      images: files, 
+      keepImageIds: existingImages.map(img => img.imageId),
+      newImages: files,
     };
+    await updatePost(id, postData);
   
     try {
       await updatePost(id, postData); 
@@ -194,27 +196,27 @@ export default function EditPost() {
               (PNG, JPG, JPEG 최대 5장)
             </div>
           </Dropzone>
-          {(files.length > 0 || existingImageUrls.length > 0) ? (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {/* ✅ 기존 이미지 렌더링 */}
-            {existingImageUrls.map((url, index) => (
-              <div key={`existing-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
-                <button
-                  onClick={() => {
-                    const updated = [...existingImageUrls];
-                    updated.splice(index, 1);
-                    setExistingImageUrls(updated);
-                  }}
-                  className="absolute top-0 right-0 bg-black-50 rounded-full p-[2px] shadow text-gray-700 hover:text-red-600"
-                >
-                  <X size={14} />
-                </button>
-                <img
-                  src={url}
-                  alt={`uploaded-${index}`}
-                  className="object-cover w-full h-full"
-                />
-              </div>
+          {(files.length > 0 || existingImages.length > 0) ? (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {/* ✅ 기존 이미지 렌더링 */}
+              {existingImages.map((img, index) => (
+                <div key={`existing-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
+                  <button
+                    onClick={() => {
+                      const updated = [...existingImages];
+                      updated.splice(index, 1);
+                      setExistingImages(updated);
+                    }}
+                    className="absolute top-0 right-0 bg-black-50 rounded-full p-[2px] shadow text-gray-700 hover:text-red-600"
+                  >
+                    <X size={14} />
+                  </button>
+                  <img
+                    src={img.imageUrl}
+                    alt={`uploaded-${index}`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
             ))}
 
             {/* ✅ 새로 선택한 이미지 렌더링 */}
