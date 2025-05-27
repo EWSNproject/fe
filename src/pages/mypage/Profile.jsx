@@ -99,6 +99,7 @@ const Mypage = ({ handleLogout }) => {
       await logout();
       handleLogout();
       toast.success("로그아웃 되었습니다.");
+      sessionStorage.clear();
       navigate("/");
     } catch (error) {
       console.error("❌ 로그아웃 실패:", error);
