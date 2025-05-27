@@ -61,7 +61,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
       setComments((prev) =>
         prev.map((c) =>
           c.id === commentId
-            ? { ...c, content: "삭제된 댓글입니다.", deleted: true }
+            ? { ...c, content: "사용자가 삭제한 댓글입니다.", deleted: true }
             : c
         )
       );
@@ -71,7 +71,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         for (const parentId in prev) {
           updated[parentId] = prev[parentId].map((reply) =>
             reply.id === commentId
-              ? { ...reply, content: "삭제된 댓글입니다.", deleted: true }
+              ? { ...reply, content: "사용자가 삭제한 댓글입니다.", deleted: true }
               : reply
           );
         }
@@ -213,7 +213,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         대댓글
                       </button>
                     )}
-                    {comment.userId === userId && comment.content !== "삭제된 댓글입니다." ? (
+                    {comment.userId === userId && comment.content !== "사용자가 삭제한 댓글입니다." ? (
                       <button
                         className='flex items-center hover:underline'
                         onClick={() => {
@@ -224,7 +224,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                         삭제
                       </button>
                     ) : (
-                      comment.userId !== userId && comment.content !== "삭제된 댓글입니다." && (
+                      comment.userId !== userId && comment.content !== "사용자가 삭제한 댓글입니다." && (
                         <button
                           className="flex items-center hover:underline"
                           onClick={() => {

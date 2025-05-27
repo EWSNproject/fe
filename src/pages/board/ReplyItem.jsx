@@ -58,7 +58,7 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
         <div className="w-full font-normal break-words text-black-950">{reply.content}</div>
         <div className="flex justify-between">
           <div className="text-black-500 flex gap-2.5 text-sm font-normal">
-            {reply.userId === nickname && reply.content !== "삭제된 댓글입니다." ? (
+            {reply.userId === nickname && reply.content !== "사용자가 삭제한 댓글입니다." ? (
               <button 
                 className="flex items-center hover:underline"
                 onClick={() => setDeleteModalOpen(true)}
@@ -66,7 +66,7 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
                 삭제
               </button>
             ) : (
-              reply.userId !== nickname && reply.content !== "삭제된 댓글입니다." && (
+              reply.userId !== nickname && reply.content !== "사용자가 삭제한 댓글입니다." && (
                 <button
                   className="flex items-center hover:underline"
                   onClick={() => setReportModalOpen(true)}
