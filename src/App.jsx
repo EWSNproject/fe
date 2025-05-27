@@ -11,6 +11,7 @@ import BoardDetail from "./pages/board/BoardDetail";
 import PostList from "./pages/post/PostList";
 import EditPost from "./pages/post/EditPost";
 import Mypage from "./pages/mypage/Profile";
+import AdminPage from "./pages/adminPage/admin";
 import Layout from "./layouts/Layout";
 import BenefitsDetail from "./pages/allbenefits/BenefitsDetail"
 import Cookies from 'js-cookie';
@@ -65,8 +66,8 @@ function App() {
         <Route path="postEdit/:id" element={<EditPost />} />
         <Route path="mypage" element={<Mypage handleLogout={handleLogout} />} />
       </Route>
+      <Route path="admin" element={<AdminPage />} />
     </Routes>
-    
     </>
     
   );

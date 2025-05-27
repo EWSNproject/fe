@@ -85,12 +85,12 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
         {item.content}
       </div>
 
-      {item.imageUrls && item.imageUrls.length > 0 && (
+      {item.images && item.images.length > 0 && (
         <div className="flex flex-wrap gap-2.5 lg:gap-2 mt-4">
-          {item.imageUrls.slice(0, 5).map((url, index) => (
+          {item.images.slice(0, 5).map((img, index) => (
             <img
-              key={index}
-              src={url}
+              key={img.imageId || index}
+              src={img.imageUrl}
               alt={`이미지 ${index + 1}`}
               className="w-[120px] h-[120px] border rounded border-black-800 object-cover bg-black-50"
             />

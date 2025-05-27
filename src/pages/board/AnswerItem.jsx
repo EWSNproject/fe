@@ -64,7 +64,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
       setComments((prev) =>
         prev.map((a) =>
           a.id === answerId
-            ? { ...a, content: "삭제된 댓글입니다.", deleted: true }
+            ? { ...a, content: "사용자가 삭제한 답변입니다.", deleted: true }
             : a
         )
       );
@@ -180,7 +180,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               <div className='w-full font-normal break-words text-black-950'>{comment.content}</div>
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
-                  {comment.userId === userId && comment.content !== "삭제된 답변입니다." ? (
+                  {comment.userId === userId && comment.content !== "사용자가 삭제한 답변입니다." ? (
                   // 본인이 쓴 답변 & 삭제되지 않았을 때만 삭제 버튼
                   <button
                     onClick={() => {
@@ -193,7 +193,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                   </button>
                 ) : (
                   // 다른 사람이 쓴 답변 & 삭제되지 않았을 때만 신고 버튼
-                  comment.userId !== userId && comment.content !== "삭제된 답변입니다." && (
+                  comment.userId !== userId && comment.content !== "사용자가 삭제한 답변입니다." && (
                     <button
                       className="flex items-center hover:underline"
                       onClick={() => {
