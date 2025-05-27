@@ -28,7 +28,6 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
         
         setCategories(categoriesData);
         
-        // Update selected state with user's interests
         if (userInterests) {
           const newSelected = {
             familyStatus: userInterests["가구형태"]?.filter(item => item.selected).map(item => item.name) || [],
@@ -66,9 +65,7 @@ const InterestModal = ({ isOpen, onRequestClose }) => {
       await saveUserInterests(selected);
       toast.success("관심사가 성공적으로 저장되었습니다.");
       onRequestClose();
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      
     } catch (error) {
       toast.error(error.message || "관심사 저장에 실패했습니다.");
     }

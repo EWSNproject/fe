@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getBenefitDetail } from "../../api/BenefitsService";
+import { List } from "lucide-react";
 
 const BenefitsDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [benefit, setBenefit] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -89,15 +91,21 @@ const BenefitsDetail = () => {
   return (
     <div className="max-w-[1000px] mt-10 md:mt-5 mx-auto p-6 ">
       <div className="flex flex-col gap-6">
-        <div className="flex min-w-[322px] min-h-[40px]">
-          <div className="flex items-center px-4 py-2 text-lg md:text-sm bg-yellow-700 text-black-50">
-            담당부서
+        <div className="flex min-w-[322px] min-h-[40px] justify-between">
+          <div className="flex">
+            <div className="flex items-center px-4 py-2 text-lg md:text-sm bg-yellow-700 text-black-50">
+              담당부서
+            </div>
+            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+              {department}
+            </div>
+            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+              {phone}
+            </div>
           </div>
-          <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
-            {department}
-          </div>
-          <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
-            {phone}
+          <div className='flex gap-2 cursor-pointer items-center' onClick={() => navigate('/benefitsList')}>
+            <span className='border-gray-400 md: ml-3'><List size={30} /></span>
+            <span className='text-[20px] md:hidden'>목록</span>
           </div>
         </div>
 
@@ -120,11 +128,11 @@ const BenefitsDetail = () => {
           </div>
           <div className="mt-[18px] space-y-4 ml-8">
             <li className="mb-2 font-medium">
-              지원대상 : {renderMultiline(benefit.supportTarget)}
+              지원대상  {renderMultiline(benefit.supportTarget)}
             </li>
             {benefit.selectionCriteria && (
               <li className="mb-2 font-medium">
-                선정기준 : {renderMultiline(benefit.selectionCriteria)}
+                선정기준  {renderMultiline(benefit.selectionCriteria)}
               </li>
             )}
           </div>
@@ -138,7 +146,7 @@ const BenefitsDetail = () => {
           </div>
           <div className="mt-[18px] space-y-4 ml-8">
             <li className="mb-2 font-medium">
-              지원내용 : {renderMultiline(benefit.supportDetail)}
+              지원내용  {renderMultiline(benefit.supportDetail)}
             </li>
             <li className="mb-2 font-medium">
               지원유형 : {benefit.supportType || "정보 없음"}
@@ -154,29 +162,28 @@ const BenefitsDetail = () => {
           </div>
           <div className="mt-[18px] space-y-4 ml-8">
             <li className="mb-2 font-medium">
-              신청방법 : {renderMultiline(benefit.applicationMethod)}
+              신청방법  {renderMultiline(benefit.applicationMethod)}
             </li>
           </div>
         </div>
       </div>
 
-      {/* 상세보기 버튼 */}
-      {hasMoreContent() && (
-        <div className="flex justify-end mt-8">
+      {/* 버튼 컨테이너 */}
+      <div className="flex justify-end gap-4 mt-8">
+        {/* 상세보기 버튼 */}
+        {hasMoreContent() && (
           <button
             onClick={() => setShowMore(!showMore)}
-            className="ml-2 px-12 max-w-[237px] bg-black-300 text-black-50 py-3 rounded-lg transition"
+            className="px-12 max-w-[237px] bg-black-300 text-black-50 py-3 rounded-lg transition"
           >
             {showMore ? "접기" : "상세 보기"}
           </button>
-        </div>
-      )}
+        )}
 
-      {/* 신청하기 버튼 */}
-      <div className="flex justify-end mt-8">
+        {/* 신청하기 버튼 */}
         {benefit.onlineApplicationUrl && (
           <button
-            className="ml-2 px-12 max-w-[237px] bg-yellow-700 hover:bg-yellow-500 text-black-50 py-3 rounded-lg transition"
+            className="px-12 max-w-[237px] bg-yellow-700 hover:bg-yellow-500 text-black-50 py-3 rounded-lg transition"
             onClick={() =>
               window.open(benefit.onlineApplicationUrl, "_blank")
             }

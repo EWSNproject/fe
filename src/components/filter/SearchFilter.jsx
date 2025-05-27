@@ -1,19 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { autocompleteSearch } from "../../api/BenefitsService";
 
-const SearchFilter = ({ onSearch, onReset }) => {
-  const [searchInput, setSearchInput] = useState("");
+const SearchFilter = ({ onSearch, onReset, initialKeyword = "" }) => {
+  const [searchInput, setSearchInput] = useState(() => {
+    const savedKeyword = localStorage.getItem('benefitsSearchKeyword');
+    return savedKeyword || initialKeyword;
+  });
   const [suggestions, setSuggestions] = useState([]);
 
   const handleSearch = () => {
     onSearch(searchInput);
-    setSearchInput("");
+    localStorage.setItem('benefitsSearchKeyword', searchInput);
     setSuggestions([]);
+  };
+
+  const handleReset = () => {
+    setSearchInput("");
+    localStorage.removeItem('benefitsSearchKeyword');
+    onReset();
   };
 
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setSearchInput(value);
+    localStorage.setItem('benefitsSearchKeyword', value);
 
     if (value) {
       try {
@@ -29,9 +39,18 @@ const SearchFilter = ({ onSearch, onReset }) => {
 
   const handleSuggestionClick = (suggestion) => {
     setSearchInput(suggestion);
+    localStorage.setItem('benefitsSearchKeyword', suggestion);
     setSuggestions([]);
     onSearch(suggestion);
   };
+
+  // 컴포넌트 마운트 시 저장된 검색어 복원
+  useEffect(() => {
+    const savedKeyword = localStorage.getItem('benefitsSearchKeyword');
+    if (savedKeyword) {
+      setSearchInput(savedKeyword);
+    }
+  }, []);
 
   return (
     <div className="pt-6 pb-6 px-[30px] mb-6 border rounded max-w-[1200px] min-h-[180px] bg-black-50 relative">
@@ -51,18 +70,18 @@ const SearchFilter = ({ onSearch, onReset }) => {
 
           {/* 자동완성 목록 */}
           {suggestions.length > 0 && (
-    <ul className="absolute left-[60px] w-[calc(100%-60px)] top-full mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[500px] md:max-w-[calc(100vw-32px)]">
-        {suggestions.map((suggestion, index) => (
-            <li
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100 truncate"
-            >
-                {suggestion}
-            </li>
-        ))}
-    </ul>
-)}
+            <ul className="absolute left-[60px] w-[calc(100%-60px)] top-full mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[700px] md:max-w-[calc(100vw-32px)] max-h-[300px] overflow-y-auto">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100 truncate"
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -71,7 +90,7 @@ const SearchFilter = ({ onSearch, onReset }) => {
         <div className="flex gap-2.5 w-full max-w-[300px] min-h-[40px]">
           <button
             className="flex-1 text-black-50 bg-gray-500 rounded-[10px] px-3 py-2 text-sm md:text-base h-10"
-            onClick={onReset}
+            onClick={handleReset}
           >
             초기화
           </button>
