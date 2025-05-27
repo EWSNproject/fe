@@ -1,5 +1,4 @@
-// ReportCard.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getReports, getReportType } from "../../api/admin";
 import Pagination from "../../components/Pagination";
 
@@ -9,7 +8,7 @@ export default function ReportCard() {
   const [totalPages, setTotalPages] = useState(1);
   const [filterStatus, setFilterStatus] = useState("ALL");
 
-  const fetchReports = async (page = 1) => {
+  const fetchReports = useCallback(async (page = 1) => {
     try {
       let data;
       if (filterStatus === "ALL") {
@@ -22,11 +21,11 @@ export default function ReportCard() {
     } catch (error) {
       console.error("신고 내역 불러오기 실패", error);
     }
-  };
+  }, [filterStatus]);
 
   useEffect(() => {
     fetchReports(currentPage);
-  }, [filterStatus, currentPage]);
+  }, [fetchReports, currentPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -34,36 +33,30 @@ export default function ReportCard() {
 
   const handleFilterChange = (status) => {
     setFilterStatus(status);
-    setCurrentPage(1); // 필터 바뀌면 첫 페이지로 이동
+    setCurrentPage(1);
   };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex gap-3 mb-4">
-        <button
-          className={`px-4 py-2 rounded ${filterStatus === "ALL" ? "bg-yellow-600 text-white" : "bg-gray-100 text-black"}`}
-          onClick={() => handleFilterChange("ALL")}
-        >
-          전체
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${filterStatus === "PENDING" ? "bg-yellow-600 text-white" : "bg-gray-100 text-black"}`}
-          onClick={() => handleFilterChange("PENDING")}
-        >
-          처리 대기중
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${filterStatus === "RESOLVED" ? "bg-yellow-600 text-white" : "bg-gray-100 text-black"}`}
-          onClick={() => handleFilterChange("RESOLVED")}
-        >
-          처리 완료
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${filterStatus === "REJECTED" ? "bg-yellow-600 text-white" : "bg-gray-100 text-black"}`}
-          onClick={() => handleFilterChange("REJECTED")}
-        >
-          거부됨
-        </button>
+        {["ALL", "PENDING", "RESOLVED", "REJECTED"].map((status) => (
+          <button
+            key={status}
+            className={`px-4 py-2 rounded ${
+              filterStatus === status
+                ? "bg-yellow-600 text-white"
+                : "bg-gray-100 text-black"
+            }`}
+            onClick={() => handleFilterChange(status)}
+          >
+            {{
+              ALL: "전체",
+              PENDING: "처리 대기중",
+              RESOLVED: "처리 완료",
+              REJECTED: "거부됨",
+            }[status]}
+          </button>
+        ))}
       </div>
 
       <table className="w-full text-sm border-collapse">
