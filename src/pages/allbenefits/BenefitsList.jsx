@@ -17,7 +17,6 @@ const SortOptions = ({ selected, onSelect }) => {
           * 나이와 지역은 회원가입한 정보를 바탕으로 두고 있습니다.
           <br />
           * 수정 원하신다면 마이페이지 회원정보 수정을 이용해주세요.
-         
         </div>
       </div>
       <div className="flex gap-4">
@@ -156,7 +155,6 @@ const fetchFilteredData = useCallback(async () => {
           <SideFilter onFilterChange={handleFilterChange} />
         </div>
         <div className="flex flex-col flex-1">
-          {/* 검색 필터*/}
           <SearchFilter onSearch={handleSearch} onReset={handleReset} />
 
           <div className="w-full max-w-[1200px]">
