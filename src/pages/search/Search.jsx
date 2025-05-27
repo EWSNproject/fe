@@ -22,17 +22,13 @@ const Search = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobilePage, setMobilePage] = useState(1);
 
+  const loadMore = () => {
+    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
+  };
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
-
-  // 페이지 로드 시 저장된 검색어 복원
-  useEffect(() => {
-    const savedTerm = localStorage.getItem('searchTerm');
-    if (savedTerm) {
-      setSearchTerm(savedTerm);
-    }
-  }, []);
 
   useEffect(() => {
     const fetchPopularBenefits = async () => {
@@ -64,6 +60,8 @@ const Search = () => {
     if (query) {
       setSearchTerm(query);
       handleSearch(query);
+    } else {
+      setSearchTerm("");
     }
   }, [query]);
 
@@ -89,15 +87,8 @@ const Search = () => {
       const posts = await searchAllPosts(term);
       setPostResults(posts);
 
-      // 검색어를 localStorage에 저장
-      localStorage.setItem('searchTerm', term);
-
-      try {
-        const updatedSearches = await getSearchHistory();
-        setRecentSearches(updatedSearches);
-      } catch (error) {
-        console.error("Error fetching search history:", error);
-      }
+      const updatedSearches = await getSearchHistory();
+      setRecentSearches(updatedSearches);
     } catch (e) {
       console.warn("❌ 검색 실패:", e);
     }
@@ -108,7 +99,6 @@ const Search = () => {
   const handleInputChange = async (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-    localStorage.setItem('searchTerm', term);
 
     if (term) {
       try {
@@ -124,13 +114,8 @@ const Search = () => {
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion);
-    localStorage.setItem('searchTerm', suggestion);
     setAutocompleteResults([]);
     handleSearch(suggestion);
-  };
-
-  const loadMore = () => {
-    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
   };
 
   const totalItems = searchResults.length > 0 ? searchResults : popularBenefits;
