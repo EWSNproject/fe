@@ -6,7 +6,6 @@ import { addBookmark, removeBookmark } from "../api/BenefitsService";
 import { toast } from "react-toastify";
 
 const Card = ({ data }) => {
-  // data가 undefined일 경우를 대비한 기본값 설정
   const {
     id = "",
     title = "",
@@ -18,12 +17,12 @@ const Card = ({ data }) => {
 
   const [bookmarked, setBookmarked] = useState(data?.isBookmarked || false);
 
-  // data가 없는 경우 렌더링하지 않음
+
   if (!data) {
     return null;
   }
 
-  // 북마크 토글 함수
+
   const toggleBookmark = async () => {
     try {
       if (bookmarked) {
