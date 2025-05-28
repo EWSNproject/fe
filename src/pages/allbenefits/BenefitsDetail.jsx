@@ -36,8 +36,17 @@ const BenefitsDetail = () => {
 
   if (!benefit) {
     return (
-      <div className="text-center text-gray-500">
-        존재하지 않는 복지혜택입니다.
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-600 text-center px-4">
+        <p className="mb-2 text-lg font-semibold">해당 복지 혜택 정보를 찾을 수 없습니다.</p>
+        <p className="mb-6 text-sm text-gray-500">
+          요청하신 혜택은 존재하지 않거나 삭제되었을 수 있습니다.
+        </p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-6 py-2 font-semibold transition bg-yellow-600 rounded-md text-black-50 hover:bg-yellow-500 hover:text-yellow-900"
+        >
+          이전 페이지로 돌아가기
+        </button>
       </div>
     );
   }
