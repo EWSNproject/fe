@@ -9,6 +9,7 @@ import { searchAllPosts } from "../../api/postApi";
 import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 import { getSearchHistory } from "../../api/main";
 import Pagination from "../../components/Pagination";
+import LineLoading from "../../components/Loading/LineLoading";
 
 const Search = () => {
   const [visibleItems, setVisibleItems] = useState(6);
@@ -148,7 +149,7 @@ const Search = () => {
       <div className="relative w-full max-w-[1236px] mb-8">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-[10px] min-h-[64px] border bg-[#FAFAFA] px-4 py-3 w-full">
           
-          <div className="flex items-center w-full relative">
+          <div className="relative flex items-center w-full">
             {/* 입력창 */}
             <input
               type="text"
@@ -204,7 +205,7 @@ const Search = () => {
       {/* Recent Searches */}
       <div className="mb-6 w-full max-w-[1236px]">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-semibold mb-3">최근 검색어</h2>
+          <h2 className="mb-3 text-xl font-semibold">최근 검색어</h2>
           {recentSearches.length > 0 && (
             <button
               className="text-sm text-red-500 hover:underline"
@@ -234,7 +235,7 @@ const Search = () => {
                 <img
                   src={CancelIcon}
                   alt="삭제"
-                  className="w-5 h-5 cursor-pointer ml-1"
+                  className="w-5 h-5 ml-1 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteSearchHistory(item.id);
@@ -255,9 +256,12 @@ const Search = () => {
       <div className="w-full max-w-[1236px] mb-8">
         <h2 className="mb-4 text-xl font-semibold">복지서비스</h2>
         {isLoading ? (
-          <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
+          <div className="flex flex-col items-center justify-center gap-3 min-h-[60px]">
+            <LineLoading />
+            <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
+          <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
             {pagedItems.map((card) => (
               <Card
                 key={card.publicServiceId}

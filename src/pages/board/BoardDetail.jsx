@@ -8,6 +8,7 @@ import { getCommentsByPostId } from "../../api/commentApi";
 import { getAnswersByPostId } from "../../api/answerApi";
 import { getUserInfo } from '../../api/auth'; 
 import Cookies from 'js-cookie'; 
+import LineLoading from '../../components/Loading/LineLoading';
 
 export default function BoardDetail() {
   const { id } = useParams();  
@@ -47,7 +48,13 @@ export default function BoardDetail() {
     fetchPostAndUser();
   }, [id]);
 
-  if (loading) return <div className='mt-20 text-center'>로딩 중...</div>;
+  if (loading) {
+      return (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <LineLoading size={40} />
+        </div>
+      );
+    }
   if (!item) return <div className='mt-20 text-center'>해당 게시글을 찾을 수 없습니다.</div>;
 
   return (

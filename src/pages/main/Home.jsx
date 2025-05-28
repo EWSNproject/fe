@@ -16,6 +16,7 @@ import InterestModal from "../../components/modal/InterestModal";
 import Cookies from "js-cookie";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import CurveLoading from '../../components/Loading/CurveLoading'; 
 
 const Home = () => {
   const navigate = useNavigate();
@@ -169,7 +170,7 @@ const Home = () => {
           ))}
         </ul>
         {isLoading ? (
-          <p className="text-lg text-gray-500">로딩 중...</p>
+          <CurveLoading size={40}/>
         ) : (
           categoryCards.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>

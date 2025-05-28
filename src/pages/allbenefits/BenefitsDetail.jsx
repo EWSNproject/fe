@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBenefitDetail } from "../../api/BenefitsService";
 import { List } from "lucide-react";
+import CurveLoading from '../../components/Loading/CurveLoading'; 
 
 const BenefitsDetail = () => {
   const navigate = useNavigate();
@@ -26,7 +27,11 @@ const BenefitsDetail = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div className="text-center text-gray-500">로딩 중...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <CurveLoading size={40} />
+      </div>
+    );
   }
 
   if (!benefit) {
@@ -93,18 +98,18 @@ const BenefitsDetail = () => {
       <div className="flex flex-col gap-6">
         <div className="flex min-w-[322px] min-h-[40px] justify-between">
           <div className="flex">
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm bg-yellow-700 text-black-50">
+            <div className="flex items-center px-4 py-2 text-lg bg-yellow-700 md:text-sm text-black-50">
               담당부서
             </div>
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+            <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700 md:text-sm">
               {department}
             </div>
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+            <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700 md:text-sm">
               {phone}
             </div>
           </div>
-          <div className='flex gap-2 cursor-pointer items-center' onClick={() => navigate('/benefitsList')}>
-            <span className='border-gray-400 md: ml-3'><List size={30} /></span>
+          <div className='flex items-center gap-2 cursor-pointer' onClick={() => navigate('/benefitsList')}>
+            <span className='ml-3 border-gray-400 md:'><List size={30} /></span>
             <span className='text-[20px] md:hidden'>목록</span>
           </div>
         </div>
