@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { autocompleteSearch } from "../../api/BenefitsService";
-import Cookies from "js-cookie"; // 추가
+import Cookies from "js-cookie"; 
 
 const SearchFilter = ({ onSearch, onReset, initialKeyword = "" }) => {
   const isLoggedIn = !!Cookies.get("accessToken"); 
+
   const [searchInput, setSearchInput] = useState(() => {
     if (isLoggedIn) {
       const savedKeyword = sessionStorage.getItem("benefitsSearchKeyword");
@@ -90,18 +91,21 @@ const SearchFilter = ({ onSearch, onReset, initialKeyword = "" }) => {
           </div>
 
           {suggestions.length > 0 && (
-            <ul className="absolute left-[60px] w-[calc(100%-60px)] top-full mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[700px] md:max-w-[calc(100vw-32px)] max-h-[300px] overflow-y-auto">
-              {suggestions.map((suggestion, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="p-3 transition-colors duration-200 rounded cursor-pointer hover:bg-yellow-100 truncate"
-                >
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
-          )}
+  <ul className="absolute left-[60px] w-[calc(100%-60px)] top-full mt-2 bg-white border border-gray-300 rounded-xl shadow-xl z-10 max-w-[700px] md:max-w-[calc(100vw-32px)] max-h-[300px] overflow-y-auto">
+    {suggestions.map((suggestion, index) => (
+      <li
+        key={index}
+        onClick={() => handleSuggestionClick(suggestion)}
+        title={suggestion}
+        className="flex items-center gap-2 p-3 transition-colors duration-150 rounded-md cursor-pointer hover:bg-yellow-200 hover:text-black hover:font-medium"
+      >
+        <span className="text-gray-500">🔍</span>
+        <span className="truncate">{suggestion}</span>
+      </li>
+    ))}
+  </ul>
+)}
+
         </div>
       </div>
 
