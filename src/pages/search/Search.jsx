@@ -12,7 +12,6 @@ import LineLoading from "../../components/Loading/LineLoading";
 import { useNavigate } from "react-router-dom";
 
 const Search = () => {
-  const [visibleItems, setVisibleItems] = useState(6);
   const [popularBenefits, setPopularBenefits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -88,7 +87,12 @@ const Search = () => {
     try {
       const result = await getsearchBenefits(term);
       setSearchResults(result.content);
-      setHasMore(!result.last);
+      
+      if (result.content.length === 0) {
+        setHasMore(false);
+      } else {
+        setHasMore(!result.last);
+      }
 
       const posts = await searchAllPosts(term);
       setPostResults(posts);
@@ -275,12 +279,12 @@ const Search = () => {
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-center text-gray-400">검색 결과가 없습니다.</p>
+            <p className="mt-4 font-semibold text-center text-gray-400">검색 결과가 없습니다.</p>
           )
         )}
 
         {/* 모바일/PC 공통 더보기 버튼 */}
-        {hasMore && (
+        {hasMore && searchResults.length > 0 && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}
@@ -293,7 +297,7 @@ const Search = () => {
       </div>
 
       {/* 게시판 */}
-      <div className="w-full max-w-[1236px]">
+      <div className="w-full max-w-[1236px] mb-4">
         <h2 className="mb-4 text-xl font-semibold">게시판</h2>
         <MyPostsList posts={postResults} />
       </div>
