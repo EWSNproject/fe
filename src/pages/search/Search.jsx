@@ -16,12 +16,12 @@ const Search = () => {
   const [popularBenefits, setPopularBenefits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [postResults, setPostResults] = useState([]);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [mobilePage, setMobilePage] = useState(1);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -30,9 +30,7 @@ const Search = () => {
   // 페이지 로드 시 저장된 검색어 복원
   useEffect(() => {
     const savedTerm = localStorage.getItem('searchTerm');
-    if (savedTerm) {
-      setSearchTerm(savedTerm);
-    }
+    if (savedTerm) setSearchTerm(savedTerm);
   }, []);
 
   useEffect(() => {
@@ -68,12 +66,6 @@ const Search = () => {
     }
   }, [query]);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const handleSearch = async (term) => {
     if (!term.trim()) return;
 
@@ -81,24 +73,20 @@ const Search = () => {
     setSearchResults([]);
     setPostResults([]);
     setAutocompleteResults([]);
+    setCurrentPage(0);
+    setHasMore(true);
 
     try {
-      const benefits = await searchBenefits(term, 10);
-      setSearchResults(benefits);
-      setVisibleItems(6);
+      const result = await searchBenefits(term, 6, 0);
+      setSearchResults(result.content);
+      setHasMore(!result.last);
 
       const posts = await searchAllPosts(term);
       setPostResults(posts);
+      localStorage.setItem("searchTerm", term);
 
-      // 검색어를 localStorage에 저장
-      localStorage.setItem('searchTerm', term);
-
-      try {
-        const updatedSearches = await getSearchHistory();
-        setRecentSearches(updatedSearches);
-      } catch (error) {
-        console.error("Error fetching search history:", error);
-      }
+      const updatedSearches = await getSearchHistory();
+      setRecentSearches(updatedSearches);
     } catch (e) {
       console.warn("❌ 검색 실패:", e);
     }
@@ -130,16 +118,17 @@ const Search = () => {
     handleSearch(suggestion);
   };
 
-  const loadMore = () => {
-    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
+  const loadMore = async () => {
+    const nextPage = currentPage + 1;
+    try {
+      const result = await searchBenefits(searchTerm, 6, nextPage);
+      setSearchResults((prev) => [...prev, ...result.content]);
+      setCurrentPage(nextPage);
+      setHasMore(!result.last);
+    } catch (e) {
+      console.error("❌ 더보기 실패:", e);
+    }
   };
-
-  const totalItems = searchResults.length > 0 ? searchResults : popularBenefits;
-  const totalPages = isMobile ? Math.ceil(totalItems.length / 3) : 1;
-
-  const pagedItems = isMobile
-    ? totalItems.slice((mobilePage - 1) * 3, mobilePage * 3)
-    : totalItems.slice(0, visibleItems);
 
   return (
     <div className="flex flex-col items-center p-6 max-w-[1680px] mx-auto">
@@ -202,7 +191,7 @@ const Search = () => {
         )}
       </div>
 
-      {/* Recent Searches */}
+      {/* 최근 검색어 */}
       <div className="mb-6 w-full max-w-[1236px]">
         <div className="flex items-center justify-between mb-2">
           <h2 className="mb-3 text-xl font-semibold">최근 검색어</h2>
@@ -261,36 +250,30 @@ const Search = () => {
             <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
-            {pagedItems.map((card) => (
-              <Card
-                key={card.publicServiceId}
-                data={{
-                  id: card.publicServiceId,
-                  title: card.serviceName,
-                  description: card.summaryPurpose,
-                  category: card.serviceCategory,
-                  specialGroup: card.specialGroup,
-                  familyType: card.familyType,
-                  isBookmarked: card.bookmarked,
-                }}
-              />
-            ))}
-          </div>
+          searchResults.length > 0 ? (
+            <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
+              {searchResults.map((card) => (
+                <Card
+                  key={card.publicServiceId}
+                  data={{
+                    id: card.publicServiceId,
+                    title: card.serviceName,
+                    description: card.summaryPurpose,
+                    category: card.serviceCategory,
+                    specialGroup: card.specialGroup,
+                    familyType: card.familyType,
+                    isBookmarked: card.bookmarked,
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-center text-gray-400">검색 결과가 없습니다.</p>
+          )
         )}
 
-        {/* 모바일에서만 페이지네이션 */}
-        {isMobile && totalPages > 1 && (
-          <Pagination
-            currentPage={mobilePage}
-            totalPages={totalPages}
-            onPageChange={setMobilePage}
-            pageGroupSize={3}
-          />
-        )}
-
-        {/* PC에서는 기존 더보기 버튼 유지 */}
-        {!isMobile && visibleItems < searchResults.length && (
+        {/* 모바일/PC 공통 더보기 버튼 */}
+        {hasMore && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}

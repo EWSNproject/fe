@@ -83,10 +83,16 @@ export const getFilterData = async () => {
   }
 };
 
-export const searchBenefits = async (searchTerm,size) => {
+export const searchBenefits = async (searchTerm, size, page) => {
   try {
-    const response = await httpClient.get(`/mongo/search/services?searchTerm=${encodeURIComponent(searchTerm)}&size=${size}`);
-    return response.data.content;
+    let url = `/mongo/search/services?searchTerm=${encodeURIComponent(searchTerm)}&size=${size}`;
+
+    if (page !== undefined) {
+      url += `&page=${page}`;
+    }
+
+    const response = await httpClient.get(url);
+    return response.data; 
   } catch (error) {
     console.error('Error fetching searched benefits:', error);
     throw error;
