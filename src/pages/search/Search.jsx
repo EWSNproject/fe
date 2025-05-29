@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Card from "../../components/Card";
 import MyPostsList from "../../components/profile/PostList";
@@ -28,14 +28,6 @@ const Search = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (query) {
-      setSearchTerm(query);
-      handleSearch(query, false); 
-    }
-  }, [query]);
-
-
-  useEffect(() => {
     const fetchPopularBenefits = async () => {
       try {
         const data = await getPopularBenefits();
@@ -61,51 +53,49 @@ const Search = () => {
     fetchRecentSearches();
   }, []);
 
+  const handleSearch = useCallback(
+    async (term, updateUrl = true) => {
+      if (!term.trim()) return;
+
+      if (updateUrl) {
+        navigate(`/search?query=${encodeURIComponent(term)}`);
+      }
+
+      setIsLoading(true);
+      setSearchResults([]);
+      setPostResults([]);
+      setAutocompleteResults([]);
+      setCurrentPage(0);
+      setHasMore(true);
+
+      try {
+        const result = await getsearchBenefits(term);
+        setSearchResults(result.content);
+        setHasMore(!result.last);
+
+        const posts = await searchAllPosts(term);
+        setPostResults(posts);
+        localStorage.setItem("searchTerm", term);
+
+        const updatedSearches = await getSearchHistory();
+        setRecentSearches(updatedSearches);
+      } catch (e) {
+        console.warn("❌ 검색 실패:", e);
+      }
+
+      setIsLoading(false);
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (query) {
       setSearchTerm(query);
-      handleSearch(query);
+      handleSearch(query, false);
     } else {
       setSearchTerm("");
     }
-  }, [query]);
-
-  const handleSearch = async (term, updateUrl = true) => {
-    if (!term.trim()) return;
-
-    if (updateUrl) {
-      navigate(`/search?query=${encodeURIComponent(term)}`);
-    }
-
-    setIsLoading(true);
-    setSearchResults([]);
-    setPostResults([]);
-    setAutocompleteResults([]);
-    setCurrentPage(0);
-    setHasMore(true);
-
-    try {
-      const result = await getsearchBenefits(term);
-      setSearchResults(result.content);
-      
-      if (result.content.length === 0) {
-        setHasMore(false);
-      } else {
-        setHasMore(!result.last);
-      }
-
-      const posts = await searchAllPosts(term);
-      setPostResults(posts);
-      localStorage.setItem("searchTerm", term);
-
-      const updatedSearches = await getSearchHistory();
-      setRecentSearches(updatedSearches);
-    } catch (e) {
-      console.warn("❌ 검색 실패:", e);
-    }
-
-    setIsLoading(false);
-  };
+  }, [query, handleSearch]);
 
   const handleInputChange = async (e) => {
     const term = e.target.value;
