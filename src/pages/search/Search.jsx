@@ -260,6 +260,24 @@ const Search = () => {
             <LineLoading />
             <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
           </div>
+        ) : searchTerm.trim() === "" ? (
+          // ✅ 검색어가 없으면 인기 복지 혜택 보여주기
+          <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
+            {popularBenefits.map((card) => (
+              <Card
+                key={card.publicServiceId}
+                data={{
+                  id: card.publicServiceId,
+                  title: card.serviceName,
+                  description: card.summaryPurpose,
+                  category: card.serviceCategory,
+                  specialGroup: card.specialGroup,
+                  familyType: card.familyType,
+                  isBookmarked: card.bookmarked,
+                }}
+              />
+            ))}
+          </div>
         ) : (
           searchResults.length > 0 ? (
             <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
