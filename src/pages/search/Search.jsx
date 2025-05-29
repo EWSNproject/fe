@@ -6,7 +6,7 @@ import SearchIcon from "../../assets/images/ic_search_white.svg";
 import CancelIcon from "../../assets/images/Cancel.svg";
 import { getPopularBenefits, deleteSearchHistory } from "../../api/main";
 import { searchAllPosts } from "../../api/postApi";
-import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
+import { getsearchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 import { getSearchHistory } from "../../api/main";
 import LineLoading from "../../components/Loading/LineLoading";
 import { useNavigate } from "react-router-dom";
@@ -86,7 +86,7 @@ const Search = () => {
     setHasMore(true);
 
     try {
-      const result = await searchBenefits(term, 6, 0);
+      const result = await getsearchBenefits(term);
       setSearchResults(result.content);
       setHasMore(!result.last);
 
@@ -128,10 +128,10 @@ const Search = () => {
   const loadMore = async () => {
     const nextPage = currentPage + 1;
     try {
-      const result = await searchBenefits(searchTerm, 6, nextPage);
+      const result = await  getsearchBenefits(searchTerm, 6, nextPage);
       setSearchResults((prev) => [...prev, ...result.content]);
       setCurrentPage(nextPage);
-      setHasMore(!result.last);
+      setHasMore(!result.last); 
     } catch (e) {
       console.error("❌ 더보기 실패:", e);
     }
