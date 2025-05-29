@@ -1,12 +1,45 @@
 import { useEffect, useState, useCallback } from "react";
 import { getReports, getReportType } from "../../api/admin";
 import Pagination from "../../components/Pagination";
+import ReportActionModal from "./components/ReportActionModal";
+import { postReportApproval, postApprovalDenied } from "../../api/admin";
 
 export default function ReportCard() {
   const [reports, setReports] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filterStatus, setFilterStatus] = useState("ALL");
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState(null);
+
+  const handleModalOpen = (reportId) => {
+    setSelectedReportId(reportId);
+    setModalOpen(true);
+  };
+
+  const handleModalSubmit = async (data) => {
+    console.log("처리 요청 내용:", data);
+
+    try {
+      if (data.reject) {
+        await postApprovalDenied(selectedReportId);
+      } else if (data.approve) {
+        const suspendData = {
+          suspendStartAt: `${data.startDate}T12:00:00`,
+          suspendEndAt: `${data.endDate}T12:00:00`,
+          suspendReason: data.reason || "관리자 지정 사유 없음",
+        };
+
+        await postReportApproval(selectedReportId, suspendData);
+      }
+
+      await fetchReports(currentPage);
+      setModalOpen(false);
+    } catch (error) {
+      console.error("신고 처리 중 오류 발생:", error);
+    }
+  };
 
   const fetchReports = useCallback(async (page = 1) => {
     try {
@@ -86,15 +119,24 @@ export default function ReportCard() {
                 <td className="p-2 border">{report.content || "-"}</td>
                 <td className="p-2 border">{report.createdAt.split("T")[0]}</td>
                 <td className="p-2 border">
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    report.status === "처리 완료"
-                      ? "border border-green-400 text-green-500"
-                      : report.status === "거부됨"
-                      ? "border border-red-400 text-red-500"
-                      : "border border-yellow-700 text-yellow-800"
-                  }`}>
-                    {report.status}
-                  </span>
+                  {report.status === "처리 대기중" ? (
+                    <button
+                      className="px-2 py-1 text-xs text-yellow-800 border border-yellow-700 rounded cursor-pointer"
+                      onClick={() => handleModalOpen(report.id)}
+                    >
+                      {report.status}
+                    </button>
+                  ) : (
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        report.status === "처리 완료"
+                          ? "border border-green-400 text-green-500"
+                          : "border border-red-400 text-red-500"
+                      }`}
+                    >
+                      {report.status}
+                    </span>
+                  )}
                 </td>
               </tr>
             ))
@@ -107,6 +149,12 @@ export default function ReportCard() {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         pageGroupSize={5}
+      />
+
+      <ReportActionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
       />
     </div>
   );
