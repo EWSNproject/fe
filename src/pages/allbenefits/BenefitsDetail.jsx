@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getBenefitDetail } from "../../api/BenefitsService";
 import { List } from "lucide-react";
+import CurveLoading from '../../components/Loading/CurveLoading'; 
 
 const BenefitsDetail = () => {
   const navigate = useNavigate();
@@ -26,13 +27,26 @@ const BenefitsDetail = () => {
   }, [id]);
 
   if (isLoading) {
-    return <div className="text-center text-gray-500">로딩 중...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <CurveLoading size={40} />
+      </div>
+    );
   }
 
   if (!benefit) {
     return (
-      <div className="text-center text-gray-500">
-        존재하지 않는 복지혜택입니다.
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-gray-600 text-center px-4">
+        <p className="mb-2 text-lg font-semibold">해당 복지 혜택 정보를 찾을 수 없습니다.</p>
+        <p className="mb-6 text-sm text-gray-500">
+          요청하신 혜택은 존재하지 않거나 삭제되었을 수 있습니다.
+        </p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-6 py-2 font-semibold transition bg-yellow-600 rounded-md text-black-50 hover:bg-yellow-500 hover:text-yellow-900"
+        >
+          이전 페이지로 돌아가기
+        </button>
       </div>
     );
   }
@@ -93,18 +107,18 @@ const BenefitsDetail = () => {
       <div className="flex flex-col gap-6">
         <div className="flex min-w-[322px] min-h-[40px] justify-between">
           <div className="flex">
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm bg-yellow-700 text-black-50">
+            <div className="flex items-center px-4 py-2 text-lg bg-yellow-700 md:text-sm text-black-50">
               담당부서
             </div>
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+            <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700 md:text-sm">
               {department}
             </div>
-            <div className="flex items-center px-4 py-2 text-lg md:text-sm text-black bg-white border-2 border-yellow-700">
+            <div className="flex items-center px-4 py-2 text-lg text-black bg-white border-2 border-yellow-700 md:text-sm">
               {phone}
             </div>
           </div>
-          <div className='flex gap-2 cursor-pointer items-center' onClick={() => navigate('/benefitsList')}>
-            <span className='border-gray-400 md: ml-3'><List size={30} /></span>
+          <div className='flex items-center gap-2 cursor-pointer' onClick={() => navigate('/benefitsList')}>
+            <span className='ml-3 border-gray-400 md:'><List size={30} /></span>
             <span className='text-[20px] md:hidden'>목록</span>
           </div>
         </div>

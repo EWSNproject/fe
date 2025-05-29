@@ -5,6 +5,7 @@ import SearchFilter from "../../components/filter/SearchFilter";
 import Pagination from "../../components/Pagination";
 import { getFilteredBenefits, searchBenefits } from "../../api/BenefitsService";
 import InfoIcon from "../../assets/images/Info.svg";
+import CurveLoading from '../../components/Loading/CurveLoading'; 
 
 const SortOptions = ({ selected, onSelect }) => {
   const options = ["가나다순", "인기순", "방문순"];
@@ -155,8 +156,8 @@ useEffect(() => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <p>로딩 중...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <CurveLoading size={40} />
       </div>
     );
   }
@@ -193,7 +194,7 @@ useEffect(() => {
                 />
               ))
             ) : (
-              <div className="col-span-3 text-center py-8">검색 결과가 없습니다.</div>
+              <div className="col-span-3 py-8 text-center">검색 결과가 없습니다.</div>
             )}
           </div>
           {benefits.length > 0 && (

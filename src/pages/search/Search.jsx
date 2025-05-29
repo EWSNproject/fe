@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import Card from "../../components/Card";
 import MyPostsList from "../../components/profile/PostList";
@@ -6,29 +6,26 @@ import SearchIcon from "../../assets/images/ic_search_white.svg";
 import CancelIcon from "../../assets/images/Cancel.svg";
 import { getPopularBenefits, deleteSearchHistory } from "../../api/main";
 import { searchAllPosts } from "../../api/postApi";
-import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
+import { getsearchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 import { getSearchHistory } from "../../api/main";
-import Pagination from "../../components/Pagination";
+import LineLoading from "../../components/Loading/LineLoading";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
-  const [visibleItems, setVisibleItems] = useState(6);
   const [popularBenefits, setPopularBenefits] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [postResults, setPostResults] = useState([]);
   const [autocompleteResults, setAutocompleteResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [mobilePage, setMobilePage] = useState(1);
-
-  const loadMore = () => {
-    setVisibleItems((prev) => Math.min(prev + 4, searchResults.length));
-  };
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPopularBenefits = async () => {
@@ -56,45 +53,49 @@ const Search = () => {
     fetchRecentSearches();
   }, []);
 
+  const handleSearch = useCallback(
+    async (term, updateUrl = true) => {
+      if (!term.trim()) return;
+
+      if (updateUrl) {
+        navigate(`/search?query=${encodeURIComponent(term)}`);
+      }
+
+      setIsLoading(true);
+      setSearchResults([]);
+      setPostResults([]);
+      setAutocompleteResults([]);
+      setCurrentPage(0);
+      setHasMore(true);
+
+      try {
+        const result = await getsearchBenefits(term);
+        setSearchResults(result.content);
+        setHasMore(!result.last);
+
+        const posts = await searchAllPosts(term);
+        setPostResults(posts);
+        localStorage.setItem("searchTerm", term);
+
+        const updatedSearches = await getSearchHistory();
+        setRecentSearches(updatedSearches);
+      } catch (e) {
+        console.warn("❌ 검색 실패:", e);
+      }
+
+      setIsLoading(false);
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (query) {
       setSearchTerm(query);
-      handleSearch(query);
+      handleSearch(query, false);
     } else {
       setSearchTerm("");
     }
-  }, [query]);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleSearch = async (term) => {
-    if (!term.trim()) return;
-
-    setIsLoading(true);
-    setSearchResults([]);
-    setPostResults([]);
-    setAutocompleteResults([]);
-
-    try {
-      const benefits = await searchBenefits(term, 10);
-      setSearchResults(benefits);
-      setVisibleItems(6);
-
-      const posts = await searchAllPosts(term);
-      setPostResults(posts);
-
-      const updatedSearches = await getSearchHistory();
-      setRecentSearches(updatedSearches);
-    } catch (e) {
-      console.warn("❌ 검색 실패:", e);
-    }
-
-    setIsLoading(false);
-  };
+  }, [query, handleSearch]);
 
   const handleInputChange = async (e) => {
     const term = e.target.value;
@@ -118,12 +119,17 @@ const Search = () => {
     handleSearch(suggestion);
   };
 
-  const totalItems = searchResults.length > 0 ? searchResults : popularBenefits;
-  const totalPages = isMobile ? Math.ceil(totalItems.length / 3) : 1;
-
-  const pagedItems = isMobile
-    ? totalItems.slice((mobilePage - 1) * 3, mobilePage * 3)
-    : totalItems.slice(0, visibleItems);
+  const loadMore = async () => {
+    const nextPage = currentPage + 1;
+    try {
+      const result = await  getsearchBenefits(searchTerm, 6, nextPage);
+      setSearchResults((prev) => [...prev, ...result.content]);
+      setCurrentPage(nextPage);
+      setHasMore(!result.last); 
+    } catch (e) {
+      console.error("❌ 더보기 실패:", e);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center p-6 max-w-[1680px] mx-auto">
@@ -133,7 +139,7 @@ const Search = () => {
       <div className="relative w-full max-w-[1236px] mb-8">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-[10px] min-h-[64px] border bg-[#FAFAFA] px-4 py-3 w-full">
           
-          <div className="flex items-center w-full relative">
+          <div className="relative flex items-center w-full">
             {/* 입력창 */}
             <input
               type="text"
@@ -186,10 +192,10 @@ const Search = () => {
         )}
       </div>
 
-      {/* Recent Searches */}
+      {/* 최근 검색어 */}
       <div className="mb-6 w-full max-w-[1236px]">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-semibold mb-3">최근 검색어</h2>
+          <h2 className="mb-3 text-xl font-semibold">최근 검색어</h2>
           {recentSearches.length > 0 && (
             <button
               className="text-sm text-red-500 hover:underline"
@@ -219,7 +225,7 @@ const Search = () => {
                 <img
                   src={CancelIcon}
                   alt="삭제"
-                  className="w-5 h-5 cursor-pointer ml-1"
+                  className="w-5 h-5 ml-1 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     deleteSearchHistory(item.id);
@@ -240,10 +246,14 @@ const Search = () => {
       <div className="w-full max-w-[1236px] mb-8">
         <h2 className="mb-4 text-xl font-semibold">복지서비스</h2>
         {isLoading ? (
-          <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
-        ) : (
-          <div className="grid grid-cols-3 md:grid-cols-1 gap-6">
-            {pagedItems.map((card) => (
+          <div className="flex flex-col items-center justify-center gap-3 min-h-[60px]">
+            <LineLoading />
+            <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
+          </div>
+        ) : searchTerm.trim() === "" ? (
+          // ✅ 검색어가 없으면 인기 복지 혜택 보여주기
+          <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
+            {popularBenefits.map((card) => (
               <Card
                 key={card.publicServiceId}
                 data={{
@@ -258,20 +268,31 @@ const Search = () => {
               />
             ))}
           </div>
+        ) : (
+          searchResults.length > 0 ? (
+            <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
+              {searchResults.map((card) => (
+                <Card
+                  key={card.publicServiceId}
+                  data={{
+                    id: card.publicServiceId,
+                    title: card.serviceName,
+                    description: card.summaryPurpose,
+                    category: card.serviceCategory,
+                    specialGroup: card.specialGroup,
+                    familyType: card.familyType,
+                    isBookmarked: card.bookmarked,
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 font-semibold text-center text-gray-400">검색 결과가 없습니다.</p>
+          )
         )}
 
-        {/* 모바일에서만 페이지네이션 */}
-        {isMobile && totalPages > 1 && (
-          <Pagination
-            currentPage={mobilePage}
-            totalPages={totalPages}
-            onPageChange={setMobilePage}
-            pageGroupSize={3}
-          />
-        )}
-
-        {/* PC에서는 기존 더보기 버튼 유지 */}
-        {!isMobile && visibleItems < searchResults.length && (
+        {/* 모바일/PC 공통 더보기 버튼 */}
+        {hasMore && searchResults.length > 0 && (
           <div className="flex justify-center mt-8">
             <button
               onClick={loadMore}
@@ -284,7 +305,7 @@ const Search = () => {
       </div>
 
       {/* 게시판 */}
-      <div className="w-full max-w-[1236px]">
+      <div className="w-full max-w-[1236px] mb-4">
         <h2 className="mb-4 text-xl font-semibold">게시판</h2>
         <MyPostsList posts={postResults} />
       </div>

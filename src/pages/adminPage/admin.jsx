@@ -10,7 +10,7 @@ export default function Admin() {
 
   return (
     <div className="flex bg-[#FAFAFA] w-full">
-      <Sidebar setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="flex-1">
         <header className="w-full border-b bg-black-50 h-[70px] flex items-center">
           <span className="flex ml-10 text-xl font-semibold">관리자페이지</span>

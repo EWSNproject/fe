@@ -112,6 +112,18 @@ export const searchBenefits = async (searchTerm, page = 0, size = null) => {
   }
 };
 
+export const getsearchBenefits = async (searchTerm, size = 6, page = 0) => {
+  try {
+    const url = `/mongo/search/services?searchTerm=${encodeURIComponent(searchTerm)}&size=${size}&page=${page}`;
+    const response = await httpClient.get(url);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching searched benefits:', error);
+    throw error;
+  }
+};
+
+
 export const autocompleteSearch = async (word) => {
   try {
     const response = await httpClient.get(

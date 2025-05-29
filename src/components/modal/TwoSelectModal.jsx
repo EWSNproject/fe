@@ -28,17 +28,17 @@ export default function TwoSelectModal({
         )}
 
         <div className="flex flex-col items-center justify-center flex-1">
-          <p className="text-[24px] font-medium text-center">{message}</p>
+          <p className="text-[24px] font-medium text-center md:text-[20px]">{message}</p>
 
           {/* 빨간 서브 메시지 */}
           {subMessage && (
-            <p className="text-[18px] text-error text-center mt-2">
+            <p className="text-[18px] text-error text-center mt-2 md:text-[14px]">
               {subMessage}
             </p>
           )}
         </div>
 
-        <div className="flex justify-between gap-3 text-xl md:font-medium font-semibold">
+        <div className="flex justify-between gap-3 text-xl font-semibold md:font-medium">
           {button2Text && (
             <button
               onClick={button2Action}

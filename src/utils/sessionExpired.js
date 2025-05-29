@@ -26,7 +26,7 @@ export function showSessionExpiredModal() {
     <TwoSelectModal
       icon={Bang}
       isOpen={true}
-      message="로그인 시간이 만료되었어요."
+      message="로그인시 이용한 서비스입니다."
       subMessage="다시 로그인하시면 계속 이용하실 수 있어요."
       button2Text="홈으로"
       button2Action={handleHome}

@@ -2,11 +2,12 @@ import Logo from "../../assets/images/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { BookUser, TriangleAlert, UserMinus, UserX } from 'lucide-react';
 
-function SidebarItem({ icon, label, onClick }) {
+function SidebarItem({ icon, label, onClick, active }) {
   return (
     <span
       onClick={onClick}
-      className="flex gap-2.5 px-3 py-2 w-full rounded-lg hover:bg-yellow-400 cursor-pointer"
+      className={`flex gap-2.5 px-3 py-2 w-full rounded-lg cursor-pointer
+        ${active ? "bg-yellow-700 text-white" : "hover:bg-yellow-400"}`}
     >
       {icon}
       {label}
@@ -14,7 +15,7 @@ function SidebarItem({ icon, label, onClick }) {
   );
 }
 
-export default function Sidebar({ setActiveTab }) {
+export default function Sidebar({ activeTab, setActiveTab }) {
   const navigate = useNavigate();
   
   return (
@@ -32,35 +33,29 @@ export default function Sidebar({ setActiveTab }) {
             <SidebarItem
               icon={<BookUser />}
               label="회원정보"
+              active={activeTab === "user-info"}
               onClick={() => setActiveTab("user-info")}
             />
             <SidebarItem
               icon={<TriangleAlert />}
               label="신고내역"
+              active={activeTab === "report"}
               onClick={() => setActiveTab("report")}
             />
             <SidebarItem
               icon={<UserMinus />}
               label="정지된 회원"
+              active={activeTab === "suspended"}
               onClick={() => setActiveTab("suspended")}
             />
             <SidebarItem
               icon={<UserX />}
               label="탈퇴한 회원"
+              active={activeTab === "withdrawn"}
               onClick={() => setActiveTab("withdrawn")}
             />
           </div>
         </div>
-
-      {/*
-        <div className="flex flex-col gap-2.5">
-          <span className="text-xs text-black-400">complaint</span>
-          <div>
-            <SidebarItem icon={<FileX />} label="신고된 게시물" />
-            <SidebarItem icon={<MessageSquareWarning />} label="신고된 댓글" />
-          </div>
-        </div>
-      */}
       </div>
     </div>
   );

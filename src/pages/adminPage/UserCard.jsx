@@ -62,7 +62,7 @@ export default function UserCard() {
                 <td className="p-2 border">{user.gender}</td>
                 <td className="p-2 border">{age}</td>
                 <td className="p-2 border">{user.createdAt.split("T")[0]}</td>
-                <td className="p-2 border">{user.role}</td>
+                <td className={`p-2 border ${user.role === "ROLE_ADMIN" ? "text-red-500 font-semibold" : ""}`}>{user.role}</td>
                 <td className="p-2 border">
                   <span
                     className={`px-2 py-1 rounded text-xs ${

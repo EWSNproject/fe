@@ -1,4 +1,5 @@
 import  { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Card from "../../components/Card";
 import {
   getPopularBenefits,
@@ -7,7 +8,7 @@ import {
   getInterestUser,
 } from "../../api/main";
 import { getUserInfo } from "../../api/auth";
-import { searchBenefits, getRecentService } from "../../api/BenefitsService";
+import { getsearchBenefits, getRecentService } from "../../api/BenefitsService";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -16,9 +17,11 @@ import InterestModal from "../../components/modal/InterestModal";
 import Cookies from "js-cookie";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import CurveLoading from '../../components/Loading/CurveLoading'; 
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popularBenefits, setPopularBenefits] = useState([]);
   const [recentServices, setRecentServices] = useState([]);
@@ -39,12 +42,39 @@ const Home = () => {
   useEffect(() => {
     const currentUserId = Cookies.get("userId");
     const hasSeenInterestModal = Cookies.get("hasSeenInterestModal");
+    const params = new URLSearchParams(location.search);
+    const isEditInterest = params.get("editInterest") === "true";
 
-    if (accessToken && currentUserId && hasSeenInterestModal !== "true") {
-      setIsModalOpen(true);
-      Cookies.set("hasSeenInterestModal", "true", { expires: 1 });
+    const fetchUserDataForModal = async () => {
+      try {
+        const interests = await getInterestUser();
+        const selected = [];
+        Object.entries(interests).forEach(([_, items]) => {
+          items.forEach(item => {
+            if (item.selected) selected.push(item.name);
+          });
+        });
+
+        // 조건 1: 마이페이지 쿼리로 접근했을 경우 무조건 모달 열기
+        if (isEditInterest) {
+          setIsModalOpen(true);
+          return;
+        }
+
+        // 조건 2: 관심 키워드가 없고, 이전에 본 적 없다면 모달 열기
+        if (accessToken && currentUserId && hasSeenInterestModal !== "true" && selected.length === 0) {
+          setIsModalOpen(true);
+          Cookies.set("hasSeenInterestModal", "true", { expires: 1 });
+        }
+      } catch (error) {
+        console.error("관심 키워드 확인 중 오류:", error);
+      }
+    };
+
+    if (accessToken && currentUserId) {
+      fetchUserDataForModal();
     }
-  }, [accessToken]);
+  }, [accessToken, location.search]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,8 +152,8 @@ const Home = () => {
     setIsLoading(true);
 
     try {
-      const data = await searchBenefits(category, 6);
-      setCategoryCards(data);
+      const data = await getsearchBenefits(category, 6);
+      setCategoryCards(data.content);
     } catch (err) {
       console.error("카테고리 검색 실패:", err);
     } finally {
@@ -169,7 +199,7 @@ const Home = () => {
           ))}
         </ul>
         {isLoading ? (
-          <p className="text-lg text-gray-500">로딩 중...</p>
+          <CurveLoading size={40}/>
         ) : (
           categoryCards.length > 0 && (
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
@@ -268,16 +298,19 @@ const Home = () => {
                         최근 검색어
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {recentSearches.map((search) => (
-                        <span
-                          key={search.id}
-                          className="px-3 py-1 text-sm font-medium text-yellow-900 transition bg-white border border-yellow-700 rounded-full"
-                        >
-                          #{search.searchTerm}
-                        </span>
-                      ))}
-                    </div>
+                    {recentSearches.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {recentSearches.map((search) => (
+                          <button
+                            key={search.id}
+                            onClick={() => navigate(`/search?query=${encodeURIComponent(search.searchTerm)}`)}
+                            className="px-3 py-1 text-sm font-medium text-yellow-900 transition bg-white border border-yellow-700 rounded-full shadow-sm hover:bg-yellow-100"
+                          >
+                            #{search.searchTerm}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -352,14 +385,31 @@ const Home = () => {
         </motion.div>
       ) : (
         <div className="w-full max-w-[1236px] mb-8 mt-8 text-center">
-          <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
-            <h2 className="mb-2 text-2xl font-bold text-gray-800">
-              현재 맞춤 복지 서비스가 없습니다.
-            </h2>
-            <p className="mb-6 text-gray-600">
-              회원가입을 통해 관심 있는 서비스를 추천 받으세요!
-            </p>
-          </div>
+          {accessToken && interestKeywords.length === 0 ? (
+            <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+              <h2 className="mb-2 text-2xl font-bold text-gray-800">
+                아직 맞춤 복지 추천을 받을 준비가 안 되었어요!
+              </h2>
+              <p className="mb-4 text-gray-700">
+                마이페이지에서 관심 키워드를 선택하면 나에게 맞는 복지 혜택을 추천해드릴게요.
+              </p>
+              <button
+                onClick={() => navigate("/mypage?editInterest=true")}
+                className="px-6 py-2 mt-4 font-semibold text-white transition bg-yellow-700 rounded-full hover:bg-green-700"
+              >
+                키워드 설정하러 가기 →
+              </button>
+            </div>
+          ) : (
+            <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+              <h2 className="mb-2 text-2xl font-bold text-gray-800">
+                현재 맞춤 복지 서비스가 없습니다.
+              </h2>
+              <p className="mb-6 text-gray-600">
+                회원가입을 통해 관심 있는 서비스를 추천 받으세요!
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

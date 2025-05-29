@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 
@@ -16,7 +16,17 @@ export default function MyPostsList({ posts }) {
   );
 
   if (posts.length === 0) {
-    return <p className="text-gray-400">게시글이 없습니다.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center py-10 text-center text-gray-600 border shadow-sm bg-gray-50 rounded-xl">
+        <p className="mb-2 text-lg">게시글이 없습니다.</p>
+        <button
+          onClick={() => navigate('/board')}
+          className="px-4 py-2 text-white transition bg-yellow-600 rounded-lg hover:bg-yellow-700"
+        >
+          ✍️ 게시글 작성하러 가기
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -24,19 +34,19 @@ export default function MyPostsList({ posts }) {
       {currentPosts.map((post) => (
         <div 
           key={post.postId} 
-          className="border-b grid grid-cols-12 gap-4 md:gap-0 cursor-pointer hover:bg-gray-50"
+          className="grid grid-cols-12 gap-4 border-b cursor-pointer md:gap-0 hover:bg-gray-50"
           onClick={() => navigate(`/board/${post.postId}`)}
         >
-          <div className="md:col-span-12 col-span-9">
-            <h3 className="text-lg font-semibold mt-3 break-words">{post.title}</h3>
-            <p className="text-sm text-black-500 mt-1">{post.content}</p>
-            <div className="flex gap-4 mt-2 text-sm text-gray-600 mb-3">
+          <div className="col-span-9 md:col-span-12">
+            <h3 className="mt-3 text-lg font-semibold break-words">{post.title}</h3>
+            <p className="mt-1 text-sm text-black-500">{post.content}</p>
+            <div className="flex gap-4 mt-2 mb-3 text-sm text-gray-600">
               <span>❤️ {post.recommendCnt}</span>
               <span>💬 {post.commentCnt}</span>
               <span className="text-tag-green">{post.nickName}</span>
             </div>
           </div>
-          <div className="col-span-3 text-right text-sm text-black-300 mt-3 md:hidden">
+          <div className="col-span-3 mt-3 text-sm text-right text-black-300 md:hidden">
             {new Date(post.createdAt).toLocaleDateString()}
           </div>
         </div>

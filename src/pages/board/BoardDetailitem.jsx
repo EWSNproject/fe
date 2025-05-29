@@ -81,7 +81,7 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
         </div>
       </div>
   
-      <div className='mb-10 text-xl font-light'>
+      <div className='mb-10 text-xl font-light whitespace-pre-wrap'>
         {item.content}
       </div>
 
