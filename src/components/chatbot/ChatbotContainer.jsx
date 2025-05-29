@@ -35,7 +35,7 @@ export default function ChatbotContainer() {
           {/* 맨 위로 가기 버튼 */}
           <button
             onClick={scrollToTop}
-            className="flex items-center justify-center text-white bg-gray-500 rounded-full shadow-lg hover:bg-gray-800 w-14 h-14"
+            className="flex items-center justify-center text-white bg-gray-500 rounded-full shadow-lg hover:bg-gray-800 md:w-10 md:h-10 w-14 h-14"
           >
             <ArrowUp className="w-6 h-6" />
           </button>
@@ -43,7 +43,7 @@ export default function ChatbotContainer() {
           {/* 챗봇 열기 버튼 */}
           <button
             onClick={() => setOpened(true)}
-            className="flex items-center justify-center bg-yellow-600 rounded-full shadow-lg text-black-50 hover:bg-yellow-700 w-14 h-14"
+            className="flex items-center justify-center bg-yellow-600 rounded-full shadow-lg text-black-50 hover:bg-yellow-700 md:w-10 md:h-10 w-14 h-14"
           >
             <MessageCircle className="w-6 h-6" />
           </button>
