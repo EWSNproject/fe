@@ -1,4 +1,5 @@
 import  { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Card from "../../components/Card";
 import {
   getPopularBenefits,
@@ -20,6 +21,7 @@ import CurveLoading from '../../components/Loading/CurveLoading';
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [popularBenefits, setPopularBenefits] = useState([]);
   const [recentServices, setRecentServices] = useState([]);
@@ -40,12 +42,39 @@ const Home = () => {
   useEffect(() => {
     const currentUserId = Cookies.get("userId");
     const hasSeenInterestModal = Cookies.get("hasSeenInterestModal");
+    const params = new URLSearchParams(location.search);
+    const isEditInterest = params.get("editInterest") === "true";
 
-    if (accessToken && currentUserId && hasSeenInterestModal !== "true") {
-      setIsModalOpen(true);
-      Cookies.set("hasSeenInterestModal", "true", { expires: 1 });
+    const fetchUserDataForModal = async () => {
+      try {
+        const interests = await getInterestUser();
+        const selected = [];
+        Object.entries(interests).forEach(([_, items]) => {
+          items.forEach(item => {
+            if (item.selected) selected.push(item.name);
+          });
+        });
+
+        // 조건 1: 마이페이지 쿼리로 접근했을 경우 무조건 모달 열기
+        if (isEditInterest) {
+          setIsModalOpen(true);
+          return;
+        }
+
+        // 조건 2: 관심 키워드가 없고, 이전에 본 적 없다면 모달 열기
+        if (accessToken && currentUserId && hasSeenInterestModal !== "true" && selected.length === 0) {
+          setIsModalOpen(true);
+          Cookies.set("hasSeenInterestModal", "true", { expires: 1 });
+        }
+      } catch (error) {
+        console.error("관심 키워드 확인 중 오류:", error);
+      }
+    };
+
+    if (accessToken && currentUserId) {
+      fetchUserDataForModal();
     }
-  }, [accessToken]);
+  }, [accessToken, location.search]);
 
   useEffect(() => {
     const fetchData = async () => {
