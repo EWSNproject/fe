@@ -3,7 +3,6 @@ import { BookmarkIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import Tooltip from "./ui/Tooltip";
 import { addBookmark, removeBookmark } from "../api/BenefitsService";
-import { toast } from "react-toastify";
 
 const Card = ({ data }) => {
   const {
@@ -36,7 +35,6 @@ const Card = ({ data }) => {
       setBookmarked(!bookmarked);
     } catch (error) {
       console.error('Error toggling bookmark:', error);
-      toast.error('북마크 처리 중 오류가 발생했습니다.');
     }
   };
 
