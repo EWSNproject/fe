@@ -269,16 +269,19 @@ const Home = () => {
                         최근 검색어
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {recentSearches.map((search) => (
-                        <span
-                          key={search.id}
-                          className="px-3 py-1 text-sm font-medium text-yellow-900 transition bg-white border border-yellow-700 rounded-full"
-                        >
-                          #{search.searchTerm}
-                        </span>
-                      ))}
-                    </div>
+                    {recentSearches.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {recentSearches.map((search) => (
+                          <button
+                            key={search.id}
+                            onClick={() => navigate(`/search?query=${encodeURIComponent(search.searchTerm)}`)}
+                            className="px-3 py-1 text-sm font-medium text-yellow-900 transition bg-white border border-yellow-700 rounded-full shadow-sm hover:bg-yellow-100"
+                          >
+                            #{search.searchTerm}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 

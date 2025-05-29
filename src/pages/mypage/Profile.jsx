@@ -11,6 +11,12 @@ import ReasonSelectModal from "../../components/modal/ReasonSelectModal.jsx";
 import DuplicateModal from "../../components/modal/DuplicateModal.jsx";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
 import { toast } from 'react-toastify';
+import questionMark from "../../assets/images/questionMark.svg";
+import eggLevel from "../../assets/images/egg.svg";
+import chick from "../../assets/images/chick.svg";
+import chicken from "../../assets/images/chicken.svg";
+import eagle from "../../assets/images/eagle.svg";
+import cloud from "../../assets/images/cloud.svg";
 
 const Mypage = ({ handleLogout }) => {
   const [activeTab, setActiveTab] = useState("liked");
@@ -30,6 +36,7 @@ const Mypage = ({ handleLogout }) => {
   const pageGroupSize = 5;
 
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const levelImages = [questionMark, eggLevel, chick, chicken, eagle, cloud];
 
   // 반응형 itemsPerPage 설정
   useEffect(() => {
@@ -158,14 +165,14 @@ const Mypage = ({ handleLogout }) => {
                       key={index}
                       className="flex flex-col items-center text-center"
                     >
-                      <div
-                        className={`w-8 h-8 rounded-full bg-yellow-700 mb-2`}
-                      ></div>
+                      <img
+                        src={levelImages[index]}
+                        alt={item.name}
+                        className="object-contain w-8 h-8 mb-2"
+                      />
                       <span className="text-sm font-medium">{item.level}</span>
                       <span className="text-sm text-gray-600">{item.name}</span>
-                      <span className="text-sm text-gray-500">
-                        {item.points}
-                      </span>
+                      <span className="text-sm text-gray-500">{item.points}</span>
                     </div>
                   ))}
                 </div>
@@ -239,33 +246,49 @@ const Mypage = ({ handleLogout }) => {
 
         {activeTab === "liked" && (
           <>
-            <div className="grid grid-cols-3 gap-6 mt-6 md:grid-cols-1">
-              {currentItems.map((benefit) => (
-                <Card
-                  key={benefit.publicServiceId}
-                  data={{
-                    id: benefit.publicServiceId,
-                    title: benefit.serviceName,
-                    description: benefit.summaryPurpose,
-                    isBookmarked: benefit.bookmarked,
-                    category: benefit.serviceCategory,
-                    specialGroup: benefit.specialGroup,
-                    familyType: benefit.familyType,
-                  }}
-                />
-              ))}
-            </div>
+            {currentItems.length > 0 ? (
+              <>
+                <div className="grid grid-cols-3 gap-6 mt-6 md:grid-cols-1">
+                  {currentItems.map((benefit) => (
+                    <Card
+                      key={benefit.publicServiceId}
+                      data={{
+                        id: benefit.publicServiceId,
+                        title: benefit.serviceName,
+                        description: benefit.summaryPurpose,
+                        isBookmarked: benefit.bookmarked,
+                        category: benefit.serviceCategory,
+                        specialGroup: benefit.specialGroup,
+                        familyType: benefit.familyType,
+                      }}
+                    />
+                  ))}
+                </div>
 
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                pageGroupSize={pageGroupSize}
-              />
+                {totalPages > 1 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    pageGroupSize={pageGroupSize}
+                  />
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-3 py-16 mt-8 text-center text-gray-600 border rounded-xl bg-gray-50">
+                <p className="text-lg font-semibold">북마크한 복지혜택이 없습니다.</p>
+                <p className="text-sm">지금 복지혜택을 둘러보고 북마크해보세요!</p>
+                <button
+                  onClick={() => navigate("/benefitsList")}
+                  className="px-4 py-2 mt-4 text-sm text-white transition bg-yellow-600 rounded-lg hover:bg-yellow-700"
+                >
+                  👉 복지혜택 보러가기
+                </button>
+              </div>
             )}
           </>
         )}
+
       </div>
 
       {/* Footer */}
