@@ -147,24 +147,24 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
           <h3 className="text-[14px]">{title}</h3>
           {isOpen ? <FaChevronUp /> : <FaChevronDown />}
         </div>
-        {isOpen && (
+        {isOpen ? (
           <ul className="mt-2">
             {options.map((option) => (
-              <li key={option.code} className="flex items-center gap-2 my-1">
+              <li key={`${title}-${option.code}`} className="flex items-center gap-2 my-1">
                 <input
                   type="checkbox"
-                  id={option.code}
+                  id={`${title}-${option.code}`}
                   checked={selectedOptions.some(selected => selected.code === option.code)}
                   onChange={() => handleCheckboxChange(option)}
                   className="w-4 h-4 accent-tag-green"
                 />
-                <label htmlFor={option.code} className="text-sm">
+                <label htmlFor={`${title}-${option.code}`} className="text-sm">
                   {option.label}
                 </label>
               </li>
             ))}
           </ul>
-        )}
+        ) : null}
       </div>
     );
   };
