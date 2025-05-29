@@ -7,7 +7,7 @@ import {
   getInterestUser,
 } from "../../api/main";
 import { getUserInfo } from "../../api/auth";
-import { searchBenefits, getRecentService } from "../../api/BenefitsService";
+import { getsearchBenefits, getRecentService } from "../../api/BenefitsService";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -123,8 +123,8 @@ const Home = () => {
     setIsLoading(true);
 
     try {
-      const data = await searchBenefits(category, 6);
-      setCategoryCards(data);
+      const data = await getsearchBenefits(category, 6);
+      setCategoryCards(data.content);
     } catch (err) {
       console.error("카테고리 검색 실패:", err);
     } finally {
