@@ -385,14 +385,31 @@ const Home = () => {
         </motion.div>
       ) : (
         <div className="w-full max-w-[1236px] mb-8 mt-8 text-center">
-          <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
-            <h2 className="mb-2 text-2xl font-bold text-gray-800">
-              현재 맞춤 복지 서비스가 없습니다.
-            </h2>
-            <p className="mb-6 text-gray-600">
-              회원가입을 통해 관심 있는 서비스를 추천 받으세요!
-            </p>
-          </div>
+          {accessToken && interestKeywords.length === 0 ? (
+            <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+              <h2 className="mb-2 text-2xl font-bold text-gray-800">
+                아직 맞춤 복지 추천을 받을 준비가 안 되었어요!
+              </h2>
+              <p className="mb-4 text-gray-700">
+                마이페이지에서 관심 키워드를 선택하면 나에게 맞는 복지 혜택을 추천해드릴게요.
+              </p>
+              <button
+                onClick={() => navigate("/mypage?editInterest=true")}
+                className="px-6 py-2 mt-4 font-semibold text-white transition bg-yellow-700 rounded-full hover:bg-green-700"
+              >
+                키워드 설정하러 가기 →
+              </button>
+            </div>
+          ) : (
+            <div className="px-6 py-10 shadow-md bg-gradient-to-r to-green-100 via-white from-yellow-100 rounded-2xl">
+              <h2 className="mb-2 text-2xl font-bold text-gray-800">
+                현재 맞춤 복지 서비스가 없습니다.
+              </h2>
+              <p className="mb-6 text-gray-600">
+                회원가입을 통해 관심 있는 서비스를 추천 받으세요!
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
