@@ -8,8 +8,8 @@ import { getPopularBenefits, deleteSearchHistory } from "../../api/main";
 import { searchAllPosts } from "../../api/postApi";
 import { searchBenefits, autocompleteSearch } from "../../api/BenefitsService";
 import { getSearchHistory } from "../../api/main";
-import Pagination from "../../components/Pagination";
 import LineLoading from "../../components/Loading/LineLoading";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
   const [visibleItems, setVisibleItems] = useState(6);
@@ -26,12 +26,15 @@ const Search = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const query = queryParams.get("query");
+  const navigate = useNavigate();
 
-  // 페이지 로드 시 저장된 검색어 복원
   useEffect(() => {
-    const savedTerm = localStorage.getItem('searchTerm');
-    if (savedTerm) setSearchTerm(savedTerm);
-  }, []);
+    if (query) {
+      setSearchTerm(query);
+      handleSearch(query, false); 
+    }
+  }, [query]);
+
 
   useEffect(() => {
     const fetchPopularBenefits = async () => {
@@ -66,8 +69,12 @@ const Search = () => {
     }
   }, [query]);
 
-  const handleSearch = async (term) => {
+  const handleSearch = async (term, updateUrl = true) => {
     if (!term.trim()) return;
+
+    if (updateUrl) {
+      navigate(`/search?query=${encodeURIComponent(term)}`);
+    }
 
     setIsLoading(true);
     setSearchResults([]);
