@@ -99,7 +99,7 @@ const Mypage = ({ handleLogout }) => {
       await logout();
       handleLogout();
       toast.success("로그아웃 되었습니다.");
-      localStorage.removeItem('searchTerm');
+      sessionStorage.clear();
       Cookies.remove('userId');
       navigate("/");
     } catch (error) {

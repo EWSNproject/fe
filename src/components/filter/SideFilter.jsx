@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Menu } from "lucide-react";
 import { getFilterData } from "../../api/BenefitsService";
+import Cookies from "js-cookie";
 
 const SideFilter = ({ onFilterChange, initialFilters }) => {
+  const isLoggedIn = !!Cookies.get("accessToken");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [filterCategories, setFilterCategories] = useState({
@@ -20,13 +22,11 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
 
   const [openSections, setOpenSections] = useState({});
 
-  // ✅ 전체 선택 여부 판단
   const isAllSelected =
     tempFilters.familyTypes.length === filterCategories["가구형태"]?.length &&
     tempFilters.specialGroups.length === filterCategories["가구상황"]?.length &&
     tempFilters.categories.length === filterCategories["관심주제"]?.length;
 
-  // ✅ 필터 항목 로딩
   useEffect(() => {
     const fetchFilterData = async () => {
       try {
@@ -37,19 +37,19 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
           "관심주제": data.categories || []
         });
 
-        // 저장된 필터 복원
-        const savedFilters = localStorage.getItem('benefitsFilters');
-        if (savedFilters) {
-          setTempFilters(JSON.parse(savedFilters));
+        if (isLoggedIn) {
+          const savedFilters = sessionStorage.getItem("benefitsFilters");
+          if (savedFilters) {
+            setTempFilters(JSON.parse(savedFilters));
+          }
         }
       } catch (error) {
         console.error("필터 데이터를 불러오는데 실패했습니다:", error);
       }
     };
     fetchFilterData();
-  }, []);
+  }, [isLoggedIn]);
 
-  // ✅ 전달된 initialFilters 적용
   useEffect(() => {
     if (
       initialFilters &&
@@ -96,7 +96,9 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
 
   const handleSearch = () => {
     onFilterChange(tempFilters);
-    localStorage.setItem('benefitsFilters', JSON.stringify(tempFilters));
+    if (isLoggedIn) {
+      sessionStorage.setItem("benefitsFilters", JSON.stringify(tempFilters));
+    }
   };
 
   const handleReset = () => {
@@ -105,7 +107,9 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
       specialGroups: [],
       categories: []
     });
-    localStorage.removeItem('benefitsFilters');
+    if (isLoggedIn) {
+      sessionStorage.removeItem("benefitsFilters");
+    }
     onFilterChange({
       familyTypes: [],
       specialGroups: [],
@@ -143,24 +147,24 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
           <h3 className="text-[14px]">{title}</h3>
           {isOpen ? <FaChevronUp /> : <FaChevronDown />}
         </div>
-        {isOpen && (
+        {isOpen ? (
           <ul className="mt-2">
             {options.map((option) => (
-              <li key={option.code} className="flex items-center gap-2 my-1">
+              <li key={`${title}-${option.code}`} className="flex items-center gap-2 my-1">
                 <input
                   type="checkbox"
-                  id={option.code}
+                  id={`${title}-${option.code}`}
                   checked={selectedOptions.some(selected => selected.code === option.code)}
                   onChange={() => handleCheckboxChange(option)}
                   className="w-4 h-4 accent-tag-green"
                 />
-                <label htmlFor={option.code} className="text-sm">
+                <label htmlFor={`${title}-${option.code}`} className="text-sm">
                   {option.label}
                 </label>
               </li>
             ))}
           </ul>
-        )}
+        ) : null}
       </div>
     );
   };

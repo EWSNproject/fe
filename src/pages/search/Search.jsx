@@ -66,6 +66,8 @@ const Search = () => {
     if (query) {
       setSearchTerm(query);
       handleSearch(query);
+    } else {
+      setSearchTerm("");
     }
   }, [query]);
 
@@ -104,7 +106,6 @@ const Search = () => {
   const handleInputChange = async (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-    localStorage.setItem('searchTerm', term);
 
     if (term) {
       try {
@@ -120,7 +121,6 @@ const Search = () => {
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion);
-    localStorage.setItem('searchTerm', suggestion);
     setAutocompleteResults([]);
     handleSearch(suggestion);
   };
