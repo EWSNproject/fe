@@ -39,10 +39,17 @@ export default function Chatbot({ onClose }) {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-full ">
-      <div className="flex items-center justify-between px-5 py-3 bg-yellow-600 border-b border-gray-200 rounded-t-[28px]">
-        <span className="ml-2 text-sm">혜택온 사이트 소개</span>
-        <button className="pr-2 text-xl font-bold text-gray-600 cursor-pointer" onClick={onClose}>×</button>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-sm rounded-t-[28px]">
+        <span className="text-sm font-medium tracking-wide text-gray-900">
+          💬 혜택온 사이트 소개
+        </span>
+        <button
+          onClick={onClose}
+          className="text-lg font-bold text-gray-600 transition-colors hover:text-red-500"
+        >
+          ×
+        </button>
       </div>
 
       <div className="flex-1 px-1 py-3 space-y-4 overflow-y-auto">
@@ -53,26 +60,38 @@ export default function Chatbot({ onClose }) {
       </div>
 
       {!messages.length && (
-        <>
-          {/* 클릭 유도 이미지 */}
-          <div className="flex justify-center ">
+        <div className="flex items-center justify-center h-full">
+          <div className="flex flex-col items-center gap-6 text-center">
+            {/* 말풍선 */}
+            <div className="relative bg-yellow-100 px-6 py-4 rounded-3xl shadow-md max-w-[280px] animate-fade-in">
+              <p className="text-base font-medium leading-relaxed text-gray-800">
+                안녕하세요! 😊<br />
+                <strong className="text-yellow-700">혜택온 챗봇</strong>입니다.<br />
+                아래 버튼을 눌러 시작해보세요!
+              </p>
+              <div className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-yellow-100 rotate-45" />
+            </div>
+
+            {/* 손가락 이미지 */}
             <img
               onClick={() => sendQuestion("처음")}
               src={ClickGuide}
               alt="클릭 가이드"
-              className="w-[400px] h-[400px] transition-transform duration-300 ease-in-out cursor-pointer hover:scale-125"
+              className="w-[100px] h-[100px] cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out"
             />
+
+            {/* 시작 버튼 */}
+            <Button
+              onClick={() => sendQuestion("처음")}
+              loading={loading}
+              className="px-8 py-3 text-white bg-yellow-600 rounded-full shadow-md hover:bg-yellow-700"
+            >
+              🤖 챗봇 시작하기
+            </Button>
           </div>
-          <Button
-            fullWidth
-            onClick={() => sendQuestion("처음")}
-            loading={loading}
-            className="py-2 rounded-lg mt-14 bg-black-100 hover:bg-yellow-700"
-          >
-            챗봇 시작하기
-          </Button>
-        </>
+        </div>
       )}
+
     </div>
   );
 }
