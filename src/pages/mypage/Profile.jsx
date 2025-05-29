@@ -99,6 +99,8 @@ const Mypage = ({ handleLogout }) => {
       await logout();
       handleLogout();
       toast.success("로그아웃 되었습니다.");
+      localStorage.removeItem('searchTerm');
+      Cookies.remove('userId');
       navigate("/");
     } catch (error) {
       console.error("❌ 로그아웃 실패:", error);
@@ -112,6 +114,8 @@ const Mypage = ({ handleLogout }) => {
     try {
       await deleteUser(reason);
       setModalMessage("회원탈퇴가 완료되었습니다.");
+      localStorage.removeItem('searchTerm');
+      Cookies.remove('userId');
       setIsModalOpen(true);
       handleLogout();
     } catch (error) {
@@ -176,7 +180,7 @@ const Mypage = ({ handleLogout }) => {
                   게시판에서 활동하며 포인트를 적립하면 등급이 상승합니다.
                 </p>
                 <div className="rounded-lg">
-                  <ul className="pl-5 space-y-2 list-disc text-sm lg:text-xs">
+                  <ul className="pl-5 space-y-2 text-sm list-disc lg:text-xs">
                     <li className="text-tag-red">
                       가입 후 인사 게시판에 글을 작성하면 100점을 획득하여 바로
                       '알' 단계로 승급됩니다.
@@ -235,7 +239,7 @@ const Mypage = ({ handleLogout }) => {
 
         {activeTab === "liked" && (
           <>
-            <div className="grid grid-cols-3 md:grid-cols-1 gap-6 mt-6">
+            <div className="grid grid-cols-3 gap-6 mt-6 md:grid-cols-1">
               {currentItems.map((benefit) => (
                 <Card
                   key={benefit.publicServiceId}
