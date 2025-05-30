@@ -40,14 +40,17 @@ export default function EditPost() {
   const handleKeyDown = (e) => {
     if ((e.key === "Enter" || e.key === " ") && input.trim()) {
       e.preventDefault();
+
       let newTag = input.trim();  
       if (newTag.startsWith("#")) {
         newTag = newTag.slice(1);  
       }
-      if (tags.length >= 3 || tags.includes(newTag)) {
-        setInput("");
+
+      if (newTag.length === 0 || tags.length >= 3 || tags.includes(newTag)) {
+        setInput(""); 
         return;
       }
+
       setTags([...tags, newTag]);
       setInput("");
     }
