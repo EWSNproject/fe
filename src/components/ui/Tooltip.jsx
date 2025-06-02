@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Tooltip = ({ children, content }) => {
     const [isVisible, setIsVisible] = useState(false);
@@ -15,7 +15,7 @@ const Tooltip = ({ children, content }) => {
       >
         {children}
         {isVisible && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 z-10 w-max px-2 py-1 text-sm bg-black-50 rounded-lg shadow-lg whitespace-nowrap">
+          <div className="absolute z-10 px-2 py-1 mt-1 text-sm -translate-x-1/2 rounded-lg shadow-lg left-1/2 top-full w-max bg-black-50 whitespace-nowrap">
             {content}
           </div>
         )}
@@ -23,7 +23,4 @@ const Tooltip = ({ children, content }) => {
     );
   };
   
-  
-  
-
 export default Tooltip;

@@ -8,8 +8,6 @@ export default function MyPostsList({ posts }) {
   const postsPerPage = 5;
 
   const totalPages = Math.ceil(posts.length / postsPerPage);
-  
-  // 현재 페이지에 해당하는 게시글만 표시
   const currentPosts = posts.slice(
     (currentPage - 1) * postsPerPage,
     currentPage * postsPerPage
