@@ -3,7 +3,7 @@ import httpClient from './httpClient';
 export const getbookmarked = async () => {
   try {
     const response = await httpClient.get('/users/me/bookmarked/posts');
-    return response.data.content; // 사용자 정보 반환
+    return response.data.content; 
   } catch (error) {
     throw new Error("사용자 정보를 가져오는 데 실패했습니다.");
   }
