@@ -34,7 +34,7 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   const handleConfirmSelect = async () => {
     if (!selectTargetId) return;
     try {
-      const res = await selectAnswer(postId, selectTargetId);
+      await selectAnswer(postId, selectTargetId);
       setComments((prev) =>
         prev.map((a) =>
           a.id === selectTargetId
