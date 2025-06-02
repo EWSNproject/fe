@@ -43,9 +43,9 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
   const [nicknameCheckMessage, setNicknameCheckMessage] = useState("");
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [isPasswordChangeModalOpen, setIsPasswordChangeModalOpen] =
-    useState(false); // 비밀번호 변경 모달 상태
+    useState(false);
   const [isProfileUpdateModalOpen, setIsProfileUpdateModalOpen] =
-    useState(false); // 프로필 수정 모달 상태
+    useState(false);
 
   const [region, setRegion] = useState("");
   const [district, setDistrict] = useState("");
@@ -76,7 +76,6 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
     }
   }, [user]);
 
-  // 모달이 닫힐 때 비밀번호 필드 리셋
   const handleCloseModal = () => {
     setCurrentPassword("");
     setNewPassword("");
@@ -106,7 +105,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
 
     try {
       await changePassword({ currentPassword, newPassword, confirmPassword });
-      setIsPasswordChangeModalOpen(true); // 비밀번호 변경 성공 모달 열기
+      setIsPasswordChangeModalOpen(true); 
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -128,7 +127,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
 
     try {
       await updateUserProfile(updatedData);
-      setIsProfileUpdateModalOpen(true); // 프로필 수정 성공 모달 열기
+      setIsProfileUpdateModalOpen(true); 
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -156,7 +155,6 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
     }
   };
 
-  // 모든 입력 필드가 채워졌는지 확인하는 함수
   const isProfileComplete = () => {
     return name && nickname && gender && birthDate && region && district && job;
   };
@@ -170,7 +168,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
         className="bg-black-50 pt-5 pr-5 pl-5 max-w-[600px] min-h-[782px] w-full mx-auto rounded-lg outline-none md:max-h-[90vh] md:overflow-y-auto"
         overlayClassName="fixed inset-0 bg-black-950 bg-opacity-80 flex items-center justify-center"
       >
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">개인정보 수정</h2>
           <button
             onClick={handleCloseModal}
@@ -215,7 +213,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
                 disabled
                 className="pr-[16px] pl-[16px] block w-full min-h-[50px] bg-gray-200 border border-gray-300 rounded shadow-sm"
               />
-              <p className="text-tag-red text-sm mt-1">
+              <p className="mt-1 text-sm text-tag-red">
                 아이디는 변경이 불가능합니다.
               </p>
             </div>
@@ -271,7 +269,7 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
             </div>
 
             {passwordError && (
-              <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+              <p className="mt-2 text-sm text-red-500">{passwordError}</p>
             )}
 
             <button
@@ -388,21 +386,18 @@ const UserInfoModal = ({ isOpen, onRequestClose, user }) => {
         )}
       </Modal>
 
-      {/* 중복 확인 모달 */}
       <DuplicateModal
         isOpen={isDuplicateModalOpen}
         message={nicknameCheckMessage}
         onClose={() => setIsDuplicateModalOpen(false)}
       />
 
-      {/* 비밀번호 변경 성공 모달 */}
       <DuplicateModal
         isOpen={isPasswordChangeModalOpen}
         message="비밀번호가 성공적으로 변경되었습니다."
         onClose={() => setIsPasswordChangeModalOpen(false)}
       />
 
-      {/* 프로필 수정 성공 모달 */}
       <DuplicateModal
         isOpen={isProfileUpdateModalOpen}
         message="프로필이 성공적으로 수정되었습니다."

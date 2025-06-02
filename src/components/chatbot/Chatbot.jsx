@@ -62,7 +62,6 @@ export default function Chatbot({ onClose }) {
       {!messages.length && (
         <div className="flex items-center justify-center h-full">
           <div className="flex flex-col items-center gap-6 text-center">
-            {/* 말풍선 */}
             <div className="relative bg-yellow-100 px-6 py-4 rounded-3xl shadow-md max-w-[280px] animate-fade-in">
               <p className="text-base font-medium leading-relaxed text-gray-800">
                 안녕하세요! 😊<br />
@@ -72,7 +71,6 @@ export default function Chatbot({ onClose }) {
               <div className="absolute bottom-[-10px] left-1/2 -translate-x-1/2 w-4 h-4 bg-yellow-100 rotate-45" />
             </div>
 
-            {/* 손가락 이미지 */}
             <img
               onClick={() => sendQuestion("처음")}
               src={ClickGuide}
@@ -80,7 +78,6 @@ export default function Chatbot({ onClose }) {
               className="w-[100px] h-[100px] cursor-pointer hover:scale-110 transition-transform duration-200 ease-in-out"
             />
 
-            {/* 시작 버튼 */}
             <Button
               onClick={() => sendQuestion("처음")}
               loading={loading}
@@ -99,7 +96,6 @@ export default function Chatbot({ onClose }) {
 function ChatMessage({ role, text, options, onSelect, onBack }) {
   return (
     <div className={`flex ${role === "user" ? "justify-end" : "justify-start"} gap-1 px-2`}>
-      {/* 챗봇일 경우 왼쪽에 이미지 표시 */}
       {role === "bot" && (
         <img
           src={BotLogo}

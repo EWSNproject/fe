@@ -26,7 +26,6 @@ const Header = ({ isLoggedIn, userData }) => {
   };
 
   useEffect(() => {
-    // 경로 변경될 때마다 메뉴 닫기
     setMenuOpen(false);
   }, [location.pathname]);
 
@@ -36,7 +35,7 @@ const Header = ({ isLoggedIn, userData }) => {
       const decoded = jwtDecode(token);
       if (decoded.exp < Date.now() / 1000) {
         Cookies.remove("accessToken");
-        window.location.reload(); // 새로고침으로 상태 반영
+        window.location.reload(); 
       }
     }
   }, []);

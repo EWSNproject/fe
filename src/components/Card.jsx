@@ -38,7 +38,6 @@ const Card = ({ data }) => {
     }
   };
 
-  // 태그 목록을 문자열로 변환하는 함수
   const formatTagList = (tags) => {
     return tags.join(", ");
   };
@@ -48,14 +47,12 @@ const Card = ({ data }) => {
       {/* 카테고리 태그들 */}
       <div className="flex justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          {/* 서비스 카테고리 - 항상 표시 (빨간색) */}
           <Tooltip content="">
             <span className="px-2.5 py-1 text-xs font-light rounded-full text-black-50 bg-tag-red inline-flex items-center">
               {category}
             </span>
           </Tooltip>
 
-          {/* Special Group - 첫 번째 태그만 표시 (주황색) */}
           {specialGroup.length > 0 && (
             <Tooltip
               content={
@@ -70,7 +67,6 @@ const Card = ({ data }) => {
             </Tooltip>
           )}
 
-          {/* Family Type - 첫 번째 태그만 표시 (초록색) */}
           {familyType.length > 0 && (
             <Tooltip
               content={
@@ -84,7 +80,6 @@ const Card = ({ data }) => {
           )}
         </div>
 
-        {/* 북마크 아이콘 */}
         <div>
           <BookmarkIcon
             className={`w-6 h-6 cursor-pointer ${
@@ -95,7 +90,6 @@ const Card = ({ data }) => {
         </div>
       </div>
 
-      {/* 제목과 설명 */}
       <div className="space-y-4">
         <h3 className="text-2xl font-bold text-gray-900 md:text-lg lg:text-xl">
           {title}
@@ -103,7 +97,6 @@ const Card = ({ data }) => {
         <p className="text-gray-600">{description}</p>
       </div>
 
-      {/* 자세히 보기 버튼 */}
       <div className="flex justify-end h-[40px] mt-auto">
         <Link
           to={`/benefitsList/${id}`}

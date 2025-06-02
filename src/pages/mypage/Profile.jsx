@@ -32,20 +32,19 @@ const Mypage = ({ handleLogout }) => {
   const [myPosts, setMyPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
 
-  const [itemsPerPage, setItemsPerPage] = useState(6); // 기본값: 데스크탑 6개
+  const [itemsPerPage, setItemsPerPage] = useState(6); 
   const pageGroupSize = 5;
 
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const levelImages = [questionMark, eggLevel, chick, chicken, eagle, cloud];
 
-  // 반응형 itemsPerPage 설정
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       setItemsPerPage(width < 768 ? 2 : 6);
     };
 
-    handleResize(); // 초기 실행
+    handleResize(); 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -149,7 +148,6 @@ const Mypage = ({ handleLogout }) => {
         <div className="w-full max-w-[1224px]">
           <div className="px-10 py-20 my-2 text-sm bg-yellow-200 rounded-lg shadow-md lg:px-4 lg:py-10">
             <div className="flex items-center gap-10 lg:flex-col lg:gap-6">
-              {/* 레벨 트래커 */}
               <div className="relative w-[738px] lg:w-full">
                 <div className="absolute w-full h-[2px] bg-black-300 top-[18px] lg:hidden"></div>
                 <div className="relative flex justify-between w-full">
@@ -178,7 +176,6 @@ const Mypage = ({ handleLogout }) => {
                 </div>
               </div>
 
-              {/* 포인트 설명 */}
               <div className="flex-1 lg:w-full">
                 <h3 className="ml-4 text-lg font-bold lg:ml-0 lg:text-base">
                   등급 및 포인트 시스템 안내
@@ -291,14 +288,12 @@ const Mypage = ({ handleLogout }) => {
 
       </div>
 
-      {/* Footer */}
       <div className="w-full max-w-[1236px] bg-yellow-400 flex items-center mt-6">
         <div className="items-center px-6 py-4 mx-auto">
           <div className="flex items-center gap-4 text-sm ">
             <button onClick={() => setIsLogoutConfirmOpen(true)}>로그아웃</button>
             <div className="w-[1px] h-3 bg-gray-300" />
             <button onClick={() => setIsWithdrawOpen(true)}>회원탈퇴</button>
-            {/* 관리자 전용 버튼: ROLE_ADMIN인 경우에만 표시 */}
             {user?.role === "ROLE_ADMIN" && (
               <>
                 <div className="w-[1px] h-3 bg-gray-300" />

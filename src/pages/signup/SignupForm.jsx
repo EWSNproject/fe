@@ -190,7 +190,6 @@ export default function SignupForm() {
         </h2>
 
         <span className="flex flex-col w-full gap-4 mb-6">
-          {/* 아이디 입력 */}
           <div className="flex justify-between w-full gap-2">
             <div className="flex-grow">
               <TextInput
@@ -227,7 +226,6 @@ export default function SignupForm() {
             </Button>
           </div>
 
-          {/* 비밀번호 입력 */}
           <span>
             <div className="relative">
               <PasswordInput
@@ -309,7 +307,6 @@ export default function SignupForm() {
         </span>
 
         <span className="flex flex-col gap-4">
-          {/* 이름 & 닉네임 */}
           <TextInput
             label="이름"
             placeholder="이름을 입력해주세요"
@@ -366,7 +363,6 @@ export default function SignupForm() {
             </Button>
           </div>
 
-          {/* 성별 선택 */}
           <div className="flex flex-col w-full gap-1">
             <div className="text-base font-normal text-black-950">성별</div>
             <div className="flex justify-between w-full px-1 h-[50px]">
@@ -388,7 +384,6 @@ export default function SignupForm() {
             {!gender}
           </div>
 
-          {/* 생년월일 */}
           <div className="flex flex-col gap-1">
             <div className="mb-1 text-base font-normal text-black-950">
               생년월일
@@ -406,7 +401,6 @@ export default function SignupForm() {
             />
           </div>
 
-          {/* 지역 */}
           <div className="flex flex-col gap-1">
             <div className="text-base font-normal text-black-950">지역</div>
             <div className="flex gap-2">
@@ -426,7 +420,6 @@ export default function SignupForm() {
             {!region || !district}
           </div>
 
-          {/* 직업 */}
           <div className="flex flex-col gap-1">
             <div className="text-base font-normal text-black-950">직업</div>
             <Dropdown
@@ -439,7 +432,6 @@ export default function SignupForm() {
           </div>
         </span>
 
-        {/* 회원가입 버튼 */}
         <Button
           type="submit"
           fullWidth
@@ -466,7 +458,6 @@ export default function SignupForm() {
           </span>
         </div>
 
-        {/* 중복확인 결과 모달 */}
         <DuplicateModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}

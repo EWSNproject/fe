@@ -19,13 +19,12 @@ import {getUserInfo} from './api/auth'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const token = Cookies.get('accessToken'); // 쿠키에서 토큰 가져오기
+    const token = Cookies.get('accessToken'); 
     if (token) {
       getUserInfo(token)
         .then(userInfo => {
@@ -72,7 +71,5 @@ function App() {
     
   );
 }
-
-
 
 export default App;

@@ -131,7 +131,6 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
           )}
       </div>
 
-      {/* ✅ 게시글 신고 모달 */}
       <ReportModal
         opened={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
@@ -140,7 +139,6 @@ export default function BoardDetailitem({ item, userNickname, postAuthorId }) {
         confirmText="신고"
         options={REPORT_OPTIONS}
       />
-
     </div>
   );
 }

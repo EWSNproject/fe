@@ -2,7 +2,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { showSessionExpiredModal } from '../utils/sessionExpired'; 
 
-//const BASE_URL = 'http://localhost:8080/api';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const httpClient = axios.create({

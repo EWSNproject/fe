@@ -4,11 +4,7 @@ import { getPostById, updatePost } from "../../api/postApi";
 import { SlNote } from "react-icons/sl";
 import { X } from "lucide-react";
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import {
-  TextInput,
-  Textarea,
-  Button,
-} from "@mantine/core";
+import { TextInput, Textarea, Button } from "@mantine/core";
 import { categoryMap } from "../../constants/postCategory";
 import TwoSelectModal from "../../components/modal/TwoSelectModal";
 import Bang from "../../assets/images/ic_Bang.svg";
@@ -111,7 +107,6 @@ export default function EditPost() {
 
   return (
     <div className="w-full max-w-[1000px] mx-auto mt-[30px] mb-[60px] px-4 sm:px-6">
-      {/* 제목 */}
       <div className="flex items-center gap-2 mb-3 text-2xl">
         <SlNote />
         게시글 수정하기
@@ -120,7 +115,6 @@ export default function EditPost() {
       <div className="mb-6 border-t border-black-400" />
 
       <div className="flex flex-col">
-        {/* 카테고리 선택 */}
         <div className="flex gap-3">
           {categories.map((category) => (
             <button
@@ -135,7 +129,6 @@ export default function EditPost() {
           ))}
         </div>
 
-        {/* 제목 입력 */}
         <div className="flex flex-col gap-3">
           <span className="text-xs font-normal text-right text-error">
             제목과 내용은 필수입니다.
@@ -157,7 +150,6 @@ export default function EditPost() {
           </div>
         </div>
 
-        {/* 내용 입력 */}
         <div className="mb-2 w-full max-w-[1000px]">
           <Textarea
             placeholder="500자 이내로 작성해주세요."
@@ -177,7 +169,6 @@ export default function EditPost() {
           </div>
         </div>
 
-        {/* 이미지 첨부 */}
         <div className="flex flex-col gap-2 mb-6">
           <label className="text-sm font-medium">이미지 파일 첨부</label>
           <Dropzone
@@ -201,7 +192,6 @@ export default function EditPost() {
           </Dropzone>
           {(files.length > 0 || existingImages.length > 0) ? (
             <div className="flex flex-wrap gap-2 mt-2">
-              {/* ✅ 기존 이미지 렌더링 */}
               {existingImages.map((img, index) => (
                 <div key={`existing-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
                   <button
@@ -222,7 +212,6 @@ export default function EditPost() {
                 </div>
             ))}
 
-            {/* ✅ 새로 선택한 이미지 렌더링 */}
             {files.map((file, index) => (
               <div key={`new-${index}`} className="relative w-24 h-24 overflow-hidden border rounded">
                 <button
@@ -245,7 +234,6 @@ export default function EditPost() {
 
         </div>
 
-        {/* 태그 입력 */}
         <div className="flex flex-col gap-1 mb-6">
           <label className="mb-1 text-sm font-medium">태그 편집</label>
           <div className="bg-black-50 flex flex-wrap items-center gap-2 border rounded px-3 py-2 min-h-[44px]">
@@ -270,7 +258,6 @@ export default function EditPost() {
           </div>
         </div>
 
-        {/* 관련 링크 입력 */}
         <div>
           <label className="mb-4 text-sm font-medium">관련링크걸기</label>
           <div className="flex flex-wrap w-full gap-6 mb-6 lg:flex-col">
@@ -298,7 +285,6 @@ export default function EditPost() {
           </div>
         </div>
 
-        {/* 작성 완료 버튼 */}
         <div className="text-right">
           <Button
             className={`rounded-xl px-[40px] py-[10px] text-base font-bold text-black-50 ${
@@ -322,7 +308,6 @@ export default function EditPost() {
         button1Text="수정하기"
         button1Action={handleSubmit}
       />
-
     </div>
   );
 } 

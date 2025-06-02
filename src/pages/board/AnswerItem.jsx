@@ -9,7 +9,6 @@ import ReportModal from "../../components/modal/ReportModal";
 import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
-// 질문게시판을 택했을 경우, 답변 관련 코드
 export default function AnswerItem({ postId, answers, userId, nickname, setComments, setCommentCount, postAuthor }) {
   const [answer, setAnswer] = useState("");
   const [userMap, setUserMap] = useState({});
@@ -20,7 +19,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
   const [selectModalOpen, setSelectModalOpen] = useState(false);
   const [selectTargetId, setSelectTargetId] = useState(null);
 
-  // 답변 작성
   const handleSaveAnswer = async () => {
     if (!answer.trim()) return;
     try {
@@ -33,13 +31,10 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
     }
   };
 
-  // 채택
   const handleConfirmSelect = async () => {
     if (!selectTargetId) return;
     try {
-      const res = await selectAnswer(postId, selectTargetId);
-      console.log("✅ 채택 성공:", res);
-      // UI 갱신
+      await selectAnswer(postId, selectTargetId);
       setComments((prev) =>
         prev.map((a) =>
           a.id === selectTargetId
@@ -50,14 +45,12 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
       toast.success("답변이 채택되었습니다.");
     } catch (err) {
       toast.error("채택 중 오류가 발생했습니다.");
-      console.error("❌ 채택 실패:", err);
     } finally {
       setSelectModalOpen(false);
       setSelectTargetId(null);
     }
   };
 
-  // 답변 삭제
   const handleDelete = async (answerId) => {
     try {
       await deleteAnswer(postId, answerId);  
@@ -80,7 +73,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
     setDeleteTargetId(null);
   };
 
-  // 답변 작성한 사용자의 닉네임 조회
   useEffect(() => {
     const loadNicknames = async () => {
       const uniqueIds = [...new Set(answers.map(a => a.userId))];
@@ -98,7 +90,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
     loadNicknames();
   }, [answers, userMap]);
 
-  // 신고
   const handleReportSubmit = ({ reason, detail }) => {
     const reportedAnswer = answers.find((a) => a.id === reportTargetId);
 
@@ -126,7 +117,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
 
   return (
     <div className='flex flex-col gap-[30px]'>
-      {/* 답변 입력 UI */}
       <div className='flex items-end gap-5 md:gap-2'>
         <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
           {nickname?.charAt(0) || "?"}
@@ -155,7 +145,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         </button>
       </div>
 
-      {/* 답변 목록 */}
       <div className='w-full max-w-[1000px] mx-auto px-4 flex flex-col gap-1.5 md:px-0'>
         {answers.map((comment) => {
           const date = new Date(comment.createdAt);
@@ -181,7 +170,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
               <div className='flex justify-between'>
                 <div className='text-black-500 flex gap-2.5 text-sm font-normal'>
                   {comment.userId === userId && comment.content !== "사용자가 삭제한 답변입니다." ? (
-                  // 본인이 쓴 답변 & 삭제되지 않았을 때만 삭제 버튼
                   <button
                     onClick={() => {
                       setDeleteTargetId(comment.id);
@@ -192,7 +180,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                     삭제
                   </button>
                 ) : (
-                  // 다른 사람이 쓴 답변 & 삭제되지 않았을 때만 신고 버튼
                   comment.userId !== userId && comment.content !== "사용자가 삭제한 답변입니다." && (
                     <button
                       className="flex items-center hover:underline"
@@ -206,7 +193,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                   )
                 )}
                 </div>
-                {/* 글쓴이 본인이고, 채택된 댓글이 아직 없고, 해당 답변이 다른 사람이 쓴 것일 때만 채택 버튼 표시 */}
                 {userId === postAuthor && !isAnySelected && comment.userId !== userId && (
                   <button 
                     onClick={() => {
@@ -219,7 +205,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
                   </button>
                 )}
               </div>
-              {/* 채택된 경우에만 안내 문구 출력 */}
               {comment.selected && (
                 <div className="px-3 py-1 text-sm font-bold border-2 rounded-lg bg-black-50 border-tag-blue text-tag-blue">
                   채택된 댓글입니다.
@@ -230,7 +215,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         })}
       </div>
 
-      {/* ✅ 채택 확인 모달 */}
       <TwoSelectModal
         isOpen={selectModalOpen}
         message="채택하시겠습니까?"
@@ -244,7 +228,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         }}
       />
 
-      {/* ✅ 삭제 확인 모달 */}
       <TwoSelectModal
         isOpen={deleteModalOpen}
         message="답변을 삭제하시겠습니까?"
@@ -255,7 +238,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         button2Action={() => setDeleteModalOpen(false)}
       />
 
-      {/* ✅ 신고 상세내용 모달 */}
       <ReportModal
         opened={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
@@ -264,7 +246,6 @@ export default function AnswerItem({ postId, answers, userId, nickname, setComme
         confirmText="신고"
         options={REPORT_OPTIONS}
       />
-
     </div>
   );
 }

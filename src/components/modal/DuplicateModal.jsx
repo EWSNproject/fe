@@ -1,4 +1,3 @@
-import React from 'react';
 import { createPortal } from 'react-dom';
 
 export default function DuplicateModal({ isOpen, message, onClose }) {
@@ -7,7 +6,7 @@ export default function DuplicateModal({ isOpen, message, onClose }) {
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-900 bg-opacity-80">
       <div className="bg-black-50 flex flex-col min-w-[500px] md:min-w-[200px] md:w-[90%] min-h-[210px] p-6 rounded-[8px] z-50">
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex items-center justify-center flex-1">
           <p className="text-[18px] md:text-[16px] text-center mt-8">{message}</p>
         </div>
         <div className="flex justify-end">

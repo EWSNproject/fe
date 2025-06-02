@@ -39,7 +39,7 @@ export const getPopularBenefits = async () => {
 
 export const getMatchServices = async () => {
   const token = Cookies.get('accessToken');
-  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  if (!token) return []; 
   
   try {
     const response = await httpClient.get('/mongo/services/matched');
@@ -51,7 +51,7 @@ export const getMatchServices = async () => {
 
 export const getSearchHistory = async () => {
   const token = Cookies.get('accessToken');
-  if (!token) return []; // 토큰 없으면 요청 아예 안 함
+  if (!token) return []; 
   
   try {
     const response = await httpClient.get('/search/history');

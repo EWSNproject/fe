@@ -142,7 +142,7 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
     };
 
     return (
-      <div className="p-4 mb-4 border rounded-lg bg-white">
+      <div className="p-4 mb-4 bg-white border rounded-lg">
         <div className="flex items-center justify-between cursor-pointer" onClick={onToggle}>
           <h3 className="text-[14px]">{title}</h3>
           {isOpen ? <FaChevronUp /> : <FaChevronDown />}
@@ -171,8 +171,7 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
 
   return (
     <div className="relative">
-      {/* 데스크탑 메뉴 버튼 */}
-      <div className="lg:flex hidden justify-start px-4 mb-2">
+      <div className="justify-start hidden px-4 mb-2 lg:flex">
         <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2">
           <Menu size={20} />
           <span className="text-sm font-semibold">
@@ -181,9 +180,8 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
         </button>
       </div>
 
-      {/* 데스크탑 필터 영역 */}
       {menuOpen && (
-        <div className="lg:flex hidden flex-col p-4 border rounded-lg bg-gray-50 w-full">
+        <div className="flex-col hidden w-full p-4 border rounded-lg lg:flex bg-gray-50">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold">필터</h2>
             <div className="flex gap-2">
@@ -218,14 +216,13 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
 
           <button
             onClick={handleSearch}
-            className="w-full py-2 mt-4 bg-yellow-700 text-white rounded-lg text-sm font-semibold"
+            className="w-full py-2 mt-4 text-sm font-semibold text-white bg-yellow-700 rounded-lg"
           >
             검색하기
           </button>
         </div>
       )}
 
-      {/* 모바일 필터 영역 */}
       <div className="lg:hidden block w-[280px] bg-gray-50 border rounded-xl p-4 mr-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold">필터</h2>
@@ -261,7 +258,7 @@ const SideFilter = ({ onFilterChange, initialFilters }) => {
 
         <button
           onClick={handleSearch}
-          className="w-full py-2 mt-4 bg-yellow-700 text-white rounded-lg"
+          className="w-full py-2 mt-4 text-white bg-yellow-700 rounded-lg"
         >
           검색
         </button>

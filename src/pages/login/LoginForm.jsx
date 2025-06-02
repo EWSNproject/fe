@@ -47,8 +47,6 @@ export default function LoginForm({ handleLogin }) {
       setModalMessage("로그인 성공하였습니다.");
       setIsModalOpen(true);
       if (!hasLoggedIn) {
-        // 처음 로그인인 경우
-        
         localStorage.setItem('hasLoggedIn', 'true');
       }
   
@@ -79,8 +77,6 @@ export default function LoginForm({ handleLogin }) {
           noValidate
         >
           <h2 className="text-3xl font-medium text-center text-black-950 mb-11">로그인</h2>
-
-          {/* 아이디 입력 */}
           <div>
             <TextInput
               label="아이디"
@@ -105,13 +101,12 @@ export default function LoginForm({ handleLogin }) {
             />
           </div>
 
-          {/* 비밀번호 입력 */}
           <div className="relative">
             <PasswordInput
               label="비밀번호"
               placeholder="비밀번호를 입력하세요"
               visible={showPassword}
-              autoComplete="new-password" // ✨ 핵심: Chrome 보안 경고 방지
+              autoComplete="new-password" 
               visibilityToggleIcon={({ reveal }) =>
                 reveal ? <Eye size={24} /> : <EyeOff size={24} />
               }
@@ -143,7 +138,6 @@ export default function LoginForm({ handleLogin }) {
             />
           </div>
 
-          {/* 제출 버튼 */}
           <Button
             type="submit"
             fullWidth
@@ -166,7 +160,6 @@ export default function LoginForm({ handleLogin }) {
         </form>
       </div>
 
-      {/* 모달 추가 */}
       <DuplicateModal
         isOpen={isModalOpen}
         message={modalMessage}

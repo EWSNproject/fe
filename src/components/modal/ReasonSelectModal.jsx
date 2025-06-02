@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ReasonSelectModal = ({
   opened,
@@ -39,7 +39,7 @@ const ReasonSelectModal = ({
           {options.map((reason, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 justify-center " 
+              className="flex items-center justify-center gap-2 " 
             >
               <input
                 type="radio"
@@ -65,7 +65,7 @@ const ReasonSelectModal = ({
                 value={etcText}
                 onChange={(e) => setEtcText(e.target.value)}
                 placeholder="기타 사유를 입력해주세요"
-                className="w-full p-2 border border-gray-300 rounded resize-none h-24 text-sm"
+                className="w-full h-24 p-2 text-sm border border-gray-300 rounded resize-none"
               />
             </div>
           )}

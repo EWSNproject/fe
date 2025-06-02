@@ -60,12 +60,10 @@ export const updatePost = async (postId, postData) => {
   formData.append("urlPath", postData.urlPath);
   formData.append("tags", postData.tags);
 
-  // 유지할 이미지 ID들
   postData.keepImageIds.forEach(id => {
     formData.append("keepImageIds", id);
   });
 
-  // 새 이미지 파일들
   postData.newImages.forEach(file => {
     formData.append("newImages", file);
   });

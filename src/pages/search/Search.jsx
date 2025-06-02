@@ -134,13 +134,10 @@ const Search = () => {
   return (
     <div className="flex flex-col items-center p-6 max-w-[1680px] mx-auto">
       <h1 className="text-[32px] font-bold mb-6">통합검색</h1>
-
-      {/* 검색 입력 */}
       <div className="relative w-full max-w-[1236px] mb-8">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-[10px] min-h-[64px] border bg-[#FAFAFA] px-4 py-3 w-full">
           
           <div className="relative flex items-center w-full">
-            {/* 입력창 */}
             <input
               type="text"
               placeholder="검색어를 입력하세요"
@@ -155,7 +152,6 @@ const Search = () => {
               }}
             />
 
-            {/* 취소 아이콘 */}
             {searchTerm && (
               <img
                 src={CancelIcon}
@@ -166,7 +162,6 @@ const Search = () => {
             )}
           </div>
 
-          {/* 검색 버튼 */}
           <button
             className="flex items-center justify-center px-4 py-2 bg-yellow-700 text-white text-sm rounded-[8px] whitespace-nowrap w-full sm:w-auto"
             onClick={() => handleSearch(searchTerm)}
@@ -176,7 +171,6 @@ const Search = () => {
           </button>
         </div>
 
-        {/* 자동완성 결과 */}
         {autocompleteResults.length > 0 && (
           <ul className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded shadow-lg z-10 mt-1 max-h-[240px] overflow-y-auto">
             {autocompleteResults.map((suggestion, index) => (
@@ -192,7 +186,6 @@ const Search = () => {
         )}
       </div>
 
-      {/* 최근 검색어 */}
       <div className="mb-6 w-full max-w-[1236px]">
         <div className="flex items-center justify-between mb-2">
           <h2 className="mb-3 text-xl font-semibold">최근 검색어</h2>
@@ -209,7 +202,6 @@ const Search = () => {
           )}
         </div>
 
-        {/* 태그만 조건적으로 렌더링 */}
         {recentSearches.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {recentSearches.map((item) => (
@@ -242,7 +234,6 @@ const Search = () => {
         )}
       </div>
 
-      {/* 복지서비스 */}
       <div className="w-full max-w-[1236px] mb-8">
         <h2 className="mb-4 text-xl font-semibold">복지서비스</h2>
         {isLoading ? (
@@ -251,7 +242,6 @@ const Search = () => {
             <p>검색한 키워드가 포함한 복지서비스를 찾는중입니다...</p>
           </div>
         ) : searchTerm.trim() === "" ? (
-          // ✅ 검색어가 없으면 인기 복지 혜택 보여주기
           <div className="grid grid-cols-3 gap-6 md:grid-cols-1">
             {popularBenefits.map((card) => (
               <Card
@@ -291,7 +281,6 @@ const Search = () => {
           )
         )}
 
-        {/* 모바일/PC 공통 더보기 버튼 */}
         {hasMore && searchResults.length > 0 && (
           <div className="flex justify-center mt-8">
             <button
@@ -304,7 +293,6 @@ const Search = () => {
         )}
       </div>
 
-      {/* 게시판 */}
       <div className="w-full max-w-[1236px] mb-4">
         <h2 className="mb-4 text-xl font-semibold">게시판</h2>
         <MyPostsList posts={postResults} />

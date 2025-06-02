@@ -80,7 +80,7 @@ const UserInfoLevel = ({ user }) => {
                 개인정보 수정
               </button>
               <button
-                className="px-4 py-2 mt-3 w-full transition bg-yellow-500 rounded hover:bg-yellow-600"
+                className="w-full px-4 py-2 mt-3 transition bg-yellow-500 rounded hover:bg-yellow-600"
                 onClick={openInterestModal}
               >
                 키워드 수정
@@ -129,7 +129,7 @@ const UserInfoLevel = ({ user }) => {
             </div>
             {nextLevel && (
               <div className="flex justify-end mt-2 text-sm">
-                <div className="flex flex-row flex-wrap items-center gap-1 break-keep w-full max-w-full">
+                <div className="flex flex-row flex-wrap items-center w-full max-w-full gap-1 break-keep">
                   <span>{user.remainPoint}포인트 모으면</span>
                   <span className="text-yellow-800">{nextLevel}</span>
                   <span>등급으로 승급!</span>
