@@ -63,7 +63,6 @@ export default function Boardlist() {
       <div className="mt-20 flex flex-col gap-[30px] w-[1280px] lg:w-full">
         <h1 className="text-4xl font-semibold text-center text-black-950">게시판</h1>
 
-        {/* 게시판 종류 */}
         <div className="flex justify-center">
           <div className="space-x-3 text-lg text-black-400">
             {['전체', '질문게시판', '자유게시판', '인사게시판'].map((buttonName) => (
@@ -78,7 +77,6 @@ export default function Boardlist() {
           </div>
         </div>
 
-        {/* 상단 정보 및 검색 */}
         <div className="mt-[30px] w-full px-10 md:px-4 lg:mt-[15px] md:mt-0">
           <div className="flex flex-wrap justify-between gap-4">
             <div className="flex items-end gap-4 text-base font-medium text-black-500 md:w-full md:order-2">
@@ -108,7 +106,7 @@ export default function Boardlist() {
                   검색
                 </button>
               </div>
-              {/* 정렬 드롭다운 */}
+
               <div className="md:left">
                 <SortDropdown
                   options={sortOptions}
@@ -119,7 +117,6 @@ export default function Boardlist() {
             </div>
           </div>
 
-          {/* 게시판글 시작부분 */}
           <div className="mt-5">
             <div className=" lg:hidden h-[60px] flex bg-yellow-200 text-lg font-medium border-black-300 border-x-0 border-2 text-center justify-between">
               <div className="flex">

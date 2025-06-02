@@ -6,7 +6,6 @@ import ReportModal from "../../components/modal/ReportModal";
 import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
-// 자유게시판을 택했을 경우, 대댓글 관련 코드
 export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
@@ -79,7 +78,6 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
         </div>
       </div>
 
-      {/* ✅ 삭제 확인 모달 */}
       <TwoSelectModal
         isOpen={deleteModalOpen}
         message="대댓글을 삭제하시겠습니까?"
@@ -90,7 +88,6 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
         button2Action={() => setDeleteModalOpen(false)}
       />
       
-      {/* ✅ 신고 상세내용 모달 */}
       <ReportModal
         opened={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
@@ -99,7 +96,6 @@ export default function ReplyItem({ reply, nickname, onDelete, postAuthor }) {
         confirmText="신고"
         options={REPORT_OPTIONS}
       />
-
     </div>
   );
 }

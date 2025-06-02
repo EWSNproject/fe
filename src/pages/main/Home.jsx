@@ -285,7 +285,6 @@ const Home = () => {
               서비스를 추천해드려요!
             </p>
 
-            {/* Recent Searches */}
             {(recentSearches.length > 0 ||
               (userInfo && interestKeywords.length > 0)) && (
               <div className="flex flex-row gap-4 mb-8 md:flex-col">
@@ -335,21 +334,18 @@ const Home = () => {
                       ))}
                     </div>
                     <div className="flex flex-wrap gap-2 mt-3 mb-3">
-                      {/* 출생연도 */}
                       {userInfo.birthAt && (
                         <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm ">
                           {userInfo.birthAt.slice(0, 4)}년생
                         </span>
                       )}
 
-                      {/* 지역 */}
                       {userInfo.city && userInfo.state && (
                         <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm ">
                           {userInfo.city} {userInfo.state}
                         </span>
                       )}
 
-                      {/* 직업 */}
                       {userInfo.job && (
                         <span className="px-3 py-1 text-sm font-medium text-green-900 bg-white border border-green-300 rounded-full shadow-sm">
                           {userInfo.job}
@@ -361,7 +357,6 @@ const Home = () => {
               </div>
             )}
 
-            {/* Slider */}
             <Slider {...settings}>
               {cardData.map((card) => (
                 <div key={card.publicServiceId}>

@@ -1,11 +1,7 @@
 import { SlNote } from "react-icons/sl";
 import { X } from "lucide-react";
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import {
-  TextInput,
-  Textarea,
-  Button,
-} from "@mantine/core";
+import { TextInput, Textarea, Button } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../../api/postApi";
@@ -76,21 +72,18 @@ export default function Post() {
     };
   
     try {
-      const result = await createPost(postData); 
-      console.log("✅ 등록 성공:", result);
+      await createPost(postData); 
       setDeleteModalOpen(false); 
       toast.success("게시글이 등록되었습니다.");
       navigate("/board"); 
       
     } catch (error) {
-      console.error("❌ 등록 실패:", error);
       toast.error("게시글 등록에 실패했습니다.");
     }
   };
 
   return (
     <div className="w-full max-w-[1000px] mx-auto mt-[30px] mb-[60px] px-4 sm:px-6">
-      {/* 제목 */}
       <div className="flex items-center gap-2 mb-3 text-2xl">
         <SlNote />
         게시판 글쓰기
@@ -99,7 +92,6 @@ export default function Post() {
       <div className="mb-6 border-t border-black-400" />
 
       <div className="flex flex-col">
-        {/* 카테고리 선택 */}
         <div className="flex gap-3">
           {categories.map((category) => (
             <button
@@ -114,7 +106,6 @@ export default function Post() {
           ))}
         </div>
 
-        {/* 제목 입력 */}
         <div className="flex flex-col gap-3">
           <span className="text-xs font-normal text-right text-error">
             *제목과 내용은 필수입니다.
@@ -136,7 +127,6 @@ export default function Post() {
           </div>
         </div>
 
-        {/* 내용 입력 */}
         <div className="mb-2 w-full max-w-[1000px]">
           <Textarea
             placeholder="500자 이내로 작성해주세요."
@@ -156,7 +146,6 @@ export default function Post() {
           </div>
         </div>
 
-        {/* 이미지 첨부 */}
         <div className="flex flex-col gap-2 mb-6">
           <label className="text-sm font-medium">이미지 파일 첨부</label>
           <Dropzone
@@ -201,7 +190,6 @@ export default function Post() {
           )}
         </div>
 
-        {/* 태그 입력 */}
         <div className="flex flex-col gap-1 mb-6">
           <label className="mb-1 text-sm font-medium">태그 편집</label>
           <div className="bg-black-50 flex flex-wrap items-center gap-2 border rounded px-3 py-2 min-h-[44px]">
@@ -226,7 +214,6 @@ export default function Post() {
           </div>
         </div>
 
-        {/* 관련 링크 입력 */}
         <div>
           <label className="mb-4 text-sm font-medium">관련링크걸기</label>
           <div className="flex flex-wrap w-full gap-6 mb-6 lg:flex-col">
@@ -254,7 +241,6 @@ export default function Post() {
           </div>
         </div>
 
-        {/* 작성 완료 버튼 */}
         <div className="text-right">
           <Button
             className={`rounded-xl px-[40px] py-[10px] text-base font-bold text-black-50 ${
@@ -268,7 +254,6 @@ export default function Post() {
         </div>
       </div>
 
-      {/* ✅ 삭제 확인 모달 */}
       <TwoSelectModal
         icon={Bang}
         isOpen={deleteModalOpen}
@@ -279,7 +264,6 @@ export default function Post() {
         button1Text="등록하기"
         button1Action={handleSubmit}        
       />
-
     </div>
   );
 }

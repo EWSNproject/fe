@@ -9,7 +9,6 @@ import ReportModal from "../../components/modal/ReportModal";
 import { REPORT_OPTIONS } from "../../constants/reportOptions";
 import { toast } from 'react-toastify';
 
-// 자유&인사게시판을 택했을 경우, 댓글 관련 코드
 export default function CommentItem({ postId, postType, comments, userId, nickname, setComments, setCommentCount, postAuthor }) {
   const [comment, setComment] = useState("");
   const [replyOpenId, setReplyOpenId] = useState(null); 
@@ -39,10 +38,7 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
       setReplyOpenId(null);
       setReplyText("");
 
-      // ✅ 대댓글을 comments 상태에 바로 추가
       setComments(prev => [...prev, res]);
-
-      // ✅ replies 상태에도 대댓글 추가
       setReplies(prev => ({
         ...prev,
         [parentId]: [...(prev[parentId] || []), res],
@@ -147,7 +143,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
 
   return (
     <div className='flex flex-col gap-[30px]'>
-      {/* 댓글 입력 UI */}
       <div className='flex items-end gap-5 md:gap-2'>
         <span className='flex items-center justify-center w-10 h-10 text-xl font-semibold text-yellow-800 bg-yellow-400 rounded-full'>
           {nickname?.charAt(0) || "?"}
@@ -176,7 +171,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         </button>
       </div>
       
-      {/* 댓글 목록 */}
       <div className='w-full max-w-[1000px] mx-auto px-4 flex flex-col gap-1.5 md:px-0'>
         {comments
           .filter(comment => comment.parentId === null) 
@@ -239,7 +233,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                   </div>
                 </div>
 
-                {/* 대댓글 입력창 */}
                 {replyOpenId === comment.id && (
                   <TextInput
                     placeholder="대댓글을 입력하세요..."
@@ -258,7 +251,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
                   />
                 )}
 
-                {/* 대댓글 목록 렌더링 */}
                 {(replies[comment.id] || []).map(reply => (
                   <ReplyItem 
                     key={reply.id} 
@@ -274,7 +266,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         })}
       </div>
 
-      {/* ✅ 삭제 확인 모달 */}
       <TwoSelectModal
         isOpen={deleteModalOpen}
         message="댓글을 삭제하시겠습니까?"
@@ -285,7 +276,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         button2Action={() => setDeleteModalOpen(false)}
       />
       
-      {/* ✅ 신고 상세내용 모달 */}
       <ReportModal
         opened={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
@@ -294,7 +284,6 @@ export default function CommentItem({ postId, postType, comments, userId, nickna
         confirmText="신고"
         options={REPORT_OPTIONS}
       />
-
     </div>
   );
 }

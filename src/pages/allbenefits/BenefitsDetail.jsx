@@ -54,7 +54,6 @@ const BenefitsDetail = () => {
   const [department, phone] =
     benefit.contactInfo?.split("/") || ["정보 없음", "정보 없음"];
 
-  // 텍스트 정제 함수
   const sanitizeText = (text) => {
     if (!text || typeof text !== "string") return ["정보 없음"];
     return text
@@ -65,7 +64,6 @@ const BenefitsDetail = () => {
       .filter((line) => line.length > 0);
   };
 
-  // 줄 제한 렌더링 함수
   const renderMultiline = (text, limit = 2) => {
     const lines = sanitizeText(text);
     if (showMore || lines.length <= limit) {
@@ -86,7 +84,6 @@ const BenefitsDetail = () => {
     ));
   };
 
-  // Check if any content needs the show more button
   const hasMoreContent = () => {
     const fields = [
       benefit.supportTarget,
